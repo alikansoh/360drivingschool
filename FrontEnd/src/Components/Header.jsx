@@ -14,7 +14,7 @@ const Header = () => {
     <section className="font-Poppins">
       {/* Hero Section */}
       <motion.div
-        className="flex items-center justify-center opacity-100 md:h-[30rem] w-full xl:h-[45rem] lg:h-[35rem] gap-20 lg:flex-row mobile:flex-col mobile:justify-center mobile:items-center mobile:gap-5 mobile:h-[22rem] mobile:bg-cover bg-cover bg-[url('./src/assets/headerimage.png')]"
+        className="flex items-center justify-center opacity-100 md:h-[30rem] w-full xl:h-[45rem] lg:h-[35rem] gap-20 lg:flex-row mobile:flex-col mobile:justify-center mobile:items-center mobile:gap-5 mobile:h-[22rem] mobile:bg-cover bg-cover bg-[url('./src/assets/header.png')]"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
