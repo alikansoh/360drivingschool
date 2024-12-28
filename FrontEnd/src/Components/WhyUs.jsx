@@ -69,7 +69,7 @@ const WhyUs = () => {
             className="flex items-center bg-white shadow-md rounded-lg p-5 gap-4 hover:shadow-lg transition-all"
           >
             <FaCheckCircle className="text-red-500 text-2xl" />
-            <p className="text-lg text-gray-800 mobile:text-sm">{feature}</p>
+            <p className="text-lg text-gray-800  font-semibold">{feature}</p>
           </motion.div>
         ))}
       </motion.div>
