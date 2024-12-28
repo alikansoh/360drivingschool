@@ -117,7 +117,7 @@ const Header = () => {
               alt={`${feature.title} Illustration`}
               className="mb-7 w-[15rem] h-[15rem] mx-auto mobile:w-[15rem] mobile:h-[15rem]"
             />
-            <h1 className="text-red-600 text-3xl font-bold mobile:text-xl text-center">
+            <h1 className="text-red-600 text-3xl font-bold mobile:text-2xl text-center">
               {feature.title}
             </h1>
             <h2 className="text-l mt-1 mobile:text-sm ">

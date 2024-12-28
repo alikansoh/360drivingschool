@@ -1,11 +1,15 @@
-import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useLocation } from "react-router-dom"; // Import useLocation
 import logo from "../assets/360logo-nav.png";
 import { Link } from "react-router-dom";
 const navigation = [
   { name: "Home", href: "/" },
-  { name: "Booking", href: "/Booking" },
+  { name: "Booking", href: "Booking" },
   { name: "Contact us", href: "/Contact" },
   { name: "About us", href: "/About" },
 ];
@@ -18,12 +22,12 @@ export default function Navbar() {
   const location = useLocation(); // Get the current location (pathname)
 
   return (
-    <Disclosure as="nav" className="bg-gray-200">
+    <Disclosure as="nav" className="bg-gray-300">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-[8rem] items-center justify-between sm:[1rem] mobile:h-[5rem]">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
             {/* Mobile menu button*/}
-            <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+            <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400  hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
               <span className="absolute -inset-0.5" />
               <span className="sr-only">Open main menu</span>
               <Bars3Icon
@@ -50,10 +54,12 @@ export default function Navbar() {
                   <Link
                     key={item.name}
                     to={item.href}
-                    aria-current={location.pathname === item.href ? "page" : undefined}  // Set active item
+                    aria-current={
+                      location.pathname === item.href ? "page" : undefined
+                    } // Set active item
                     className={classNames(
                       location.pathname === item.href
-                        ? "bg-red-600 text-white"  // Apply the red background if it's the current page
+                        ? "bg-red-600 text-white" // Apply the red background if it's the current page
                         : "text-black hover:bg-red-600 hover:text-white",
                       "rounded-md px-3 py-2 font-Poppins font-bold"
                     )}
@@ -75,7 +81,9 @@ export default function Navbar() {
               key={item.name}
               as="a"
               href={item.href}
-              aria-current={location.pathname === item.href ? "page" : undefined}  // Set active item for mobile
+              aria-current={
+                location.pathname === item.href ? "page" : undefined
+              } // Set active item for mobile
               className={classNames(
                 location.pathname === item.href
                   ? "bg-red-600 text-white"

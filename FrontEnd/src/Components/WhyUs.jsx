@@ -45,10 +45,10 @@ const WhyUs = () => {
           alt="true"
           className="w-16 h-16 mx-auto animate-bounce"
         />
-        <h1 className="text-4xl font-bold mt-5 mobile:text-2xl">
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
           WHY 360 DRIVING SCHOOL?
         </h1>
-        <p className="text-lg text-gray-600 mt-3 mobile:text-md">
+        <p className="text-lg text-gray-600 mt-3 mobile:text-lg">
           Discover why students trust us for their driving education.
         </p>
       </motion.div>
