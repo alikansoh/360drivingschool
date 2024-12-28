@@ -5,7 +5,7 @@ import west from "../assets/west.png";
 import ed from "../assets/ed.png";
 import mockup from "../assets/mock.png";
 import logo from "../assets/360logo.jpeg";
-
+import { Link } from "react-router-dom";
 const Header = () => {
   const featuresRef = useRef(null);
   const isInView = useInView(featuresRef, { once: true, margin: "-100px" });
@@ -46,27 +46,29 @@ const Header = () => {
             have previously trained, individuals preparing for their tests, and
             those seeking to refresh their skills.
           </h1>
-          <motion.button
-            className="bg-white text-black mobile:gap-2 flex items-center justify-center gap-8 font-bold p-2 hover:bg-red-600 text-m w-[15rem] h-12 shadow-lg shadow-black mobile:w-[9rem] mobile:mt-3 mobile:h-[2rem] mobile:text-[0.7rem] mt-10"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            Contact us now
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="h-7 w-7 mobile:h-4 mobile:w-4 mobile:text-xs"
+          <Link to="/booking">
+            <motion.button
+              className="bg-white text-black mobile:gap-2 flex items-center justify-center gap-8 font-bold p-2 hover:bg-red-600 text-m w-[15rem] h-12 shadow-lg shadow-black mobile:w-[9rem] mobile:mt-3 mobile:h-[2rem] mobile:text-[0.7rem] mt-10"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-              />
-            </svg>
-          </motion.button>
+              Book Now{" "}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="h-7 w-7 mobile:h-4 mobile:w-4 mobile:text-xs"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
+                />
+              </svg>
+            </motion.button>
+          </Link>
         </motion.section>
       </motion.div>
 
