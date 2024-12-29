@@ -25,7 +25,7 @@ const Footer = () => {
 
           {/* Description and Subscription */}
           <div className="text-center md:text-left md:w-2/3">
-            <div className="mt-12 text-center">
+            <div className="text-center">
               <p className="font-semibold mb-4 text-red-600 text-lg md:text-xl mobile:text-md">
                 Subscribe to our newsletter for the latest updates and news.
               </p>
