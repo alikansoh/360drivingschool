@@ -5,12 +5,12 @@ import { motion } from "framer-motion";
 
 const WhyUs = () => {
   const features = [
-    "We have a high pass rate.",
-    "Door-to-door service from home or work, if you are within the area.",
-    "Our instructors are friendly and professional.",
-    "We provide flexible scheduling for your convenience.",
-    "Modern vehicles equipped with dual controls for safety.",
-    "We offer personalized attention to each student.",
+    "We maintain a high pass rate for our students.",
+    "We offer door-to-door service for students within the area.",
+    "Our instructors are both professional and approachable.",
+    "We provide flexible scheduling options to suit your needs.",
+    "Our modern vehicles are equipped with dual controls for added safety.",
+    "We deliver personalized attention to every student for optimal learning.",
   ];
 
   // Animation variants
@@ -68,8 +68,12 @@ const WhyUs = () => {
             whileTap={{ scale: 0.95 }}
             className="flex items-center bg-white shadow-md rounded-lg p-5 gap-4 hover:shadow-lg transition-all"
           >
-            <FaCheckCircle className="text-red-500 text-2xl" />
-            <p className="text-lg text-gray-800  font-semibold">{feature}</p>
+            {/* Consistent size for the checkmark */}
+            <FaCheckCircle className="text-red-500 text-3xl w-auto  " />{" "}
+            {/* Changed size to text-3xl */}
+            <p className="text-xl text-gray-800 mobile:text-sm mobile: font-bold ">
+              {feature}
+            </p>
           </motion.div>
         ))}
       </motion.div>

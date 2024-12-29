@@ -6,6 +6,7 @@ import ed from "../assets/ed.png";
 import mockup from "../assets/mock.png";
 import logo from "../assets/360logo.jpeg";
 import { Link } from "react-router-dom";
+
 const Header = () => {
   const featuresRef = useRef(null);
   const isInView = useInView(featuresRef, { once: true, margin: "-100px" });
@@ -49,8 +50,14 @@ const Header = () => {
           <Link to="/booking">
             <motion.button
               className="bg-white text-black mobile:gap-2 flex items-center justify-center gap-8 font-bold p-2 hover:bg-red-600 text-m w-[15rem] h-12 shadow-lg shadow-black mobile:w-[9rem] mobile:mt-3 mobile:h-[2rem] mobile:text-[0.7rem] mt-10"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
+              animate={{
+                scale: [1, 1.05, 1],
+                transition: {
+                  duration: 1,
+                  repeat: Infinity,
+                  repeatType: "reverse", // Makes the scale animate back and forth
+                },
+              }}
             >
               Book Now{" "}
               <svg

@@ -60,7 +60,7 @@ const Footer = () => {
                   <Link
                     to="/booking"
                     className="transition hover:text-red-700"
-                    href="#"
+                    
                   >
                     Booking
                   </Link>

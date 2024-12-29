@@ -7,9 +7,9 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
-import video1 from '../assets/1.mp4';
-import video2 from '../assets/2.mp4';
-import video3 from '../assets/3.mp4';
+import video1 from '../assets/1.png';
+import video2 from '../assets/2.png';
+import video3 from '../assets/3.png';
 
 const content = [
   {
@@ -57,13 +57,12 @@ export default function Fade() {
             >
               <div>
                 {item.img ? (
-                  <video
-                    className="h-[25rem] mobile:h-[25rem] w-full object-center rounded-lg"
-                    controls
-                    controlsList="nodownload nodrag nofullscreen noplaybackrate"
+                  <img
+                    className="h-[23rem] mobile:h-[28rem] w-[22rem]  rounded-lg"
+
                     src={item.img}
 
-                    alt={`Video for ${item.header}`}
+                    alt={` ${item.header}`}
                   />
                 ) : (
                   <div className="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-100">
