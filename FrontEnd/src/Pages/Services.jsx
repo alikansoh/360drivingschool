@@ -35,11 +35,12 @@ const BookingPage = () => {
       {/* Header Section */}
       <header className="bg-red-600 text-white py-16">
         <div className="max-w-5xl mx-auto text-center px-4">
-          <h1 className="text-4xl font-bold mb-4 sm:text-3xl text-xl">
+          <h1 className="text-4xl font-bold mb-4  ">
             Book Your Driving Lessons
           </h1>
-          <p className="text-lg sm:text-base">
-            Get started with us. Choose manual or automatic transmission lessons.
+          <p className="text-lg ">
+            Get started with us. Choose manual or automatic transmission
+            lessons.
           </p>
         </div>
       </header>
@@ -47,24 +48,25 @@ const BookingPage = () => {
       {/* How It Works Section */}
       <section className="py-12 bg-gray-50">
         <div className="max-w-6xl mx-auto text-center px-4">
-          <h2 className="text-4xl font-bold mb-8 sm:text-3xl text-2xl">
-            How It Works
-          </h2>
+          <h2 className="text-4xl font-bold mb-8 sm:text-3xl ">How It Works</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-red-600">
             {[
               {
                 title: "Step 1",
-                description: "Choose the transmission type: Manual or Automatic.",
+                description:
+                  "Choose the transmission type: Manual or Automatic.",
                 icon: "fas fa-cogs",
               },
               {
                 title: "Step 2",
-                description: "Select your lesson package and schedule a callback.",
+                description:
+                  "Select your lesson package and schedule a callback.",
                 icon: "fas fa-calendar-check",
               },
               {
                 title: "Step 3",
-                description: "Get expert driving lessons and pass your test confidently.",
+                description:
+                  "Get expert driving lessons and pass your test confidently.",
                 icon: "fas fa-car",
               },
             ].map((step, index) => (
@@ -75,10 +77,10 @@ const BookingPage = () => {
                 <div className="mb-4">
                   <i className={`${step.icon} text-4xl`}></i>
                 </div>
-                <h3 className="text-2xl font-semibold mb-4 sm:text-xl text-lg">
+                <h3 className="text-2xl font-semibold mb-4 sm:text-xl ">
                   {step.title}
                 </h3>
-                <p className="text-gray-600 sm:text-base text-sm">
+                <p className="text-gray-600 sm:text-base ">
                   {step.description}
                 </p>
               </div>
@@ -90,7 +92,7 @@ const BookingPage = () => {
       {/* Transmission Options Section */}
       <section className="py-12 bg-gray-100">
         <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8 sm:text-2xl text-xl">
+          <h2 className="text-3xl font-bold text-center mb-8 sm:text-2xl">
             Choose Your Transmission
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -134,101 +136,106 @@ const BookingPage = () => {
         </div>
       </section>
 
-     {/* Packages Section */}
-<section className="py-12 bg-white">
-  <div className="max-w-6xl mx-auto px-4">
-    <h2 className="text-3xl font-bold text-center mb-8 sm:text-2xl text-xl">
-      Choose Your Package
-    </h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {[
-        {
-          title: "Starter Package",
-          discount: "20% OFF",
-          description: "Perfect for beginners. Includes 10 driving lessons.",
-          action: () => handleSelectPackage("Starter Package"),
-        },
-        {
-          title: "Advanced Package",
-          discount: "15% OFF",
-          description: "For intermediate learners. Includes 15 driving lessons.",
-          action: () => handleSelectPackage("Advanced Package"),
-        },
-        {
-          title: "Expert Package",
-          discount: "10% OFF",
-          description: "For experienced learners. Includes 20 driving lessons.",
-          action: () => handleSelectPackage("Expert Package"),
-        },
-      ].map((pkg, index) => (
-        <div
-          key={index}
-          className="bg-gray-100 shadow-lg rounded-lg p-6 hover:shadow-xl transition sm:p-4"
-        >
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">
-            {pkg.title}
-          </h3>
-          <p className="text-red-600 font-bold text-lg mb-4">
-            {pkg.discount}
-          </p>
-          <p className="text-gray-600 mb-6 text-sm">{pkg.description}</p>
-          <button
-            onClick={pkg.action}
-            className="bg-red-600 text-white font-medium py-2 px-4 rounded-md hover:bg-red-700 transition"
-          >
-            Select {pkg.title}
-          </button>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
-
-{/* Courses Section */}
-<section className="py-12 bg-gray-50">
-  <div className="max-w-6xl mx-auto px-4">
-    <h2 className="text-3xl font-bold text-center mb-8 sm:text-2xl text-xl">
-      Additional Courses
-    </h2>
-    <p className="text-center text-gray-600 mb-8">
-      Enhance your skills with specialized driving courses designed to meet your needs.
-    </p>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {[
-        {
-          title: "Defensive Driving",
-          description: "Learn techniques to drive safely and avoid accidents.",
-          icon: "fas fa-shield-alt",
-        },
-        {
-          title: "Highway Driving",
-          description: "Master highway driving with confidence and ease.",
-          icon: "fas fa-road",
-        },
-        {
-          title: "Test Preparation",
-          description: "Ace your driving test with expert guidance.",
-          icon: "fas fa-file-alt",
-        },
-      ].map((course, index) => (
-        <div
-          key={index}
-          className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition sm:p-4"
-        >
-          <div className="mb-4 text-center text-red-600">
-            <i className={`${course.icon} text-4xl`}></i>
+      {/* Packages Section */}
+      <section className="py-12 bg-white">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-8 sm:text-2xl ">
+            Choose Your Package
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                title: "Starter Package",
+                discount: "20% OFF",
+                description:
+                  "Perfect for beginners. Includes 10 driving lessons.",
+                action: () => handleSelectPackage("Starter Package"),
+              },
+              {
+                title: "Advanced Package",
+                discount: "15% OFF",
+                description:
+                  "For intermediate learners. Includes 15 driving lessons.",
+                action: () => handleSelectPackage("Advanced Package"),
+              },
+              {
+                title: "Expert Package",
+                discount: "10% OFF",
+                description:
+                  "For experienced learners. Includes 20 driving lessons.",
+                action: () => handleSelectPackage("Expert Package"),
+              },
+            ].map((pkg, index) => (
+              <div
+                key={index}
+                className="bg-gray-100 shadow-lg rounded-lg p-6 hover:shadow-xl transition sm:p-4"
+              >
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                  {pkg.title}
+                </h3>
+                <p className="text-red-600 font-bold text-lg mb-4">
+                  {pkg.discount}
+                </p>
+                <p className="text-gray-600 mb-6 text-sm">{pkg.description}</p>
+                <button
+                  onClick={pkg.action}
+                  className="bg-red-600 text-white font-medium py-2 px-4 rounded-md hover:bg-red-700 transition"
+                >
+                  Select {pkg.title}
+                </button>
+              </div>
+            ))}
           </div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-            {course.title}
-          </h3>
-          <p className="text-gray-600 text-sm text-center">
-            {course.description}
-          </p>
         </div>
-      ))}
-    </div>
-  </div>
-</section>
+      </section>
+
+      {/* Courses Section */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-8 sm:text-2xl ">
+            Additional Courses
+          </h2>
+          <p className="text-center text-gray-600 mb-8">
+            Enhance your skills with specialized driving courses designed to
+            meet your needs.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                title: "Defensive Driving",
+                description:
+                  "Learn techniques to drive safely and avoid accidents.",
+                icon: "fas fa-shield-alt",
+              },
+              {
+                title: "Highway Driving",
+                description: "Master highway driving with confidence and ease.",
+                icon: "fas fa-road",
+              },
+              {
+                title: "Test Preparation",
+                description: "Ace your driving test with expert guidance.",
+                icon: "fas fa-file-alt",
+              },
+            ].map((course, index) => (
+              <div
+                key={index}
+                className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition sm:p-4"
+              >
+                <div className="mb-4 text-center text-red-600">
+                  <i className={`${course.icon} text-4xl`}></i>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+                  {course.title}
+                </h3>
+                <p className="text-gray-600 text-sm text-center">
+                  {course.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Booking Form (Dynamic) */}
       {isFormVisible && (
@@ -254,7 +261,7 @@ const BookingPage = () => {
                 <input
                   type="text"
                   id="name"
-                  className="w-full border-gray-300 rounded-md p-3 focus:outline-none focus:border-red-600"
+                  className="w-full border-red-600 rounded-md p-3 border-2  focus:border-red-600"
                   placeholder="Enter your name"
                   required
                 />
@@ -269,7 +276,7 @@ const BookingPage = () => {
                 <input
                   type="tel"
                   id="phone"
-                  className="w-full border-gray-300 rounded-md p-3 focus:outline-none focus:border-red-600"
+                  className="w-full border-red-600 rounded-md p-3 border-2   focus:border-red-600"
                   placeholder="Enter your phone number"
                   required
                 />
@@ -283,7 +290,7 @@ const BookingPage = () => {
                 </label>
                 <select
                   id="preferred-time"
-                  className="w-full border-gray-300 rounded-md p-3 focus:outline-none focus:border-red-600"
+                  className="w-full border-red-600 border-2 rounded-md p-3  focus:border-red-600"
                 >
                   <option value="morning">Morning (9 AM - 12 PM)</option>
                   <option value="afternoon">Afternoon (1 PM - 4 PM)</option>
