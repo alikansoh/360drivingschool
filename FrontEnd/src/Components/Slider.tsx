@@ -58,7 +58,7 @@ export default function Fade() {
               <div>
                 {item.img ? (
                   <img
-                    className="h-[23rem] mobile:h-[28rem] w-[22rem]  rounded-lg"
+                    className="h-[23rem] mobile:h-[28rem] w-[23rem]  rounded-lg"
 
                     src={item.img}
 

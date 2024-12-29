@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 // Navigation links
 const navigation = [
   { name: "Home", href: "/" },
-  { name: "Booking", href:"/booking" },
+  { name: "Booking", href: "/booking" },
   { name: "Contact us", href: "/Contact" },
   { name: "About us", href: "/About" },
 ];
@@ -48,7 +48,7 @@ export default function Navbar() {
               <img
                 alt="Your Company"
                 src={logo}
-                className="xl:h-[10rem] xl:w-[15rem] w-[9rem] h-[7rem]"
+                className="xl:h-[10rem] xl:w-[15rem] w-[9rem] h-[7rem] mobile:w-[11rem] mobile:h-[8rem] "
               />
             </div>
             <div className="hidden sm:ml-6 sm:block">
