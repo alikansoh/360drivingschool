@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import manuel from "../assets/manuel.png";
 import automatic from "../assets/automatic.png";
-
+import PackageCard from "../Components/PackageCard";
+import FormModal from "../Components/FormModal";
 const BookingPage = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [selectedTransmission, setSelectedTransmission] = useState("Manual");
@@ -28,10 +29,7 @@ const BookingPage = () => {
     setIsFormVisible(true); // Show form when a package is selected
   };
 
-  const handlePreferredTimeChange = (event) => {
-    setPreferredTime(event.target.value);
-  };
-
+ 
   useEffect(() => {
     setSelectedTransmission("Manual");
   }, []);
@@ -50,10 +48,12 @@ const BookingPage = () => {
       </header>
 
       {/* How It Works Section */}
-      <section className="py-12 bg-gray-50">
-        <div className="max-w-6xl mx-auto text-center px-4">
-          <h2 className="text-4xl font-bold mb-8 sm:text-3xl">How It Works</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-red-600">
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto text-center px-6">
+          <h2 className="text-4xl font-extrabold mb-12 text-gray-800 sm:text-5xl">
+            How It Works
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {[
               {
                 title: "Step 1",
@@ -76,15 +76,19 @@ const BookingPage = () => {
             ].map((step, index) => (
               <div
                 key={index}
-                className="bg-white p-6 shadow-lg rounded-xl transition-all transform hover:scale-105 hover:shadow-2xl hover:bg-red-50 duration-300 ease-in-out"
+                className="bg-white p-8 shadow-xl rounded-lg transition-transform transform hover:scale-105 hover:shadow-2xl duration-300"
               >
-                <div className="mb-4">
-                  <i className={`${step.icon} text-4xl`}></i>
+                <div className="flex items-center justify-center mb-6">
+                  <div className="bg-red-100 text-red-600 w-16 h-16 flex items-center justify-center rounded-full shadow-lg">
+                    <i className={`${step.icon} text-3xl`}></i>
+                  </div>
                 </div>
-                <h3 className="text-2xl font-semibold mb-4 sm:text-xl">
+                <h3 className="text-2xl font-semibold text-gray-800 mb-4">
                   {step.title}
                 </h3>
-                <p className="text-gray-600 sm:text-base">{step.description}</p>
+                <p className="text-gray-600 text-base leading-relaxed">
+                  {step.description}
+                </p>
               </div>
             ))}
           </div>
@@ -92,12 +96,12 @@ const BookingPage = () => {
       </section>
 
       {/* Transmission Options Section */}
-      <section className="py-12 bg-gray-100">
-        <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8 sm:text-2xl">
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-12 sm:text-5xl">
             Choose Your Transmission
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
               {
                 title: "Manual Lessons",
@@ -117,21 +121,27 @@ const BookingPage = () => {
               <div
                 key={index}
                 onClick={option.action}
-                className={`bg-white shadow-lg rounded-lg p-6 text-center hover:shadow-xl transition cursor-pointer ${
+                className={`relative bg-white shadow-xl rounded-lg p-8 text-center hover:shadow-2xl transition-transform transform hover:-translate-y-3 cursor-pointer ${
                   selectedTransmission === option.title.split(" ")[0]
                     ? "border-4 border-red-600"
-                    : ""
+                    : "border border-gray-200"
                 }`}
               >
+                {/* Highlight Icon for Selected Option */}
+                {selectedTransmission === option.title.split(" ")[0] && (
+                  <div className="absolute top-4 right-4 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                    ✓
+                  </div>
+                )}
                 <img
                   src={option.image}
                   alt={option.title}
-                  className="w-24 h-24 object-contain mb-4 mx-auto"
+                  className="w-28 h-28 object-contain mb-6 mx-auto"
                 />
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                <h3 className="text-2xl font-semibold text-gray-700 mb-4">
                   {option.title}
                 </h3>
-                <p className="text-gray-600 text-sm">{option.description}</p>
+                <p className="text-gray-600 text-base">{option.description}</p>
               </div>
             ))}
           </div>
@@ -139,16 +149,16 @@ const BookingPage = () => {
       </section>
 
       {/* Packages Section */}
-      <section className="py-12 bg-white">
-        <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8 sm:text-2xl">
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-12 sm:text-5xl">
             Choose Your Package
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
                 title: "Starter Package",
-                price: "£ 300 ",
+                price: "£ 300",
                 discount: "20% OFF",
                 description:
                   "Perfect for beginners. Includes 10 driving lessons.",
@@ -171,25 +181,96 @@ const BookingPage = () => {
                 action: () => handleSelectPackage("Expert Package"),
               },
             ].map((pkg, index) => (
+              <PackageCard
+                key={index}
+                title={pkg.title}
+                price={pkg.price}
+                discount={pkg.discount}
+                description={pkg.description}
+                onSelect={pkg.action}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Additional Courses */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-12 sm:text-5xl">
+            Additional Courses
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Motorway Driving Course",
+                price: "£ 150",
+                discount: "10% OFF",
+                description:
+                  "Focused on motorway driving, includes 5 lessons for high-speed and complex traffic.",
+                action: () => handleSelectPackage("Motorway Driving Course"),
+              },
+              {
+                title: "Refresher Course",
+                price: "£ 200",
+                discount: "15% OFF",
+                description:
+                  "For licensed drivers to rebuild confidence. Includes 8 situational driving lessons.",
+                action: () => handleSelectPackage("Refresher Course"),
+              },
+              {
+                title: "Night Driving Course",
+                price: "£ 120",
+                discount: "5% OFF",
+                description:
+                  "Teaches safe night-driving techniques, with 4 lessons focused on reduced visibility.",
+                action: () => handleSelectPackage("Night Driving Course"),
+              },
+              {
+                title: "Parking Mastery Course",
+                price: "£ 100",
+                discount: "No Discount",
+                description:
+                  "Specialized in parallel parking, reverse parking, and tight-space navigation.",
+                action: () => handleSelectPackage("Parking Mastery Course"),
+              },
+              {
+                title: "Eco-Friendly Driving Course",
+                price: "£ 180",
+                discount: "10% OFF",
+                description:
+                  "Learn fuel-efficient techniques to reduce emissions and save on fuel costs.",
+                action: () =>
+                  handleSelectPackage("Eco-Friendly Driving Course"),
+              },
+              {
+                title: "Winter Driving Course",
+                price: "£ 200",
+                discount: "20% OFF",
+                description:
+                  "Focused on icy and snowy conditions, with 6 lessons for hazard management.",
+                action: () => handleSelectPackage("Winter Driving Course"),
+              },
+            ].map((course, index) => (
               <div
                 key={index}
-                className="bg-gray-100 shadow-lg rounded-lg p-6 hover:shadow-xl transition sm:p-4"
+                className="shadow-lg rounded-lg hover:shadow-2xl border border-gray-300 bg-gray-50 transition-transform transform hover:-translate-y-3 p-8 text-center"
               >
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                  {pkg.title}
+                <h3 className="text-2xl font-bold text-gray-700 mb-4">
+                  {course.title}
                 </h3>
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">
-                  {pkg.price}
+                <h4 className="text-3xl font-extrabold text-gray-800 mb-3">
+                  {course.price}
                 </h4>
-                <p className="text-red-600 font-bold text-lg mb-4">
-                  {pkg.discount}
+                <p className="text-red-600 font-semibold text-lg mb-6">
+                  {course.discount}
                 </p>
-                <p className="text-gray-600 mb-6 ">{pkg.description}</p>
+                <p className="text-gray-600 mb-8">{course.description}</p>
                 <button
-                  onClick={pkg.action}
-                  className="bg-red-600 text-white font-medium py-2 px-4 rounded-md hover:bg-red-700 transition"
+                  onClick={course.action}
+                  className="bg-red-600 text-white font-bold py-3 px-6 rounded-md hover:bg-red-700 transition shadow-lg"
                 >
-                  Select {pkg.title}
+                  Select {course.title}
                 </button>
               </div>
             ))}
@@ -198,109 +279,14 @@ const BookingPage = () => {
       </section>
 
       {/* Booking Form (Dynamic) */}
-      {isFormVisible && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-lg relative">
-            <button
-              onClick={handleCloseForm}
-              className="absolute top-4 right-4 text-gray-600 hover:text-red-600 text-3xl"
-            >
-              &times;
-            </button>
-            <h2 className="text-2xl font-bold text-red-600 mb-4">
-              Book Your {selectedTransmission} Lessons
-            </h2>
-            <form>
-              <div className="mb-6">
-                <label
-                  className="block text-gray-700 font-medium mb-2"
-                  htmlFor="name"
-                >
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  className="w-full border-red-600 rounded-md p-3 border focus:border-red-600"
-                  placeholder="Enter your name"
-                  required
-                />
-              </div>
-              <div className="mb-6">
-                <label
-                  className="block text-gray-700 font-medium mb-2"
-                  htmlFor="phone"
-                >
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  className="w-full border-red-600 rounded-md p-3 border focus:border-red-600"
-                  placeholder="Enter your phone number"
-                  required
-                />
-              </div>
-              <div className="mb-6">
-                <label
-                  className="block text-gray-700 font-medium mb-2"
-                  htmlFor="post-code"
-                >
-                  Post Code
-                </label>
-                <input
-                  type="text"
-                  id="post-code"
-                  className="w-full border-red-600 rounded-md p-3 border focus:border-red-600"
-                  placeholder="Enter your Post Code"
-                  required
-                />
-              </div>
-              <div className="mb-6">
-                <label
-                  className="block text-gray-700 font-medium mb-2"
-                  htmlFor="preferred-time"
-                >
-                  Preferred Time
-                </label>
-                <select
-                  id="preferred-time"
-                  className="w-full border-red-600 border rounded-md bg-white p-3 focus:border-red-600"
-                  value={preferredTime}
-                  onChange={handlePreferredTimeChange}
-                >
-                  <option value="morning">Morning (9 AM - 12 PM)</option>
-                  <option value="afternoon">Afternoon (1 PM - 4 PM)</option>
-                  <option value="evening">Evening (5 PM - 8 PM)</option>
-                </select>
-              </div>
-              <div className="mb-6">
-                <label
-                  className="block text-gray-700 font-medium mb-2"
-                  htmlFor="package-selected"
-                >
-                  Package Selected
-                </label>
-                <select
-                  id="package-selected"
-                  value={selectedPackage}
-                  className="w-full border-red-600 rounded-md p-3 bg-white border focus:border-red-600"
-                >
-                  <option value="Starter Package"> Starter Package</option>
-                  <option value="Advanced Package">Advanced Package</option>
-                  <option value="Expert Package">Expert Package</option>
-                </select>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-red-600 text-white font-bold py-3 rounded-md hover:bg-red-700 transition"
-              >
-                Confirm Booking
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
+      <FormModal
+        isVisible={isFormVisible}
+        onClose={handleCloseForm}
+        transmissionType={selectedTransmission}
+        selectedPackage={selectedPackage}
+        preferredTime={preferredTime}
+        setPreferredTime={setPreferredTime}
+      />
     </div>
   );
 };

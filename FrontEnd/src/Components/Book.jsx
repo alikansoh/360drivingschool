@@ -48,8 +48,9 @@ const BookNowSection = () => {
       </p>
 
       {/* Book Now Button */}
-      
-      <Link to ="/Booking"
+
+      <Link
+        to="/booking"
         className={`bg-red-600 text-white text-lg font-bold py-3 px-6 rounded-lg shadow-md hover:bg-red-700 focus:outline-none transform transition-all duration-300 ${
           isVisible ? "opacity-100 scale-105" : "opacity-0 mobile:text-sm"
         }`}
