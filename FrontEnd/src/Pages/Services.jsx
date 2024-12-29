@@ -265,7 +265,7 @@ const BookingPage = () => {
                 </label>
                 <select
                   id="preferred-time"
-                  className="w-full border-red-600 border rounded-md p-3 focus:border-red-600"
+                  className="w-full border-red-600 border rounded-md bg-white p-3 focus:border-red-600"
                   value={preferredTime}
                   onChange={handlePreferredTimeChange}
                 >
@@ -281,13 +281,15 @@ const BookingPage = () => {
                 >
                   Package Selected
                 </label>
-                <input
-                  type="text"
+                <select
                   id="package-selected"
                   value={selectedPackage}
-                  className="w-full border-red-600 rounded-md p-3 border focus:border-red-600"
-                  readOnly
-                />
+                  className="w-full border-red-600 rounded-md p-3 bg-white border focus:border-red-600"
+                >
+                  <option value="Starter Package"> Starter Package</option>
+                  <option value="Advanced Package">Advanced Package</option>
+                  <option value="Expert Package">Expert Package</option>
+                </select>
               </div>
               <button
                 type="submit"
