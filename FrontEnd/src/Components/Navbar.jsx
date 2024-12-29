@@ -12,8 +12,8 @@ import { Link } from "react-router-dom";
 const navigation = [
   { name: "Home", href: "/" },
   { name: "Booking", href: "/booking" },
-  { name: "Contact us", href: "/Contact" },
-  { name: "About us", href: "/About" },
+  { name: "Contact us", href: "/contact" },
+  { name: "About us", href: "/about" },
 ];
 
 // Helper function to join classes
@@ -25,7 +25,7 @@ export default function Navbar() {
   const location = useLocation(); // Get the current location (pathname)
 
   return (
-    <Disclosure as="nav" className="bg-gray-300 ">
+    <Disclosure as="nav" className="bg-gray-300">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex items-center justify-between h-[8rem] sm:h-[6rem] mobile:h-[5rem]">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -48,7 +48,7 @@ export default function Navbar() {
               <img
                 alt="Your Company"
                 src={logo}
-                className="xl:h-[10rem] xl:w-[15rem] w-[9rem] h-[7rem] mobile:w-[11rem] mobile:h-[8rem] "
+                className="xl:h-[10rem] xl:w-[15rem] w-[9rem] h-[7rem] mobile:w-[11rem] mobile:h-[8rem]"
               />
             </div>
             <div className="hidden sm:ml-6 sm:block">
@@ -82,8 +82,8 @@ export default function Navbar() {
           {navigation.map((item) => (
             <DisclosureButton
               key={item.name}
-              as="a"
-              href={item.href}
+              as={Link} // Use Link instead of 'a'
+              to={item.href}
               aria-current={
                 location.pathname === item.href ? "page" : undefined
               }
