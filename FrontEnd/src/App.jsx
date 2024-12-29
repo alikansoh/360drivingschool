@@ -50,7 +50,7 @@ function MainContent() {
 
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/Booking" element={<Services />} />
+          <Route path="/booking" element={<Services />} />  {/* Ensure consistent case */}
           <Route path="/admin" element={<Login />} />
         </Routes>
 
