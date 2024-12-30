@@ -4,7 +4,7 @@ const flowbitePlugin = require("flowbite/plugin"); // Correct Flowbite plugin im
 module.exports = {
   content: [
     "./index.html", // Path to your HTML files
-    "./src/**/*.{js,ts,jsx,tsx}", // Path to your source files
+    "./src/**/*.{js,ts,jsx,tsx}", 
     "./node_modules/flowbite-react/**/*.js", // Include Flowbite React components
     "./node_modules/tw-elements-react/dist/js/**/*.js", // Include tw-elements React components
   ],

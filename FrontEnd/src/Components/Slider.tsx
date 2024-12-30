@@ -74,7 +74,12 @@ export default function Fade() {
               </div>
               <div className="">
                 <div className="title">
-                  <h2 className="text-5xl font-bold text-red-600 mt-10">⭐⭐⭐⭐⭐</h2>
+                  <h2
+                    className="text-5xl font-bold text-red-600 mt-10"
+                    style={{ color: '#DC2626', fontSize: '3rem' }} // Force red color and specific size
+                  >
+                    ⭐⭐⭐⭐⭐
+                  </h2>
                   <p className="font-italic text-xl mobile:text-sm">{item.info}</p>
                 </div>
                 <button className="btn bg-red-600 py-2 px-4 font-bold invisible text-white mt-5">
