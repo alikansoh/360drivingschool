@@ -1,8 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import contact from "../assets/contact.jpg";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 
 export default function ContactUs() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [formStatus, setFormStatus] = useState(null); // To manage success/error message
+
   // Page load animation
   useEffect(() => {
     document.body.classList.add("animate-page");
@@ -10,6 +17,32 @@ export default function ContactUs() {
       document.body.classList.remove("animate-page");
     };
   }, []);
+
+  // Handle form input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { name, email, message } = formData;
+
+    if (!name || !email || !message) {
+      setFormStatus("All fields are required.");
+      return;
+    }
+
+    try {
+      // Simulating sending an email (you can integrate with services like EmailJS)
+      // Here we just simulate it with a success message.
+      setFormStatus("Message sent successfully! We'll get back to you soon.");
+      setFormData({ name: "", email: "", message: "" }); // Clear form after submission
+    } catch (error) {
+      setFormStatus("There was an error. Please try again later.");
+    }
+  };
 
   return (
     <section className="bg-gray-100 mt-0 overflow-hidden">
@@ -32,33 +65,42 @@ export default function ContactUs() {
       </div>
 
       {/* Contact Info Section */}
-      <div className="max-w-screen-xl mx-auto  px-6 lg:px-8 py-8">
+      <div className="max-w-screen-xl mx-auto px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
           {/* Phone */}
-          <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all ease-in-out duration-500">
-            <FaPhoneAlt className="text-4xl text-red-600 mb-6" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">
-              Call Us
-            </h3>
-            <p className="text-base text-gray-700 text-center">
-              Speak with our support team directly at{" "}
-              <strong>07735337198</strong>. Available Monday to Friday, 9 AM
-              - 9 PM.
-            </p>
-          </div>
-
+          <a href="tel:+447735337198">
+            <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all ease-in-out duration-500">
+              <FaPhoneAlt className="text-4xl text-red-600 mb-6" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Call Us
+              </h3>
+              <p className="text-base text-gray-700 text-center">
+                Speak with us by phone at{" "}
+                <strong>
+                  <a href="tel:+447735337198">07735337198</a>
+                </strong>
+                . Available Monday to Friday, 9 AM - 9 PM.
+              </p>
+            </div>
+          </a>
           {/* Email */}
-          <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all ease-in-out duration-500">
-            <FaEnvelope className="text-4xl text-red-600 mb-6" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">
-              Email Us
-            </h3>
-            <p className="text-base text-gray-700 text-center">
-              Send us an email at <strong>baderuwl@hotmail.co.uk</strong>, and we
-              will get back to you within 24 hours.
-            </p>
-          </div>
-
+          <a href="mailto:baderuwl@hotmail.co.uk">
+            <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all ease-in-out duration-500">
+              <FaEnvelope className="text-4xl text-red-600 mb-6" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Email Us
+              </h3>
+              <p className="text-base text-gray-700 text-center">
+                Send us an email at{" "}
+                <strong>
+                  <a href="mailto:baderuwl@hotmail.co.uk">
+                    baderuwl@hotmail.co.uk
+                  </a>
+                </strong>
+                , and we will get back to you within 24 hours.
+              </p>
+            </div>
+          </a>
           {/* Address */}
           <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all ease-in-out duration-500">
             <FaMapMarkerAlt className="text-4xl text-red-600 mb-6" />
@@ -66,8 +108,7 @@ export default function ContactUs() {
               Our Location
             </h3>
             <p className="text-base text-gray-700 text-center">
-           
-              <strong>London </strong>. 
+              <strong>London, UK</strong>
             </p>
           </div>
         </div>
@@ -78,8 +119,7 @@ export default function ContactUs() {
             Send Us a Message
           </h2>
           <form
-            action="#"
-            method="POST"
+            onSubmit={handleSubmit}
             className="grid grid-cols-1 sm:grid-cols-2 gap-6"
           >
             {/* Name */}
@@ -96,6 +136,8 @@ export default function ContactUs() {
                 name="name"
                 placeholder="Your Full Name"
                 required
+                value={formData.name}
+                onChange={handleChange}
                 className="p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
               />
             </div>
@@ -114,6 +156,8 @@ export default function ContactUs() {
                 name="email"
                 placeholder="Your Email Address"
                 required
+                value={formData.email}
+                onChange={handleChange}
                 className="p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
               />
             </div>
@@ -132,6 +176,8 @@ export default function ContactUs() {
                 rows="4"
                 placeholder="How can we assist you?"
                 required
+                value={formData.message}
+                onChange={handleChange}
                 className="p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
               ></textarea>
             </div>
@@ -146,6 +192,16 @@ export default function ContactUs() {
               </button>
             </div>
           </form>
+          {/* Form status message */}
+          {formStatus && (
+            <div
+              className={`mt-4 text-center ${
+                formStatus.includes("error") ? "text-red-600" : "text-green-600"
+              }`}
+            >
+              <p>{formStatus}</p>
+            </div>
+          )}
         </div>
       </div>
     </section>
