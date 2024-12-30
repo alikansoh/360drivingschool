@@ -39,7 +39,7 @@ const FormModal = ({
             <input
               type="text"
               id="name"
-              className="w-full border-red-600 rounded-md p-3 border focus:border-red-600"
+              className="w-full  rounded-md p-3 border focus:border-red-600"
               placeholder="Enter your name"
               required
             />
@@ -56,7 +56,7 @@ const FormModal = ({
             <input
               type="tel"
               id="phone"
-              className="w-full border-red-600 rounded-md p-3 border focus:border-red-600"
+              className="w-full  rounded-md p-3 border focus:border-red-600"
               placeholder="Enter your phone number"
               required
             />
@@ -73,7 +73,7 @@ const FormModal = ({
             <input
               type="text"
               id="post-code"
-              className="w-full border-red-600 rounded-md p-3 border focus:border-red-600"
+              className="w-full  rounded-md p-3 border focus:border-red-600"
               placeholder="Enter your Post Code"
               required
             />
@@ -85,11 +85,11 @@ const FormModal = ({
               htmlFor="preferred-time"
               className="block text-gray-700 font-medium mb-2"
             >
-              Preferred Time
+              Preferred Time to contact you
             </label>
             <select
               id="preferred-time"
-              className="w-full border-red-600 border rounded-md bg-white p-3 focus:border-red-600"
+              className="w-full  border rounded-md bg-white p-3 focus:border-red-600"
               value={preferredTime}
               onChange={(e) => setPreferredTime(e.target.value)}
             >
@@ -110,7 +110,7 @@ const FormModal = ({
             <select
               id="package-selected"
               value={selectedPackage}
-              className="w-full border-red-600 rounded-md p-3 bg-white border focus:border-red-600"
+              className="w-full  rounded-md p-3 bg-white border focus:border-red-600"
               readOnly
             >
               <option value={selectedPackage}>{selectedPackage}</option>
@@ -120,7 +120,7 @@ const FormModal = ({
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-red-600 text-white font-bold py-3 rounded-md hover:bg-red-700 transition"
+            className="w-full  text-white bg-red-600 font-bold py-3 rounded-md hover:bg-red-700 transition"
           >
             Confirm Booking
           </button>

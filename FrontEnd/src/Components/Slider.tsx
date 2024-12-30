@@ -35,9 +35,13 @@ export default function Fade() {
   return (
     <section className="pt-10 pb-8 mt-20">
       <div className="lg:mx-auto max-w-5xl mx-6">
-        <h1 className="text-4xl font-bold  mb-8 text-center mobile:text-2xl">
-          Our Success Gallery
-        </h1>
+        {/* 5 Stars Title */}
+        <div className="text-center mb-4">
+          <h1 className="text-4xl font-bold mb-8 text-center mobile:text-2xl">
+            Our Success Gallery
+          </h1>
+        </div>
+
         <Swiper
           modules={[Navigation, Pagination, EffectFade]}
           effect="fade"
@@ -58,10 +62,8 @@ export default function Fade() {
               <div>
                 {item.img ? (
                   <img
-                    className="h-[23rem] mobile:h-[28rem] w-[23rem]  rounded-lg"
-
+                    className="h-[23rem] mobile:h-[28rem] w-[23rem] rounded-lg"
                     src={item.img}
-
                     alt={` ${item.header}`}
                   />
                 ) : (
@@ -71,12 +73,9 @@ export default function Fade() {
                 )}
               </div>
               <div className="">
-                {/* <header className="text-slate-600 font-bold mb-2 invisible">
-                  {item.date}
-                </header> */}
                 <div className="title">
-                  <h2 className="font-bold mt-4 text-3xl invisible text-red-500">{item.header}</h2>
-                  <p className=" font-italic text-xl  mobile:text-sm">{item.info}</p>
+                  <h2 className="text-5xl font-bold text-red-600 mt-10">⭐⭐⭐⭐⭐</h2>
+                  <p className="font-italic text-xl mobile:text-sm">{item.info}</p>
                 </div>
                 <button className="btn bg-red-600 py-2 px-4 font-bold invisible text-white mt-5">
                   More

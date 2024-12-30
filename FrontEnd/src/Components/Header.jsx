@@ -34,18 +34,13 @@ const Header = () => {
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1.2, delay: 0.5 }}
         >
-          <h1 className="text-white mobile:w-[21rem] xl:text-lg font-bold lg:w-[43rem] lg:text-md md:w-[42rem] md:text-sm mobile:text-[0.7rem]">
+          <h1 className="text-white mobile:w-[21rem] xl:text-lg font-bold lg:w-[43rem] lg:text-md md:w-[42rem] md:text-sm mobile:text-[0.8rem]">
             At 360 Driving School, we are renowned for our distinctive teaching
             and learning methodologies. Our primary objective is to ensure that
             students drive with confidence and successfully pass their driving
             tests on their first attempt. Our instructors possess extensive
-            knowledge and experience, which enables them to assist learners in
-            acquiring the skills necessary for safe driving. We conduct our
-            training in accordance with DVSA standards. Our instructors are both
-            friendly and professional. We offer a variety of lessons tailored to
-            meet the needs of all individuals, including beginners, those who
-            have previously trained, individuals preparing for their tests, and
-            those seeking to refresh their skills.
+            knowledge and experience. We have over 10 years experience in the
+            industry.
           </h1>
           <Link to="/booking">
             <motion.button
