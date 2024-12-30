@@ -75,10 +75,10 @@ export default function Fade() {
               <div className="">
                 <div className="title">
                   <h2
-                    className="text-5xl font-bold text-red-600 mt-10"
+                    className="text-5xl font-bold text-red-600 mt-10 mobile:text-3xl"
                     style={{ color: '#DC2626', fontSize: '3rem' }} // Force red color and specific size
                   >
-                    5 stars 
+                    ⭐⭐⭐⭐⭐
                   </h2>
                   <p className="font-italic text-xl mobile:text-sm">{item.info}</p>
                 </div>
