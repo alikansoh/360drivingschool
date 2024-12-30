@@ -35,9 +35,8 @@ export default function Fade() {
   return (
     <section className="pt-10 pb-8 mt-20">
       <div className="lg:mx-auto max-w-5xl mx-6">
-        {/* 5 Stars Title */}
         <div className="text-center mb-4">
-          <h1 className="text-4xl font-bold mb-8 text-center mobile:text-2xl">
+          <h1 className="text-4xl font-bold mb-8 text-center mobile:text-3xl">
             Our Success Gallery
           </h1>
         </div>
@@ -74,13 +73,8 @@ export default function Fade() {
               </div>
               <div className="">
                 <div className="title">
-                  <h2
-                    className="text-5xl font-bold text-red-600 mt-10 mobile:text-3xl"
-                    style={{ color: '#DC2626', fontSize: '3rem' }} // Force red color and specific size
-                  >
-                    ⭐⭐⭐⭐⭐
-                  </h2>
-                  <p className="font-italic text-xl mobile:text-sm">{item.info}</p>
+
+                  <p className="mt-10 font-italic text-xl mobile:text-sm font-bold">{item.info}</p>
                 </div>
                 <button className="btn bg-red-600 py-2 px-4 font-bold invisible text-white mt-5">
                   More
