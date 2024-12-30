@@ -24,6 +24,8 @@ import ScrollToTop from "./Components/ScrollToTop.js";
 import FAQsPage from "./Pages/Faqs.jsx";
 import AboutUs from "./Pages/AboutUs.jsx";
 import ContactUs from "./Pages/ContactUs.jsx";
+import PrivacyPolicy from "./Pages/privacyAndPolicy.jsx";
+import UsefulLinks from "./Pages/UsefulLinks.jsx";
 function App() {
   return (
     <section className="font-Poppins">
@@ -57,6 +59,9 @@ function MainContent() {
           <Route path="/admin" element={<Login />} />
           <Route path="/aboutUs" element={<AboutUs />} />
           <Route path="/contactUs" element={<ContactUs />} />
+          <Route path="/privacyAndPolicy" element={<PrivacyPolicy />} />
+          <Route path="/usefulLinks" element={<UsefulLinks />} />
+
 
         </Routes>
 

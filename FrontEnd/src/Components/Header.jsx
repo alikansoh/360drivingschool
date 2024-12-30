@@ -11,6 +11,33 @@ const Header = () => {
   const featuresRef = useRef(null);
   const isInView = useInView(featuresRef, { once: true, margin: "-100px" });
 
+  const features = [
+    {
+      image: easydrive,
+      title: "Hassle-Free Driving Courses",
+      description:
+        "Looking for a straightforward way to pass your driving test with an exceptional instructor?",
+    },
+    {
+      image: west,
+      title: "West London Driving Experiences",
+      description:
+        "Want an effortless path to obtaining your driving license with a top-notch instructor in West London?",
+    },
+    {
+      image: ed,
+      title: "Beginner-Friendly Courses",
+      description:
+        "New to driving? Learn from scratch and pass your driving test quickly and stress-free.",
+    },
+    {
+      image: mockup,
+      title: "Practice with Mock Tests",
+      description:
+        "Feeling anxious about your driving test? We'll help you prepare thoroughly to pass on your first attempt.",
+    },
+  ];
+
   return (
     <section className="font-Poppins">
       {/* Hero Section */}
@@ -50,7 +77,7 @@ const Header = () => {
                 transition: {
                   duration: 1,
                   repeat: Infinity,
-                  repeatType: "reverse", // Makes the scale animate back and forth
+                  repeatType: "reverse",
                 },
               }}
             >
@@ -79,32 +106,7 @@ const Header = () => {
         ref={featuresRef}
         className="h-auto w-full gap-20 mt-20 flex flex-wrap items-start justify-center shadow-l border-teal-600 shadow-teal-800 mobile:flex-col mobile:items-center mobile:gap-5 mobile:mt-10 mb-20"
       >
-        {[
-          {
-            image: easydrive,
-            title: "Easy driving courses",
-            description:
-              "Are you looking for an easy way to pass your driving license with an amazing instructor?",
-          },
-          {
-            image: west,
-            title: "West London rides",
-            description:
-              "Are you looking for an easy way to pass your driving license with an amazing instructor?",
-          },
-          {
-            image: ed,
-            title: "Complex courses for beginners",
-            description:
-              "You do not know how to drive a car, and you need to pass the driving test quickly and painlessly?",
-          },
-          {
-            image: mockup,
-            title: "Mock tests",
-            description:
-              "Are you stressed out about your upcoming driving test? We will prepare you well for your exam and you will pass it the first time.",
-          },
-        ].map((feature, index) => (
+        {features.map((feature, index) => (
           <motion.section
             key={index}
             className="w-[20rem] pt-5 mobile:w-[18rem] mobile:text-center group"

@@ -14,6 +14,7 @@ const navigation = [
   { name: "Booking", href: "/booking" },
   { name: "About us", href: "/aboutus" },
   { name: "Contact us", href: "/contactus" },
+  { name: "Useful Links", href: "/usefullinks" },
 ];
 
 // Helper function to join classes
