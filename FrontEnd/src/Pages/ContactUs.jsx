@@ -42,8 +42,8 @@ export default function ContactUs() {
             </h3>
             <p className="text-base text-gray-700 text-center">
               Speak with our support team directly at{" "}
-              <strong>(123) 456-7890</strong>. Available Monday to Friday, 9 AM
-              - 6 PM.
+              <strong>07735337198</strong>. Available Monday to Friday, 9 AM
+              - 9 PM.
             </p>
           </div>
 
@@ -54,7 +54,7 @@ export default function ContactUs() {
               Email Us
             </h3>
             <p className="text-base text-gray-700 text-center">
-              Send us an email at <strong>contact@company.com</strong>, and we
+              Send us an email at <strong>baderuwl@hotmail.co.uk</strong>, and we
               will get back to you within 24 hours.
             </p>
           </div>
@@ -66,9 +66,8 @@ export default function ContactUs() {
               Our Location
             </h3>
             <p className="text-base text-gray-700 text-center">
-              Visit us at{" "}
-              <strong>123 Business Ave, Suite 456, City, Country</strong>. We're
-              open Monday through Friday, from 9 AM to 6 PM.
+           
+              <strong>London </strong>. 
             </p>
           </div>
         </div>
