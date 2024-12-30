@@ -21,7 +21,8 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import Login from "./Pages/Login.jsx";
 import SideBar from "./Components/SideBar.jsx";
 import ScrollToTop from "./Components/ScrollToTop.js";
-
+import FAQsPage from "./Pages/Faqs.jsx";
+import AboutUs from "./Pages/AboutUs.jsx";
 function App() {
   return (
     <section className="font-Poppins">
@@ -50,8 +51,10 @@ function MainContent() {
 
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/booking" element={<Services />} />  {/* Ensure consistent case */}
+          <Route path="/booking" element={<Services />} />
+          <Route path="/faqs" element={<FAQsPage />} />
           <Route path="/admin" element={<Login />} />
+          <Route path="/aboutUs" element={<AboutUs />} />
         </Routes>
 
         {!isLoginPage && !isAdminPage && <Footer />}

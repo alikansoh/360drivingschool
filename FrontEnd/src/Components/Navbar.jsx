@@ -13,7 +13,7 @@ const navigation = [
   { name: "Home", href: "/" },
   { name: "Booking", href: "/booking" },
   { name: "Contact us", href: "/contact" },
-  { name: "About us", href: "/about" },
+  { name: "About us", href: "/aboutus" },
 ];
 
 // Helper function to join classes

@@ -9,7 +9,7 @@ const Faq = () => {
     {
       question: "How do I book driving lessons?",
       answer:
-        "You can book driving lessons through our website, by calling us directly, or visiting our office. Scheduling is flexible to fit your needs.",
+        "You can book driving lessons through our website, by calling us directly. Scheduling is flexible to fit your needs.",
     },
     {
       question: "What are the prices for lessons?",
@@ -91,7 +91,7 @@ const Faq = () => {
         {/* Button to Full FAQ Page */}
         <div className="text-center">
           <button
-            onClick={() => navigate("/faq")}
+            onClick={() => navigate("/faqs")}
             className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition"
           >
             View All FAQs
