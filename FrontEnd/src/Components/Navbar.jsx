@@ -12,8 +12,8 @@ import { Link } from "react-router-dom";
 const navigation = [
   { name: "Home", href: "/" },
   { name: "Booking", href: "/booking" },
-  { name: "Contact us", href: "/contact" },
   { name: "About us", href: "/aboutus" },
+  { name: "Contact us", href: "/contactus" },
 ];
 
 // Helper function to join classes
@@ -75,6 +75,8 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* Text under 'Contact Us' link */}
 
       {/* Mobile menu */}
       <DisclosurePanel className="sm:hidden">

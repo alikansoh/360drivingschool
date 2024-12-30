@@ -23,6 +23,7 @@ import SideBar from "./Components/SideBar.jsx";
 import ScrollToTop from "./Components/ScrollToTop.js";
 import FAQsPage from "./Pages/Faqs.jsx";
 import AboutUs from "./Pages/AboutUs.jsx";
+import ContactUs from "./Pages/ContactUs.jsx";
 function App() {
   return (
     <section className="font-Poppins">
@@ -55,6 +56,8 @@ function MainContent() {
           <Route path="/faqs" element={<FAQsPage />} />
           <Route path="/admin" element={<Login />} />
           <Route path="/aboutUs" element={<AboutUs />} />
+          <Route path="/contactUs" element={<ContactUs />} />
+
         </Routes>
 
         {!isLoginPage && !isAdminPage && <Footer />}
