@@ -3,8 +3,7 @@ import { FaShieldAlt, FaHandshake, FaStar } from "react-icons/fa"; // React Icon
 import missionImage from "../assets/mission.jpg"; // Replace with mission image
 import visionImage from "../assets/hero.jpg"; // Replace with vision image
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet";
-export default function AboutUs() {
+\export default function AboutUs() {
   return (
 
     <section className="bg-white py-16">
