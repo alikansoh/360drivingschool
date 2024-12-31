@@ -1,19 +1,57 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Character Set and Viewport -->
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Learn to drive with 360 Driving School. Professional driving lessons with experienced instructors. Book now for affordable driving classes!">
-
-    <link rel="icon" type="image/png" sizes="90" href="./src/assets/360logo-nav.png" />
-    <link href="./output.css" rel="stylesheet">
-    <link rel="stylesheet" href="/">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>360 Driving School</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Learn to drive with 360 Driving School. Professional driving lessons with experienced instructors. Book now for affordable driving classes!" />
+    <meta name="keywords" content="driving school, driving lessons, driving instructors, 360 Driving School, professional driving, affordable driving classes" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph Tags for Social Sharing -->
+    <meta property="og:title" content="360 Driving School - Professional Driving Lessons" />
+    <meta property="og:description" content="Learn to drive with experienced instructors at 360 Driving School. Book now for affordable and professional driving lessons." />
+    <meta property="og:url" content="https://www.360drivingschool.co.uk" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://www.360drivingschool.co.uk/src/assets/360logo-nav.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="90x90" href="/src/assets/360logo-nav.png" />
+    <link rel="preload" href="/output.css" as="style" />
+    <link rel="stylesheet" href="/output.css" />
+
+    <!-- Page Title -->
+    <title>360 Driving School - Learn to Drive</title>
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "360 Driving School",
+      "description": "Professional driving lessons with experienced instructors. Learn to drive with confidence.",
+      "url": "https://www.360drivingschool.co.uk",
+      "telephone": "+44-123-456-7890",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "123 Driving Lane",
+        "addressLocality": "London",
+        "addressCountry": "UK"
+      },
+      "sameAs": [
+        "https://www.facebook.com/360DrivingSchool",
+        "https://twitter.com/360DrivingSchool"
+      ]
+    }
+    </script>
   </head>
   <body>
+    <!-- Root Element for React -->
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Main JavaScript File -->
+    <script type="module" src="/src/main.jsx" async></script>
   </body>
 </html>
