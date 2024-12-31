@@ -3,5 +3,7 @@ Disallow: /admin/
 Allow: /about-us/
 Allow: /contact-us/
 Allow: /home/
-Allow: /booking/
+Allow: /courses/
+Allow: /
+Allow: /useful-links/
 Sitemap: https://www.360drivingschool.co.uk/sitemap.xml
