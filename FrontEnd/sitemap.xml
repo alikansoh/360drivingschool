@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://360drivingschool.co.uk/</loc>
+        <loc>https://www.360drivingschool.co.uk/</loc>
         <lastmod>2024-12-30</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://360drivingschool.co.uk/about-us</loc>
+        <loc>https://www.360drivingschool.co.uk/about-us</loc>
         <lastmod>2024-12-30</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://360drivingschool.co.uk/courses</loc>
+        <loc>https://www.360drivingschool.co.uk/courses</loc>
         <lastmod>2024-12-20</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://360drivingschool.co.uk/contact-us</loc>
+        <loc>https://www.360drivingschool.co.uk/contact-us</loc>
         <lastmod>2024-12-30</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://360drivingschool.co.uk/useful-links</loc>
+        <loc>https://www.360drivingschool.co.uk/useful-links</loc>
         <lastmod>2024-12-30</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
+        <priority>0.5</priority>
     </url>
     <url>
-        <loc>https://360drivingschool.co.uk/faqs</loc>
+        <loc>https://www.360drivingschool.co.uk/faqs</loc>
         <lastmod>2024-12-30</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
+        <priority>0.6</priority>
     </url>
 </urlset>

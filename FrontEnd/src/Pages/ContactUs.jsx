@@ -68,7 +68,7 @@ export default function ContactUs() {
       <div className="max-w-screen-xl mx-auto px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
           {/* Phone */}
-          <a href="tel:+447735337198">
+          <a href="tel:+447789471859">
             <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all ease-in-out duration-500">
               <FaPhoneAlt className="text-4xl text-red-600 mb-6" />
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
@@ -77,14 +77,14 @@ export default function ContactUs() {
               <p className="text-base text-gray-700 text-center">
                 Speak with us by phone at{" "}
                 <strong>
-                  <a href="tel:+447735337198">07735337198</a>
+                  <a href="tel:+447789471859">+447789471859</a>
                 </strong>
                 . Available Monday to Friday, 9 AM - 9 PM.
               </p>
             </div>
           </a>
           {/* Email */}
-          <a href="mailto:baderuwl@hotmail.co.uk">
+          <a href="mailto:info@360drivingschool.co.uk">
             <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all ease-in-out duration-500">
               <FaEnvelope className="text-4xl text-red-600 mb-6" />
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
@@ -93,8 +93,8 @@ export default function ContactUs() {
               <p className="text-base text-gray-700 text-center">
                 Send us an email at{" "}
                 <strong>
-                  <a href="mailto:baderuwl@hotmail.co.uk">
-                    baderuwl@hotmail.co.uk
+                  <a href="mailto:info@360drivingschool.co.uk">
+                    info@360drivingschool.co.uk
                   </a>
                 </strong>
                 , and we will get back to you within 24 hours.
