@@ -46,11 +46,13 @@ export default function Navbar() {
 
           <div className="flex items-center justify-center flex-1">
             <div className="flex items-center">
+              <Link to="/">
               <img
                 alt="Your Company"
                 src={logo}
                 className="xl:h-[10rem] xl:w-[15rem] w-[9rem] h-[7rem] mobile:w-[11rem] mobile:h-[8rem]"
               />
+              </Link>
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="lg:flex space-x-8">
@@ -65,7 +67,7 @@ export default function Navbar() {
                       location.pathname === item.href
                         ? "bg-red-600 text-white"
                         : "text-black hover:bg-red-600 hover:text-white",
-                      "rounded-md px-3 py-2 font-Poppins font-bold tablet:text-sm"
+                      "rounded-md px-3 py-2 font-Poppins font-bold tablet:text-sm tablet:px-2"
                     )}
                   >
                     {item.name}
