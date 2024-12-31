@@ -54,13 +54,13 @@ function MainContent() {
 
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/booking" element={<Services />} />
+          <Route path="/courses" element={<Services />} />
           <Route path="/faqs" element={<FAQsPage />} />
           <Route path="/admin" element={<Login />} />
-          <Route path="/aboutUs" element={<AboutUs />} />
-          <Route path="/contactUs" element={<ContactUs />} />
-          <Route path="/privacyAndPolicy" element={<PrivacyPolicy />} />
-          <Route path="/usefulLinks" element={<UsefulLinks />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/privacy-and-Policy" element={<PrivacyPolicy />} />
+          <Route path="/useful-Links" element={<UsefulLinks />} />
 
 
         </Routes>

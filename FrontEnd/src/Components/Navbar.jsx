@@ -11,10 +11,10 @@ import { Link } from "react-router-dom";
 // Navigation links
 const navigation = [
   { name: "Home", href: "/" },
-  { name: "Booking", href: "/booking" },
-  { name: "About us", href: "/aboutus" },
-  { name: "Contact us", href: "/contactus" },
-  { name: "Useful Links", href: "/usefullinks" },
+  { name: "Booking", href: "/courses" },
+  { name: "About us", href: "/about-us" },
+  { name: "Contact us", href: "/contact-us" },
+  { name: "Useful Links", href: "/useful-links" },
 ];
 
 // Helper function to join classes

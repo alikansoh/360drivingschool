@@ -49,18 +49,18 @@ const Footer = () => {
             <div className="mt-12">
               <ul className="flex flex-col md:flex-row justify-center gap-6 md:gap-8 lg:gap-12">
                 <li>
-                  <Link to="/aboutus" className="transition hover:text-red-700">
+                  <Link to="/about-us" className="transition hover:text-red-700">
                     About
                   </Link>
                 </li>
                 <li>
-                  <Link to="/booking" className="transition hover:text-red-700">
+                  <Link to="/courses" className="transition hover:text-red-700">
                     Booking
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="/contactus"
+                    to="/contact-us"
                     className="transition hover:text-red-700"
                   >
                     Contact us
@@ -68,7 +68,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    to="/privacyAndpolicy"
+                    to="/privacy-and-policy"
                     className="transition hover:text-red-700"
                     href="#"
                   >

@@ -69,7 +69,7 @@ const Header = () => {
             knowledge and experience. We have over 10 years experience in the
             industry.
           </h1>
-          <Link to="/booking">
+          <Link to="/courses">
             <motion.button
               className="bg-white text-black mobile:gap-2 flex items-center justify-center gap-8 font-bold p-2 hover:bg-red-600 text-m w-[15rem] h-12 shadow-lg shadow-black mobile:w-[9rem] mobile:mt-3 mobile:h-[2rem] mobile:text-[0.7rem] mt-10"
               animate={{

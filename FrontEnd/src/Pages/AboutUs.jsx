@@ -113,9 +113,11 @@ export default function AboutUs() {
             confidence to drive safely and responsibly. Our expert instructors
             are here to guide you.
           </p>
-          <button className="bg-red-600 py-3 px-8 rounded-full text-white font-semibold shadow-lg hover:bg-red-700 transition-all duration-300">
-            Get Started Now
-          </button>
+          <Link to="/courses">
+            <button className="bg-red-600 py-3 px-8 rounded-full text-white font-semibold shadow-lg hover:bg-red-700 transition-all duration-300">
+              Get Started Now
+            </button>
+          </Link>
         </div>
       </div>
     </section>
