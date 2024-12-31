@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 // Navigation links
 const navigation = [
   { name: "Home", href: "/" },
-  { name: "Booking", href: "/courses" },
+  { name: "Courses", href: "/courses" },
   { name: "About us", href: "/about-us" },
   { name: "Contact us", href: "/contact-us" },
   { name: "Useful Links", href: "/useful-links" },
