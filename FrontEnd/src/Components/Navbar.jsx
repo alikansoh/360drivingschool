@@ -65,7 +65,7 @@ export default function Navbar() {
                       location.pathname === item.href
                         ? "bg-red-600 text-white"
                         : "text-black hover:bg-red-600 hover:text-white",
-                      "rounded-md px-3 py-2 font-Poppins font-bold"
+                      "rounded-md px-3 py-2 font-Poppins font-bold tablet:text-sm"
                     )}
                   >
                     {item.name}

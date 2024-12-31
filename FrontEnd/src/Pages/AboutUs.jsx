@@ -2,10 +2,13 @@ import React from "react";
 import { FaShieldAlt, FaHandshake, FaStar } from "react-icons/fa"; // React Icons
 import missionImage from "../assets/mission.jpg"; // Replace with mission image
 import visionImage from "../assets/hero.jpg"; // Replace with vision image
-
+import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 export default function AboutUs() {
   return (
+
     <section className="bg-white py-16">
+      
       <div className="max-w-screen-xl mx-auto px-6 lg:px-8">
         {/* Hero Section */}
         <div className="text-center mb-16">
