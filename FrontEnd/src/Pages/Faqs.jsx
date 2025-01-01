@@ -3,9 +3,9 @@ import { Helmet } from "react-helmet-async";
 
 const faqs = [
   {
-    question: "What is 360 Driving School?",
+    question: "What is 360 Drive Academy?",
     answer:
-      "360 Driving School is a comprehensive driving school designed to help new drivers learn essential skills, build confidence, and pass their driving tests with ease. We offer beginner to advanced driving courses, including defensive driving and test preparation.",
+      "360 Drive Academy is a comprehensive driving school designed to help new drivers learn essential skills, build confidence, and pass their driving tests with ease. We offer beginner to advanced driving courses, including defensive driving and test preparation.",
   },
   {
     question: "What is the minimum age to start driving lessons?",
@@ -70,13 +70,13 @@ export default function FAQsPage() {
     <section className="py-10 px-6 lg:px-20 max-w-5xl mx-auto mt-10">
       {/* SEO Meta Tags */}
       <Helmet>
-        <title>Frequently Asked Questions | 360 Driving School</title>
+        <title>Frequently Asked Questions | 360 Drive Academy </title>
         <meta
           name="description"
-          content="Find answers to your questions about 360 Driving School, including course details, age requirements, instructor qualifications, cancellation policies, and more."
+          content="Find answers to your questions about 360 Drive Academy, including course details, age requirements, instructor qualifications, cancellation policies, and more."
         />
         <meta name="robots" content="index, follow" />
-        <meta name="keywords" content="360 Driving School, driving lessons, driving courses, FAQ, driving test preparation" />
+        <meta name="keywords" content="360 Drive Academy, driving lessons, driving courses, FAQ, driving test preparation" />
         <link rel="canonical" href="https://www.360drivingschool.com/faqs" />
       </Helmet>
 

@@ -51,25 +51,25 @@ export default function ContactUs() {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="robots" content="index, follow" />
-        <meta name="keywords" content="contact driving school, driving lessons inquiry, 360 driving school, learn to drive, contact us driving school" />
-        <meta name="description" content="Get in touch with 360 Driving School for driving lessons, inquiries, or questions. Our team is here to help you." />
-        <meta property="og:title" content="Contact Us - 360 Driving School" />
-        <meta property="og:description" content="Have questions? Contact 360 Driving School and we will respond within 24 hours." />
+        <meta name="keywords" content="contact driving school, driving lessons inquiry, 360 drive Academy, learn to drive, contact us driving Academy" />
+        <meta name="description" content="Get in touch with 360 Drive Academy for driving lessons, inquiries, or questions. Our team is here to help you." />
+        <meta property="og:title" content="Contact Us - 360 Drive Academy" />
+        <meta property="og:description" content="Have questions? Contact 360 Drive Academy and we will respond within 24 hours." />
         <meta property="og:image" content={contact} />
         <meta property="og:url" content={window.location.href} />
-        <meta name="twitter:title" content="Contact Us - 360 Driving School" />
-        <meta name="twitter:description" content="Get in touch with 360 Driving School for inquiries, feedback, or to book driving lessons." />
+        <meta name="twitter:title" content="Contact Us - 360 Drive Academy" />
+        <meta name="twitter:description" content="Get in touch with 360 Drive Academy for inquiries, feedback, or to book driving lessons." />
         <meta name="twitter:image" content={contact} />
         <meta name="twitter:card" content="summary_large_image" />
         <link rel="canonical" href={window.location.href} />
-        <title>Contact Us - 360 Driving School</title>
+        <title>Contact Us - 360 Drive Academy </title>
       </Helmet>
 
       {/* Header Section with Image */}
       <header className="relative w-full mb-20 mt-0 h-[475px] mobile:h-[15rem] text-red-600">
         <img
           src={contact}
-          alt="Contact 360 Driving School for driving lessons"
+          alt="Contact 360 Drive Academy for driving lessons"
           className="w-full h-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-black opacity-60"></div>
@@ -87,7 +87,7 @@ export default function ContactUs() {
       <div className="max-w-screen-xl mx-auto px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
           {/* Phone */}
-          <a href="tel:+447789471859" aria-label="Call 360 Driving School">
+          <a href="tel:+447789471859" aria-label="Call 360 Drive Academy">
             <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all ease-in-out duration-500">
               <FaPhoneAlt className="text-4xl text-red-600 mb-6" />
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
@@ -104,7 +104,7 @@ export default function ContactUs() {
           </a>
 
           {/* Email */}
-          <a href="mailto:info@360drivingschool.co.uk" aria-label="Email 360 Driving School">
+          <a href="mailto:info@360drivingschool.co.uk" aria-label="Email 360 Drive Academy ">
             <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all ease-in-out duration-500">
               <FaEnvelope className="text-4xl text-red-600 mb-6" />
               <h3 className="text-xl font-semibold text-gray-900 mb-4">

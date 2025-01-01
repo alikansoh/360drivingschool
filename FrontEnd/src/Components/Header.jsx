@@ -50,7 +50,7 @@ const Header = () => {
       >
         <motion.img
           src={logo}
-          alt="360 Driving School Logo"
+          alt="360 Drive Academy Logo"
           className="hidden desktop:hidden lg:opacity-60 lg:block lg:h-[25rem] lg:w-[30rem]"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -62,15 +62,15 @@ const Header = () => {
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1.2, delay: 0.5 }}
         >
-          <h1 className="text-white mobile:w-[21rem] xl:text-lg font-bold lg:w-[43rem] lg:text-md md:w-[42rem] md:text-md mobile:text-[0.8rem]">
-            Welcome to 360 Driving School. We specialize in professional driving
+          <h1 className="text-white mobile:w-[18rem] m-auto xl:text-lg font-bold lg:w-[43rem] lg:text-md md:w-[42rem] md:text-md mobile:text-[0.8rem]">
+            Welcome to 360 Academy. We specialize in professional driving
             lessons with exceptional instructors, offering over 10 years of
             industry expertise. Drive with confidence and pass your test on the
             first attempt!
           </h1>
           <Link to="/courses" aria-label="Book driving lessons now">
             <motion.button
-              className="bg-white text-black mobile:gap-2 flex items-center justify-center gap-8 font-bold p-2 hover:bg-red-600 text-m w-[18rem] h-12 shadow-lg shadow-black mobile:w-[11rem] mobile:mt-3 mobile:h-[2rem] mobile:text-[0.7rem] mt-10"
+              className="bg-white text-black mobile:gap-2 flex items-center justify-center gap-8 font-bold p-2 hover:bg-red-600 text-m w-[18rem] h-12 shadow-lg shadow-black mobile:w-[9rem] mobile:mt-3 mobile:h-[2rem] mobile:text-[0.7rem] mt-10"
               animate={{
                 scale: [1, 1.05, 1],
                 transition: {
@@ -80,7 +80,7 @@ const Header = () => {
                 },
               }}
             >
-              Book your Lessons Now{" "}
+              Book Now{" "}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -107,7 +107,7 @@ const Header = () => {
         aria-labelledby="features-heading"
       >
         <h2 id="features-heading" className="sr-only">
-          Key Features of 360 Driving School
+          Key Features of 360 Drive Academy
         </h2>
         {features.map((feature, index) => (
           <motion.article

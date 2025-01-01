@@ -10,10 +10,10 @@ export default function AboutUs() {
     
     <section className="bg-white py-16">
         <Helmet>
-        <title>Contact Us | 360 Driving School</title>
+        <title>Contact Us | 360 Drive Academy </title>
         <meta
           name="description"
-          content="Contact 360 Driving School for expert driving lessons. Reach us by phone, email, or send us a message. We're here to assist you!"
+          content="Contact 360 Drive Academy for expert driving lessons. Reach us by phone, email, or send us a message. We're here to assist you!"
         />
       </Helmet>
       <div className="max-w-screen-xl mx-auto px-6 lg:px-8">

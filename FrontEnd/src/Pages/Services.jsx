@@ -48,7 +48,7 @@ const BookingPage = () => {
         <title>Book Driving Lessons | Choose Manual or Automatic Transmission</title>
         <meta
           name="description"
-          content="Book driving lessons with 360 Driving School. Choose manual or automatic transmission, select your preferred package, and get started today!"
+          content="Book driving lessons with 360 Drive Academy. Choose manual or automatic transmission, select your preferred package, and get started today!"
         />
         <meta
           name="keywords"
@@ -58,10 +58,10 @@ const BookingPage = () => {
         <link rel="canonical" href="https://yourwebsite.com/booking" />
         
         {/* Open Graph tags for social media */}
-        <meta property="og:title" content="Book Driving Lessons | 360 Driving School" />
+        <meta property="og:title" content="Book Driving Lessons | 360 Drive Academy" />
         <meta
           property="og:description"
-          content="Book driving lessons with 360 Driving School. Choose manual or automatic transmission, select your preferred package, and get started today!"
+          content="Book driving lessons with 360 Drive Academy. Choose manual or automatic transmission, select your preferred package, and get started today!"
         />
         <meta property="og:image" content="https://yourwebsite.com/images/booking-page-image.jpg" />
         <meta property="og:url" content="https://yourwebsite.com/booking" />
@@ -69,10 +69,10 @@ const BookingPage = () => {
         
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Book Driving Lessons | 360 Driving School" />
+        <meta name="twitter:title" content="Book Driving Lessons | 360 Drive Academy" />
         <meta
           name="twitter:description"
-          content="Book driving lessons with 360 Driving School. Choose manual or automatic transmission, select your preferred package, and get started today!"
+          content="Book driving lessons with 360 Drive Academy. Choose manual or automatic transmission, select your preferred package, and get started today!"
         />
         <meta name="twitter:image" content="https://yourwebsite.com/images/booking-page-image.jpg" />
       </Helmet>

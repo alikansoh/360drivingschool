@@ -52,7 +52,7 @@ const WhyUs = () => {
           id="why-choose-us"
           className="text-3xl font-bold text-center text-gray-800 mb-6"
         >
-          Why Choose 360 Driving School?
+          Why Choose 360 Drive Academy
         </h1>
         <p className="text-lg text-gray-600 mt-3 mobile:text-lg">
           Discover why students trust us for their driving education.
@@ -92,7 +92,7 @@ const WhyUs = () => {
           Your Trusted Partner in Learning to Drive
         </h2>
         <p className="text-lg">
-          At <strong>360 Driving School</strong>, we focus on delivering
+          At <strong>360 Drive Academy</strong>, we focus on delivering
           high-quality driving lessons with experienced instructors. Whether
           you're a beginner or need mock test preparation, we are here to
           ensure you pass your driving test with confidence.

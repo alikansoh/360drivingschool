@@ -16,7 +16,7 @@ const content = [
     img: video1,
     date: '26 December 2018',
     header: 'Title01',
-    info: 'Absolutely fantastic experience! The instructors at 360 Driving School are incredibly patient and knowledgeable. I was super nervous when I started, but they helped me build confidence with every lesson. Passed my test on the first try! Highly recommend to anyone looking to learn in a stress-free environment',
+    info: 'Absolutely fantastic experience! The instructors at 360 Drive Academy are incredibly patient and knowledgeable. I was super nervous when I started, but they helped me build confidence with every lesson. Passed my test on the first try! Highly recommend to anyone looking to learn in a stress-free environment',
   },
   {
     img: video2,
@@ -28,7 +28,7 @@ const content = [
     img: video3,
     date: '26 December 2011',
     header: 'Title03',
-    info: 'I couldn’t be happier with my decision to join 360 Driving School. My instructor was always on time, super friendly, and gave clear, easy-to-follow instructions. They made parallel parking (my biggest fear) feel so simple! Now I feel safe and confident on the road. Thank you so much!'
+    info: 'I couldn’t be happier with my decision to join 360 Drive Academy. My instructor was always on time, super friendly, and gave clear, easy-to-follow instructions. They made parallel parking (my biggest fear) feel so simple! Now I feel safe and confident on the road. Thank you so much!'
   }];
 
 export default function Fade() {

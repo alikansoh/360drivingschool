@@ -19,9 +19,9 @@ const Footer = () => {
           <div className="flex justify-center md:justify-start mb-8 md:mb-0">
             <img
               src={Logo}
-              alt="360 Driving School Logo"
+              alt="360 drive Academy Logo"
               className="w-50 h-40 object-contain"
-              aria-label="360 Driving School"
+              aria-label="360 drive Academy Logo"
             />
           </div>
 
@@ -66,7 +66,7 @@ const Footer = () => {
                   <Link
                     to="/about-us"
                     className="transition hover:text-red-700"
-                    aria-label="About 360 Driving School"
+                    aria-label="About 360 Drive Academy"
                   >
                     About
                   </Link>
@@ -84,7 +84,7 @@ const Footer = () => {
                   <Link
                     to="/contact-us"
                     className="transition hover:text-red-700"
-                    aria-label="Contact 360 Driving School"
+                    aria-label="Contact 360 Drive Academy"
                   >
                     Contact us
                   </Link>
@@ -128,9 +128,9 @@ const Footer = () => {
           <p
             id="copyright-info"
             className="text-md text-gray-600"
-            aria-label="Copyright 360 Driving School"
+            aria-label="Copyright Academy School"
           >
-            &copy; 2024 360 Driving School. All rights reserved.
+            &copy; 2024 360 drive Academy. All rights reserved.
           </p>
         </section>
       </div>

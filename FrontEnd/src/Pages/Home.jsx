@@ -13,10 +13,10 @@ const Home = () => {
   return (
     <>
     <Helmet>
-        <title>360 Driving School - Learn to Drive with Confidence</title>
+        <title>360 Drive Academy - Learn to Drive with Confidence</title>
         <meta
           name="description"
-          content="Welcome to 360 Driving School, where we offer expert driving lessons, test preparation, and flexible scheduling for learners of all levels. Learn to drive with confidence."
+          content="Welcome to 360 Drive Academy, where we offer expert driving lessons, test preparation, and flexible scheduling for learners of all levels. Learn to drive with confidence."
         />
         <meta name="robots" content="index, follow" />
         <meta name="keywords" content="driving lessons, driving school, driving test, learn to drive, driving instructor, book driving lessons" />
