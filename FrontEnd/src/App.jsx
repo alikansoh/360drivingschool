@@ -64,14 +64,14 @@ function MainContent() {
 
         {/* Dynamic Title and Meta Tags for Each Page */}
         <Routes>
-          <Route path="/" element={<PageMeta title="Home - 360 Driving School" description="Welcome to 360 Driving School. Learn to drive with expert instructors and flexible schedules." />} />
-          <Route path="/courses" element={<PageMeta title="Courses - 360 Driving School" description="Explore our driving courses. From beginner lessons to advanced training, we offer the best driving education." />} />
-          <Route path="/faqs" element={<PageMeta title="FAQs - 360 Driving School" description="Find answers to common questions about our driving school, lessons, and services." />} />
-          <Route path="/admin" element={<PageMeta title="Admin Login - 360 Driving School" description="Admin login page for 360 Driving School." />} />
-          <Route path="/about-us" element={<PageMeta title="About Us - 360 Driving School" description="Learn more about 360 Driving School and our mission to provide quality driving lessons." />} />
-          <Route path="/contact-us" element={<PageMeta title="Contact Us - 360 Driving School" description="Get in touch with 360 Driving School. Contact us for driving lessons, inquiries, and more." />} />
-          <Route path="/privacy-and-Policy" element={<PageMeta title="Privacy Policy - 360 Driving School" description="Read our privacy policy to understand how we handle your data at 360 Driving School." />} />
-          <Route path="/useful-Links" element={<PageMeta title="Useful Links - 360 Driving School" description="Check out useful links for driving test preparation, rules, and more." />} />
+          <Route path="/" element={<PageMeta title="Home - 360 Drive Academy" description="Welcome to 360 Drive Academy. Learn to drive with expert instructors and flexible schedules." />} />
+          <Route path="/courses" element={<PageMeta title="Courses - 360 Drive Academy" description="Explore our driving courses. From beginner lessons to advanced training, we offer the best driving education." />} />
+          <Route path="/faqs" element={<PageMeta title="FAQs - 360 Drive Academy" description="Find answers to common questions about our driving academy, lessons, and services." />} />
+          <Route path="/admin" element={<PageMeta title="Admin Login - 360 Drive Academy" description="Admin login page for 360 Drive Academy." />} />
+          <Route path="/about-us" element={<PageMeta title="About Us - 360 Drive Academy" description="Learn more about 360 Drive Academy and our mission to provide quality driving lessons." />} />
+          <Route path="/contact-us" element={<PageMeta title="Contact Us - 360 Drive Academy" description="Get in touch with 360 Drive Academy. Contact us for driving lessons, inquiries, and more." />} />
+          <Route path="/privacy-and-Policy" element={<PageMeta title="Privacy Policy - 360 Drive Academy" description="Read our privacy policy to understand how we handle your data at 360 Drive Academy." />} />
+          <Route path="/useful-Links" element={<PageMeta title="Useful Links - 360 Drive Academy" description="Check out useful links for driving test preparation, rules, and more." />} />
         </Routes>
 
         {/* Navbar and Footer */}
