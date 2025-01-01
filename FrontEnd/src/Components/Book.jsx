@@ -1,6 +1,6 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+
 const BookNowSection = () => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -26,36 +26,38 @@ const BookNowSection = () => {
     <section
       id="book-now-section"
       className="flex flex-col items-center justify-center mt-20 px-5 py-10 bg-gray-100"
+      aria-labelledby="book-now-title"
     >
       {/* Headline */}
       <h2
+        id="book-now-title"
         className={`text-3xl font-bold text-center mb-5 transition-opacity duration-500 ${
           isVisible ? "opacity-100" : "opacity-0"
         }`}
       >
-        Start Your Journey to Confident Driving Today!
+        Book Your Driving Lessons Today!
       </h2>
 
-      {/* Advice */}
+      {/* Description */}
       <p
         className={`text-lg text-gray-700 text-center mb-8 transition-opacity duration-500 ${
-          isVisible ? "opacity-100" : "opacity-0 "
+          isVisible ? "opacity-100" : "opacity-0"
         }`}
       >
-        Join our trusted driving school and experience personalized lessons that
-        will help you pass your test with ease. Whether you're a beginner or
-        just need a refresher, we have the perfect course for you.
+        Learn to drive confidently with our expert instructors. Our personalized
+        driving lessons cater to all levels, ensuring you pass your test with
+        ease. Start your journey toward safe driving today.
       </p>
 
       {/* Book Now Button */}
-
       <Link
         to="/courses"
+        aria-label="Book driving lessons now"
         className={`bg-red-600 text-white text-lg font-bold py-3 px-6 rounded-lg shadow-md hover:bg-red-700 focus:outline-none transform transition-all duration-300 ${
-          isVisible ? "opacity-100 scale-105" : "opacity-0 mobile:text-sm"
+          isVisible ? "opacity-100 scale-105" : "opacity-0"
         }`}
       >
-        Book Now
+        Book Driving Lessons Now
       </Link>
     </section>
   );

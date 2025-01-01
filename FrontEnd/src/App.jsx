@@ -26,12 +26,16 @@ import AboutUs from "./Pages/AboutUs.jsx";
 import ContactUs from "./Pages/ContactUs.jsx";
 import PrivacyPolicy from "./Pages/privacyAndPolicy.jsx";
 import UsefulLinks from "./Pages/UsefulLinks.jsx";
+import { HelmetProvider, Helmet } from "react-helmet-async";
+
 function App() {
   return (
     <section className="font-Poppins">
-      <BrowserRouter>
-        <MainContent />
-      </BrowserRouter>
+      <HelmetProvider>
+        <BrowserRouter>
+          <MainContent />
+        </BrowserRouter>
+      </HelmetProvider>
     </section>
   );
 }
@@ -50,8 +54,28 @@ function MainContent() {
       {isAdminPage && <SideBar />}
 
       <div className="flex-1">
-        {!isLoginPage && !isAdminPage && <Navbar />}
+        {/* Helmet for SEO */}
+        <Helmet>
+          <meta charSet="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <meta name="robots" content="index, follow" />
+          <meta name="keywords" content="driving school, learn to drive, driving test, driving lessons, driving instructors" />
+        </Helmet>
 
+        {/* Dynamic Title and Meta Tags for Each Page */}
+        <Routes>
+          <Route path="/" element={<PageMeta title="Home - 360 Driving School" description="Welcome to 360 Driving School. Learn to drive with expert instructors and flexible schedules." />} />
+          <Route path="/courses" element={<PageMeta title="Courses - 360 Driving School" description="Explore our driving courses. From beginner lessons to advanced training, we offer the best driving education." />} />
+          <Route path="/faqs" element={<PageMeta title="FAQs - 360 Driving School" description="Find answers to common questions about our driving school, lessons, and services." />} />
+          <Route path="/admin" element={<PageMeta title="Admin Login - 360 Driving School" description="Admin login page for 360 Driving School." />} />
+          <Route path="/about-us" element={<PageMeta title="About Us - 360 Driving School" description="Learn more about 360 Driving School and our mission to provide quality driving lessons." />} />
+          <Route path="/contact-us" element={<PageMeta title="Contact Us - 360 Driving School" description="Get in touch with 360 Driving School. Contact us for driving lessons, inquiries, and more." />} />
+          <Route path="/privacy-and-Policy" element={<PageMeta title="Privacy Policy - 360 Driving School" description="Read our privacy policy to understand how we handle your data at 360 Driving School." />} />
+          <Route path="/useful-Links" element={<PageMeta title="Useful Links - 360 Driving School" description="Check out useful links for driving test preparation, rules, and more." />} />
+        </Routes>
+
+        {/* Navbar and Footer */}
+        {!isLoginPage && !isAdminPage && <Navbar />}
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/courses" element={<Services />} />
@@ -61,14 +85,27 @@ function MainContent() {
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/privacy-and-Policy" element={<PrivacyPolicy />} />
           <Route path="/useful-Links" element={<UsefulLinks />} />
-          
-
-
         </Routes>
-
         {!isLoginPage && !isAdminPage && <Footer />}
       </div>
     </div>
+  );
+}
+
+function PageMeta({ title, description }) {
+  return (
+    <Helmet>
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content={window.location.href} />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <link rel="canonical" href={window.location.href} />
+    </Helmet>
   );
 }
 

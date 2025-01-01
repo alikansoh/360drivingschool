@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import contact from "../assets/contact.jpg";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import { Helmet } from "react-helmet-async";
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({
@@ -8,7 +9,7 @@ export default function ContactUs() {
     email: "",
     message: "",
   });
-  const [formStatus, setFormStatus] = useState(null); // To manage success/error message
+  const [formStatus, setFormStatus] = useState(null);
 
   // Page load animation
   useEffect(() => {
@@ -36,7 +37,6 @@ export default function ContactUs() {
 
     try {
       // Simulating sending an email (you can integrate with services like EmailJS)
-      // Here we just simulate it with a success message.
       setFormStatus("Message sent successfully! We'll get back to you soon.");
       setFormData({ name: "", email: "", message: "" }); // Clear form after submission
     } catch (error) {
@@ -46,11 +46,30 @@ export default function ContactUs() {
 
   return (
     <section className="bg-gray-100 mt-0 overflow-hidden">
+      {/* Helmet for SEO */}
+      <Helmet>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="index, follow" />
+        <meta name="keywords" content="contact driving school, driving lessons inquiry, 360 driving school, learn to drive, contact us driving school" />
+        <meta name="description" content="Get in touch with 360 Driving School for driving lessons, inquiries, or questions. Our team is here to help you." />
+        <meta property="og:title" content="Contact Us - 360 Driving School" />
+        <meta property="og:description" content="Have questions? Contact 360 Driving School and we will respond within 24 hours." />
+        <meta property="og:image" content={contact} />
+        <meta property="og:url" content={window.location.href} />
+        <meta name="twitter:title" content="Contact Us - 360 Driving School" />
+        <meta name="twitter:description" content="Get in touch with 360 Driving School for inquiries, feedback, or to book driving lessons." />
+        <meta name="twitter:image" content={contact} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="canonical" href={window.location.href} />
+        <title>Contact Us - 360 Driving School</title>
+      </Helmet>
+
       {/* Header Section with Image */}
-      <div className="relative w-full mb-20 mt-0 h-[475px] mobile:h-[15rem] text-red-600">
+      <header className="relative w-full mb-20 mt-0 h-[475px] mobile:h-[15rem] text-red-600">
         <img
           src={contact}
-          alt="Header Image"
+          alt="Contact 360 Driving School for driving lessons"
           className="w-full h-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-black opacity-60"></div>
@@ -62,13 +81,13 @@ export default function ContactUs() {
             We'd love to hear from you! Reach out to us for any inquiries.
           </h2>
         </div>
-      </div>
+      </header>
 
       {/* Contact Info Section */}
       <div className="max-w-screen-xl mx-auto px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
           {/* Phone */}
-          <a href="tel:+447789471859">
+          <a href="tel:+447789471859" aria-label="Call 360 Driving School">
             <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all ease-in-out duration-500">
               <FaPhoneAlt className="text-4xl text-red-600 mb-6" />
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
@@ -83,8 +102,9 @@ export default function ContactUs() {
               </p>
             </div>
           </a>
+
           {/* Email */}
-          <a href="mailto:info@360drivingschool.co.uk">
+          <a href="mailto:info@360drivingschool.co.uk" aria-label="Email 360 Driving School">
             <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all ease-in-out duration-500">
               <FaEnvelope className="text-4xl text-red-600 mb-6" />
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
@@ -101,6 +121,7 @@ export default function ContactUs() {
               </p>
             </div>
           </a>
+
           {/* Address */}
           <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all ease-in-out duration-500">
             <FaMapMarkerAlt className="text-4xl text-red-600 mb-6" />

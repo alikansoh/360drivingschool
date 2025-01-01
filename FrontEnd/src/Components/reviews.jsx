@@ -2,9 +2,9 @@ import React from "react";
 import Slider from "./Slider.tsx";
 const reviews = () => {
   return (
-    <div className="mt-20 bg-gray-100 ">
+    <section className="mt-20 bg-gray-100 ">
       <Slider />
-    </div>
+    </section>
   );
 };
 

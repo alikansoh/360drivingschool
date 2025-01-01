@@ -3,14 +3,22 @@ import { FaShieldAlt, FaHandshake, FaStar } from "react-icons/fa"; // React Icon
 import missionImage from "../assets/mission.jpg"; // Replace with mission image
 import visionImage from "../assets/hero.jpg"; // Replace with vision image
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+
 export default function AboutUs() {
   return (
-
+    
     <section className="bg-white py-16">
-      
+        <Helmet>
+        <title>Contact Us | 360 Driving School</title>
+        <meta
+          name="description"
+          content="Contact 360 Driving School for expert driving lessons. Reach us by phone, email, or send us a message. We're here to assist you!"
+        />
+      </Helmet>
       <div className="max-w-screen-xl mx-auto px-6 lg:px-8">
         {/* Hero Section */}
-        <div className="text-center mb-16">
+        <header className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight">
             About Us
           </h1>
@@ -18,16 +26,17 @@ export default function AboutUs() {
             We're dedicated to helping you become a confident, safe, and skilled
             driver with our expert guidance and personalized approach.
           </p>
-        </div>
+        </header>
 
         {/* Mission and Vision Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
           {/* Mission */}
-          <div className="relative group overflow-hidden rounded-xl shadow-lg hover:scale-105 transition-all ease-in-out duration-500">
+          <article className="relative group overflow-hidden rounded-xl shadow-lg hover:scale-105 transition-all ease-in-out duration-500">
             <img
               src={missionImage}
-              alt="Mission"
+              alt="Our mission to create skilled, confident drivers"
               className="w-full h-[300px] sm:h-[350px] lg:h-[400px] object-cover rounded-xl"
+              loading="lazy"
             />
             <div className="absolute inset-0 bg-black opacity-40 group-hover:opacity-30 transition-all duration-500"></div>
             <div className="absolute bottom-6 left-8 text-white">
@@ -39,14 +48,15 @@ export default function AboutUs() {
                 providing clear, easy-to-understand driving lessons.
               </p>
             </div>
-          </div>
+          </article>
 
           {/* Vision */}
-          <div className="relative group overflow-hidden rounded-xl shadow-lg hover:scale-105 transition-all ease-in-out duration-500">
+          <article className="relative group overflow-hidden rounded-xl shadow-lg hover:scale-105 transition-all ease-in-out duration-500">
             <img
               src={visionImage}
-              alt="Vision"
+              alt="Our vision to be the leading driving school"
               className="w-full h-[300px] sm:h-[350px] lg:h-[400px] object-cover rounded-xl"
+              loading="lazy"
             />
             <div className="absolute inset-0 bg-black opacity-40 group-hover:opacity-30 transition-all duration-500"></div>
             <div className="absolute bottom-6 left-8 text-white">
@@ -58,11 +68,11 @@ export default function AboutUs() {
                 safe drivers who are prepared for any road ahead.
               </p>
             </div>
-          </div>
-        </div>
+          </article>
+        </section>
 
         {/* Our Values Section */}
-        <div className="text-center mb-16">
+        <section className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
             Our Core Values
           </h2>
@@ -103,10 +113,10 @@ export default function AboutUs() {
               </p>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Call to Action */}
-        <div className="bg-gray-900 text-white py-16 text-center rounded-lg shadow-lg p-2">
+        <section className="bg-gray-900 text-white py-16 text-center rounded-lg shadow-lg p-2">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
             Ready to Start Your Journey with Us?
           </h2>
@@ -116,11 +126,14 @@ export default function AboutUs() {
             are here to guide you.
           </p>
           <Link to="/courses">
-            <button className="bg-red-600 py-3 px-8 rounded-full text-white font-semibold shadow-lg hover:bg-red-700 transition-all duration-300">
+            <button
+              className="bg-red-600 py-3 px-8 rounded-full text-white font-semibold shadow-lg hover:bg-red-700 transition-all duration-300"
+              aria-label="Get started with driving lessons"
+            >
               Get Started Now
             </button>
           </Link>
-        </div>
+        </section>
       </div>
     </section>
   );

@@ -38,28 +38,39 @@ const Faq = () => {
   };
 
   return (
-    <section className="py-10 mt-20">
+    <section className="py-10 mt-20" aria-labelledby="faq-header">
       <div className="max-w-screen-lg mx-auto px-5">
-        {/* Header */}
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Frequently Asked Questions
-        </h2>
-        <p className="text-center text-gray-600 mb-6">
-          Have questions? We’ve got answers! Here are the most common ones we
-          receive from our students.
-        </p>
+        {/* Header Section */}
+        <header className="text-center mb-6">
+          <h2
+            id="faq-header"
+            className="text-3xl font-bold text-gray-800 mb-6"
+            aria-level="2"
+            role="heading"
+          >
+            Frequently Asked Questions
+          </h2>
+          <p className="text-center text-gray-600 mb-6">
+            Have questions? We’ve got answers! Here are the most common ones we
+            receive from our students.
+          </p>
+        </header>
 
-        {/* FAQ Accordion */}
+        {/* FAQ Accordion Section */}
         <div className="space-y-4 mb-6">
           {faqs.map((faq, index) => (
-            <div
+            <article
               key={index}
               className="bg-white shadow-md rounded-lg transition-all overflow-hidden"
+              aria-labelledby={`faq-question-${index}`}
             >
-              {/* Question */}
+              {/* Question (Interactive Element) */}
               <button
                 onClick={() => toggleFAQ(index)}
                 className="w-full flex justify-between items-center px-6 py-4 text-left text-gray-800 font-medium focus:outline-none hover:bg-gray-50"
+                aria-expanded={openIndex === index ? "true" : "false"}
+                aria-controls={`faq-answer-${index}`}
+                id={`faq-question-${index}`}
               >
                 <span>{faq.question}</span>
                 <svg
@@ -78,13 +89,18 @@ const Faq = () => {
                 </svg>
               </button>
 
-              {/* Answer */}
-              {openIndex === index && (
-                <div className="px-6 pb-4 mt-2 text-red-600 mobile:text-sm">
-                  <p>{faq.answer}</p>
-                </div>
-              )}
-            </div>
+              {/* Answer Section (Hidden/Shown based on the state) */}
+              <div
+                id={`faq-answer-${index}`}
+                className={`px-6 pb-4 mt-2 text-red-600 mobile:text-sm ${
+                  openIndex === index ? "block" : "hidden"
+                }`}
+                role="region"
+                aria-labelledby={`faq-question-${index}`}
+              >
+                <p>{faq.answer}</p>
+              </div>
+            </article>
           ))}
         </div>
 

@@ -16,40 +16,41 @@ const Header = () => {
       image: easydrive,
       title: "Hassle-Free Driving Courses",
       description:
-        "Looking for a straightforward way to pass your driving test with an exceptional instructor?",
+        "Looking for a straightforward way to pass your driving test with an exceptional instructor? Join us for a seamless experience.",
     },
     {
       image: west,
       title: "West London Driving Experiences",
       description:
-        "Want an effortless path to obtaining your driving license with a top-notch instructor in West London?",
+        "Need an effortless path to obtaining your driving license in West London? Learn with top-notch instructors.",
     },
     {
       image: ed,
-      title: "Beginner-Friendly Courses",
+      title: "Beginner-Friendly Driving Courses",
       description:
-        "New to driving? Learn from scratch and pass your driving test quickly and stress-free.",
+        "New to driving? Start from scratch with expert guidance and pass your test stress-free.",
     },
     {
       image: mockup,
-      title: "Practice with Mock Tests",
+      title: "Practice with Mock Driving Tests",
       description:
-        "Feeling anxious about your driving test? We'll help you prepare thoroughly to pass on your first attempt.",
+        "Feeling nervous about your driving test? We’ll prepare you thoroughly for a confident first-time pass.",
     },
   ];
 
   return (
-    <section className="font-Poppins">
+    <header className="font-Poppins">
       {/* Hero Section */}
       <motion.div
         className="flex items-center justify-center opacity-100 md:h-[30rem] w-full xl:h-[45rem] lg:h-[35rem] gap-20 lg:flex-row mobile:flex-col mobile:justify-center mobile:items-center mobile:gap-5 mobile:h-[22rem] mobile:bg-cover bg-cover bg-[url('/src/assets/header.png')]"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
+        role="banner"
       >
         <motion.img
           src={logo}
-          alt="Logo"
+          alt="360 Driving School Logo"
           className="hidden desktop:hidden lg:opacity-60 lg:block lg:h-[25rem] lg:w-[30rem]"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -61,17 +62,15 @@ const Header = () => {
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1.2, delay: 0.5 }}
         >
-          <h1 className="text-white mobile:w-[21rem] xl:text-lg font-bold lg:w-[43rem] lg:text-md md:w-[42rem] md:text-sm mobile:text-[0.8rem]">
-            At 360 Driving School, we are renowned for our distinctive teaching
-            and learning methodologies. Our primary objective is to ensure that
-            students drive with confidence and successfully pass their driving
-            tests on their first attempt. Our instructors possess extensive
-            knowledge and experience. We have over 10 years experience in the
-            industry.
+          <h1 className="text-white mobile:w-[21rem] xl:text-lg font-bold lg:w-[43rem] lg:text-md md:w-[42rem] md:text-md mobile:text-[0.8rem]">
+            Welcome to 360 Driving School. We specialize in professional driving
+            lessons with exceptional instructors, offering over 10 years of
+            industry expertise. Drive with confidence and pass your test on the
+            first attempt!
           </h1>
-          <Link to="/courses">
+          <Link to="/courses" aria-label="Book driving lessons now">
             <motion.button
-              className="bg-white text-black mobile:gap-2 flex items-center justify-center gap-8 font-bold p-2 hover:bg-red-600 text-m w-[15rem] h-12 shadow-lg shadow-black mobile:w-[9rem] mobile:mt-3 mobile:h-[2rem] mobile:text-[0.7rem] mt-10"
+              className="bg-white text-black mobile:gap-2 flex items-center justify-center gap-8 font-bold p-2 hover:bg-red-600 text-m w-[18rem] h-12 shadow-lg shadow-black mobile:w-[11rem] mobile:mt-3 mobile:h-[2rem] mobile:text-[0.7rem] mt-10"
               animate={{
                 scale: [1, 1.05, 1],
                 transition: {
@@ -81,7 +80,7 @@ const Header = () => {
                 },
               }}
             >
-              Book Now{" "}
+              Book your Lessons Now{" "}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -102,12 +101,16 @@ const Header = () => {
       </motion.div>
 
       {/* Features Section */}
-      <div
+      <section
         ref={featuresRef}
         className="h-auto w-full gap-20 mt-20 flex flex-wrap items-start justify-center shadow-l border-teal-600 shadow-teal-800 mobile:flex-col mobile:items-center mobile:gap-5 mobile:mt-10 mb-20"
+        aria-labelledby="features-heading"
       >
+        <h2 id="features-heading" className="sr-only">
+          Key Features of 360 Driving School
+        </h2>
         {features.map((feature, index) => (
-          <motion.section
+          <motion.article
             key={index}
             className="w-[20rem] pt-5 mobile:w-[18rem] mobile:text-center group"
             initial={{ opacity: 0, y: 50 }}
@@ -120,19 +123,18 @@ const Header = () => {
           >
             <img
               src={feature.image}
-              alt={`${feature.title} Illustration`}
+              alt={`${feature.title} - Driving Course`}
               className="mb-7 w-[15rem] h-[15rem] mx-auto mobile:w-[15rem] mobile:h-[15rem]"
+              loading="lazy"
             />
-            <h1 className="text-red-600 text-3xl font-bold mobile:text-2xl text-center">
+            <h3 className="text-red-600 text-3xl font-bold mobile:text-2xl text-center">
               {feature.title}
-            </h1>
-            <h2 className="text-l mt-1 mobile:text-sm ">
-              {feature.description}
-            </h2>
-          </motion.section>
+            </h3>
+            <p className="text-l mt-1 mobile:text-sm">{feature.description}</p>
+          </motion.article>
         ))}
-      </div>
-    </section>
+      </section>
+    </header>
   );
 };
 

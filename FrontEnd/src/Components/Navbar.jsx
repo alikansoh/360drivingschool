@@ -47,11 +47,11 @@ export default function Navbar() {
           <div className="flex items-center justify-center flex-1">
             <div className="flex items-center">
               <Link to="/">
-              <img
-                alt="Your Company"
-                src={logo}
-                className="xl:h-[10rem] xl:w-[15rem] w-[9rem] h-[7rem] mobile:w-[11rem] mobile:h-[8rem]"
-              />
+                <img
+                  alt="Your Company"
+                  src={logo}
+                  className="xl:h-[10rem] xl:w-[15rem] w-[9rem] h-[7rem] mobile:w-[11rem] mobile:h-[8rem]"
+                />
               </Link>
             </div>
             <div className="hidden sm:ml-6 sm:block">

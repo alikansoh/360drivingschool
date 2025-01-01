@@ -1,60 +1,61 @@
 import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
 
 const faqs = [
   {
     question: "What is 360 Driving School?",
     answer:
-      "360 Driving School is a comprehensive driving school designed to help new drivers learn essential skills, build confidence, and pass their driving tests with ease.",
+      "360 Driving School is a comprehensive driving school designed to help new drivers learn essential skills, build confidence, and pass their driving tests with ease. We offer beginner to advanced driving courses, including defensive driving and test preparation.",
   },
   {
     question: "What is the minimum age to start driving lessons?",
     answer:
-      "The minimum age to start driving lessons depends on your location. In most regions, you can start learning at 16, but be sure to check your local regulations.",
+      "The minimum age to start driving lessons depends on your location. In most regions, you can start learning at 16, but be sure to check your local regulations for specific requirements.",
   },
   {
     question: "How do I enroll in a course?",
     answer:
-      "You can enroll by visiting our website and selecting the course that fits your needs. Fill out the enrollment form and we will get in touch to schedule your first lesson.",
+      "To enroll in one of our driving courses, simply visit our website, select the course that fits your needs, and fill out the enrollment form. We will contact you to schedule your first lesson.",
   },
   {
     question: "What types of courses do you offer?",
     answer:
-      "We offer beginner driving lessons, advanced driving techniques, defensive driving, and courses tailored for specific driving tests.",
+      "We offer a variety of courses, including beginner driving lessons, advanced driving techniques, defensive driving courses, and test preparation lessons tailored to your local driving test requirements.",
   },
   {
     question: "Are your instructors experienced?",
     answer:
-      "Yes, our instructors are experienced and passionate about driving. They have been teaching drivers for years and are committed to helping you succeed.",
+      "Yes, all of our instructors are experienced professionals with years of teaching experience. They are fully certified and passionate about helping you succeed on the road.",
   },
   {
     question: "What is your cancellation policy?",
     answer:
-      "You can cancel or reschedule a lesson with at least 24 hours’ notice without penalty. ",
+      "We offer flexible scheduling with a 24-hour notice for cancellations or rescheduling. This ensures that you have the flexibility to manage your lessons.",
   },
   {
     question: "Do you provide a car for the driving test?",
     answer:
-      "Yes, we provide a car for your driving test if you book through us. Our vehicles are well-maintained and equipped for safe driving.",
+      "Yes, we provide a car for your driving test if you book your lessons through us. Our vehicles are regularly maintained and are equipped with all necessary safety features.",
   },
   {
     question: "Can I learn in an automatic car?",
     answer:
-      "Yes, we offer lessons in both manual and automatic vehicles. Be sure to specify your preference when booking.",
+      "Yes, we offer both manual and automatic cars for driving lessons. Be sure to specify your preference when booking your lessons with us.",
   },
   {
     question: "Are your instructors certified?",
     answer:
-      "All our instructors are fully certified, experienced, and friendly. They are committed to helping you become a confident and safe driver.",
+      "Yes, all our instructors are fully certified, trained, and committed to ensuring you become a confident and skilled driver. They are friendly, patient, and passionate about driving instruction.",
   },
   {
     question: "How do I prepare for my driving test?",
     answer:
-      "Your instructor will guide you through practice tests, teach you all the necessary skills, and review the specific requirements of your local licensing authority to ensure you're fully prepared.",
+      "Our instructors will provide practice tests, teach essential skills, and review local driving test requirements to ensure you're well-prepared for your test.",
   },
   {
     question: "Do you offer evening or weekend lessons?",
     answer:
-      "Yes, we offer evening and weekend lessons to accommodate your busy schedule. Our instructors are available during evenings and weekends to meet your needs.",
+      "Yes, we offer flexible evening and weekend driving lessons to accommodate your busy schedule. Our instructors are available to meet your needs during those times.",
   },
 ];
 
@@ -67,6 +68,18 @@ export default function FAQsPage() {
 
   return (
     <section className="py-10 px-6 lg:px-20 max-w-5xl mx-auto mt-10">
+      {/* SEO Meta Tags */}
+      <Helmet>
+        <title>Frequently Asked Questions | 360 Driving School</title>
+        <meta
+          name="description"
+          content="Find answers to your questions about 360 Driving School, including course details, age requirements, instructor qualifications, cancellation policies, and more."
+        />
+        <meta name="robots" content="index, follow" />
+        <meta name="keywords" content="360 Driving School, driving lessons, driving courses, FAQ, driving test preparation" />
+        <link rel="canonical" href="https://www.360drivingschool.com/faqs" />
+      </Helmet>
+
       <h1 className="text-4xl font-bold text-center mb-10">
         Frequently Asked Questions
       </h1>
@@ -75,18 +88,30 @@ export default function FAQsPage() {
           <div
             key={index}
             className="border border-red-600 rounded-lg shadow-sm"
+            itemScope
+            itemType="https://schema.org/Question"
           >
             <button
               className="w-full text-left px-6 py-4 text-lg font-semibold text-gray-700 flex justify-between items-center"
               onClick={() => toggleFAQ(index)}
+              aria-expanded={openIndex === index}
+              aria-controls={`faq-answer-${index}`}
             >
-              {faq.question}
+              <span itemProp="name">{faq.question}</span>
               <span className="text-gray-500">
                 {openIndex === index ? "-" : "+"}
               </span>
             </button>
             {openIndex === index && (
-              <div className="px-6 py-4 text-gray-600">{faq.answer}</div>
+              <div
+                id={`faq-answer-${index}`}
+                className="px-6 py-4 text-gray-600"
+                itemProp="acceptedAnswer"
+                itemScope
+                itemType="https://schema.org/Answer"
+              >
+                <span itemProp="text">{faq.answer}</span>
+              </div>
             )}
           </div>
         ))}

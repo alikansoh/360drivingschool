@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import manuel from "../assets/manuel.png";
 import automatic from "../assets/automatic.png";
 import PackageCard from "../Components/PackageCard";
@@ -9,6 +10,7 @@ import parking from "../assets/par.jpg";
 import night from "../assets/nig.jpg";
 import eco from "../assets/eco.jpeg";
 import winter from "../assets/win.jpeg";
+
 const BookingPage = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [selectedTransmission, setSelectedTransmission] = useState("Manual");
@@ -41,6 +43,40 @@ const BookingPage = () => {
 
   return (
     <div className="bg-gray-50">
+      {/* Helmet for SEO */}
+      <Helmet>
+        <title>Book Driving Lessons | Choose Manual or Automatic Transmission</title>
+        <meta
+          name="description"
+          content="Book driving lessons with 360 Driving School. Choose manual or automatic transmission, select your preferred package, and get started today!"
+        />
+        <meta
+          name="keywords"
+          content="driving lessons, manual transmission, automatic transmission, driving packages, driving school, book lessons"
+        />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://yourwebsite.com/booking" />
+        
+        {/* Open Graph tags for social media */}
+        <meta property="og:title" content="Book Driving Lessons | 360 Driving School" />
+        <meta
+          property="og:description"
+          content="Book driving lessons with 360 Driving School. Choose manual or automatic transmission, select your preferred package, and get started today!"
+        />
+        <meta property="og:image" content="https://yourwebsite.com/images/booking-page-image.jpg" />
+        <meta property="og:url" content="https://yourwebsite.com/booking" />
+        <meta property="og:type" content="website" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Book Driving Lessons | 360 Driving School" />
+        <meta
+          name="twitter:description"
+          content="Book driving lessons with 360 Driving School. Choose manual or automatic transmission, select your preferred package, and get started today!"
+        />
+        <meta name="twitter:image" content="https://yourwebsite.com/images/booking-page-image.jpg" />
+      </Helmet>
+
       {/* Header Section */}
       <header className="bg-red-600 text-white py-16">
         <div className="max-w-5xl mx-auto text-center px-4">
@@ -199,109 +235,117 @@ const BookingPage = () => {
         </div>
       </section>
       <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-12 sm:text-5xl">
-            Additional Courses
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-            {[
-              {
-                title: "Motorway Driving Course",
-                price: "£150",
-                discount: "10% OFF",
-                description:
-                  "Focused on motorway driving, includes 5 lessons for high-speed and complex traffic.",
-                action: () => handleSelectPackage("Motorway Driving Course"),
-                image: motorway,
-              },
-              {
-                title: "Refresher Course",
-                price: "£200",
-                discount: "15% OFF",
-                description:
-                  "For licensed drivers to rebuild confidence. Includes 8 situational driving lessons.",
-                action: () => handleSelectPackage("Refresher Course"),
-                image: refresher,
-              },
-              {
-                title: "Night Driving Course",
-                price: "£120",
-                discount: "5% OFF",
-                description:
-                  "Teaches safe night-driving techniques, with 4 lessons focused on reduced visibility.",
-                action: () => handleSelectPackage("Night Driving Course"),
-                image: night,
-              },
-              {
-                title: "Parking Mastery Course",
-                price: "£100",
-                discount: "No Discount",
-                description:
-                  "Specialized in parallel parking, reverse parking, and tight-space navigation.",
-                action: () => handleSelectPackage("Parking Mastery Course"),
-                image: parking,
-              },
-              {
-                title: "Eco-Friendly Driving Course",
-                price: "£180",
-                discount: "10% OFF",
-                description:
-                  "Learn fuel-efficient techniques to reduce emissions and save on fuel costs.",
-                action: () =>
-                  handleSelectPackage("Eco-Friendly Driving Course"),
-                image: eco,
-              },
-              {
-                title: "Winter Driving Course",
-                price: "£200",
-                discount: "20% OFF",
-                description:
-                  "Focused on icy and snowy conditions, with 6 lessons for hazard management.",
-                action: () => handleSelectPackage("Winter Driving Course"),
-                image: winter,
-              },
-            ].map((course, index) => (
-              <div
-                key={index}
-                className="relative overflow-hidden bg-white rounded-xl shadow-lg hover:shadow-xl transition-transform transform hover:scale-105"
-              >
-                {/* Discount Badge */}
-                {course.discount !== "No Discount" && (
-                  <div className="absolute top-4 right-4 bg-red-600 text-white text-sm font-bold px-4 py-2 rounded-full">
-                    {course.discount}
-                  </div>
-                )}
+  <div className="max-w-7xl mx-auto px-6">
+    <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-12 sm:text-5xl">
+      Additional Driving Courses to Enhance Your Skills
+    </h2>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+      {[
+        {
+          title: "Motorway Driving Course",
+          price: "£150",
+          discount: "10% OFF",
+          description:
+            "Focused on motorway driving, includes 5 lessons for high-speed and complex traffic.",
+          action: () => handleSelectPackage("Motorway Driving Course"),
+          image: motorway,
+          alt: "Motorway Driving Course",
+        },
+        {
+          title: "Refresher Course",
+          price: "£200",
+          discount: "15% OFF",
+          description:
+            "For licensed drivers to rebuild confidence. Includes 8 situational driving lessons.",
+          action: () => handleSelectPackage("Refresher Course"),
+          image: refresher,
+          alt: "Refresher Driving Course",
+        },
+        {
+          title: "Night Driving Course",
+          price: "£120",
+          discount: "5% OFF",
+          description:
+            "Teaches safe night-driving techniques, with 4 lessons focused on reduced visibility.",
+          action: () => handleSelectPackage("Night Driving Course"),
+          image: night,
+          alt: "Night Driving Course",
+        },
+        {
+          title: "Parking Mastery Course",
+          price: "£100",
+          discount: "No Discount",
+          description:
+            "Specialized in parallel parking, reverse parking, and tight-space navigation.",
+          action: () => handleSelectPackage("Parking Mastery Course"),
+          image: parking,
+          alt: "Parking Mastery Course",
+        },
+        {
+          title: "Eco-Friendly Driving Course",
+          price: "£180",
+          discount: "10% OFF",
+          description:
+            "Learn fuel-efficient techniques to reduce emissions and save on fuel costs.",
+          action: () =>
+            handleSelectPackage("Eco-Friendly Driving Course"),
+          image: eco,
+          alt: "Eco-Friendly Driving Course",
+        },
+        {
+          title: "Winter Driving Course",
+          price: "£200",
+          discount: "20% OFF",
+          description:
+            "Focused on icy and snowy conditions, with 6 lessons for hazard management.",
+          action: () => handleSelectPackage("Winter Driving Course"),
+          image: winter,
+          alt: "Winter Driving Course",
+        },
+      ].map((course, index) => (
+        <div
+          key={index}
+          className="relative overflow-hidden bg-white rounded-xl shadow-lg hover:shadow-xl transition-transform transform hover:scale-105"
+        >
+          {/* Discount Badge */}
+          {course.discount !== "No Discount" && (
+            <div className="absolute top-4 right-4 bg-red-600 text-white text-sm font-bold px-4 py-2 rounded-full">
+              {course.discount}
+            </div>
+          )}
 
-                {/* Course Image */}
-                <img
-                  src={course.image}
-                  alt={course.title}
-                  className="w-full h-48 object-cover rounded-t-xl"
-                />
+          {/* Course Image */}
+          <img
+            src={course.image}
+            alt={course.alt}
+            className="w-full h-48 object-cover rounded-t-xl"
+          />
 
-                {/* Course Details */}
-                <div className="p-6">
-                  <h3 className="text-2xl font-semibold text-gray-700 mb-2">
-                    {course.title}
-                  </h3>
-                  <h4 className="text-3xl font-extrabold text-gray-800 mb-3">
-                    {course.price}
-                  </h4>
-                  <p className="text-gray-600 mb-4">{course.description}</p>
+          {/* Course Details */}
+          <div className="p-6">
+            <h3 className="text-2xl font-semibold text-gray-700 mb-2">
+              {course.title}
+            </h3>
+            <h4 className="text-3xl font-extrabold text-gray-800 mb-3">
+              {course.price}
+            </h4>
+            <p className="text-gray-600 mb-4">{course.description}</p>
 
-                  {/* Action Button */}
-                  <button
-                    onClick={course.action}
-                    className="w-full bg-red-600 text-white font-bold py-3 px-6 rounded-md hover:bg-red-700 transition"
-                  >
-                    Select {course.title}
-                  </button>
-                </div>
-              </div>
-            ))}
+            {/* Action Button */}
+            <button
+              onClick={course.action}
+              className="w-full bg-red-600 text-white font-bold py-3 px-6 rounded-md hover:bg-red-700 transition"
+              aria-label={`Book ${course.title} now`}
+            >
+              Select {course.title}
+            </button>
           </div>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
+
 
       {/* Booking Form (Dynamic) */}
       <FormModal

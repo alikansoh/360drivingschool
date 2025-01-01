@@ -32,7 +32,10 @@ const WhyUs = () => {
   };
 
   return (
-    <section className="flex flex-col items-center justify-center mt-20 px-5 font-Poppins">
+    <section
+      className="flex flex-col items-center justify-center mt-20 px-5 font-Poppins"
+      aria-labelledby="why-choose-us"
+    >
       {/* Header Section */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -42,11 +45,14 @@ const WhyUs = () => {
       >
         <img
           src={yes}
-          alt="true"
+          alt="Smiling checkmark icon indicating success"
           className="w-16 h-16 mx-auto animate-bounce"
         />
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          WHY 360 DRIVING SCHOOL?
+        <h1
+          id="why-choose-us"
+          className="text-3xl font-bold text-center text-gray-800 mb-6"
+        >
+          Why Choose 360 Driving School?
         </h1>
         <p className="text-lg text-gray-600 mt-3 mobile:text-lg">
           Discover why students trust us for their driving education.
@@ -69,14 +75,29 @@ const WhyUs = () => {
             className="flex items-center bg-white shadow-md rounded-lg p-5 gap-4 hover:shadow-lg transition-all"
           >
             {/* Consistent size for the checkmark */}
-            <FaCheckCircle className="text-red-500 text-3xl w-auto  " />{" "}
-            {/* Changed size to text-3xl */}
-            <p className="text-xl text-gray-800 mobile:text-sm mobile: font-bold ">
+            <FaCheckCircle className="text-red-500 text-3xl w-auto" />
+            <p
+              className="text-xl text-gray-800 mobile:text-sm font-bold"
+              aria-label={feature}
+            >
               {feature}
             </p>
           </motion.div>
         ))}
       </motion.div>
+
+      {/* Additional SEO Content */}
+      <div className="mt-10 text-center text-gray-600">
+        <h2 className="text-2xl font-semibold mb-4">
+          Your Trusted Partner in Learning to Drive
+        </h2>
+        <p className="text-lg">
+          At <strong>360 Driving School</strong>, we focus on delivering
+          high-quality driving lessons with experienced instructors. Whether
+          you're a beginner or need mock test preparation, we are here to
+          ensure you pass your driving test with confidence.
+        </p>
+      </div>
     </section>
   );
 };
