@@ -23,7 +23,7 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
-  const location = useLocation(); // Get the current location (pathname)
+  const location = useLocation(); // Get tEmailhe current location (pathname)
 
   return (
     <Disclosure as="nav" className="bg-gray-300">

@@ -4,21 +4,33 @@ import { GrUserSettings } from "react-icons/gr";
 import { FcMissedCall } from "react-icons/fc";
 import { LuPackageOpen } from "react-icons/lu";
 import { BsFillCollectionPlayFill } from "react-icons/bs";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
+  const location = useLocation();
 
   const menuItems = [
-    { icon: <FcMissedCall size={25} className="mr-4" />, text: "Call request" },
+    {
+      icon: <FcMissedCall size={25} className="mr-4" />,
+      text: "Booking",
+      url: "/admin/booking", // Ensure this matches location.pathname
+    },
     {
       icon: <LuPackageOpen size={25} className="mr-4 " />,
       text: "Packages",
+      url: "/admin/packages", // Add leading slash for consistency
     },
     {
       icon: <BsFillCollectionPlayFill size={25} className="mr-4" />,
       text: "Courses",
+      url: "/admin/courses", // Add leading slash
     },
-    { icon: <GrUserSettings size={25} className="mr-4" />, text: "User" },
+    {
+      icon: <GrUserSettings size={25} className="mr-4" />,
+      text: "User",
+      url: "/admin/users", // Add leading slash
+    },
   ];
 
   return (
@@ -35,13 +47,11 @@ const Navbar = () => {
           360<span className="font-bold">driving school</span>
         </h1>
       </div>
-
+        <button className="bg-red-600 text-white px-4 py-2 rounded-md">Logout</button>
       {/* Mobile Menu */}
       {/* Overlay */}
-      {nav ? (
+      {nav && (
         <div className="bg-black/80 fixed w-full h-screen z-10 top-0 left-0"></div>
-      ) : (
-        ""
       )}
 
       {/* Side drawer menu */}
@@ -62,12 +72,18 @@ const Navbar = () => {
         </h2>
         <nav>
           <ul className="flex flex-col p-4 text-red-600">
-            {menuItems.map(({ icon, text }, index) => {
+            {menuItems.map(({ icon, text, url }, index) => {
               return (
-                <div key={index} className=" py-4">
-                  <li className="text-xl flex cursor-pointer   rounded-full mx-auto p-2 hover:text-white hover:bg-black">
-                    {icon} {text}
-                  </li>
+                <div key={index} className="py-4">
+                  <Link to={url}>
+                    <li
+                      className={`${
+                        location.pathname === url ? "bg-red-600 text-white" : ""
+                      } text-xl flex cursor-pointer rounded-full mx-auto p-2 hover:text-white hover:bg-black`}
+                    >
+                      {icon} {text}
+                    </li>
+                  </Link>
                 </div>
               );
             })}

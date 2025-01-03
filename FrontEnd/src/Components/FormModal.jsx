@@ -1,5 +1,7 @@
 import React from "react";
-
+import { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 const FormModal = ({
   isVisible,
   onClose,
@@ -7,9 +9,45 @@ const FormModal = ({
   selectedPackage,
   preferredTime,
   setPreferredTime,
+  setSelectedPackage,
 }) => {
+  const [name, setName] = useState("");
+  const [telephone, setPhone] = useState("");
+  const [postCode, setPostCode] = useState("");
   if (!isVisible) return null;
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:4000/booking", {
+        transmissionType: transmissionType,
+        name: name,
+        telephone: telephone,
+        postCode: postCode,
+        timetocontact: preferredTime,
+        packagename: selectedPackage,
+      })
+      console.log("Booking successful:", response.data);
+      toast.success("Booking successful we will get back to you shortly!", {
+        position: "top-right",
+        autoClose: 6000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      })
+      // Clear form fields
+      setName("");
+      setPhone("");
+      setPostCode("");
+      onClose();
+     
+    
+    } catch (error) {
+      console.error("Error booking:", error);
+    }
+  };
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-lg relative">
@@ -41,6 +79,7 @@ const FormModal = ({
               id="name"
               className="w-full  rounded-md p-3 border focus:border-red-600"
               placeholder="Enter your name"
+              onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
@@ -49,7 +88,7 @@ const FormModal = ({
           <div className="mb-6">
             <label
               htmlFor="phone"
-              className="block text-gray-700 font-medium mb-2"
+              className="block text-gselectedPackageray-700 font-medium mb-2"
             >
               Phone Number
             </label>
@@ -59,6 +98,7 @@ const FormModal = ({
               className="w-full  rounded-md p-3 border focus:border-red-600"
               placeholder="Enter your phone number"
               required
+              onChange={(e) => setPhone(e.target.value)}
             />
           </div>
 
@@ -75,6 +115,7 @@ const FormModal = ({
               id="post-code"
               className="w-full  rounded-md p-3 border focus:border-red-600"
               placeholder="Enter your Post Code"
+              onChange={(e) => setPostCode(e.target.value)}
               required
             />
           </div>
@@ -112,6 +153,7 @@ const FormModal = ({
               value={selectedPackage}
               className="w-full  rounded-md p-3 bg-white border focus:border-red-600"
               readOnly
+              onChange={(e) => setSelectedPackage(e.target.value)}
             >
               <option value={selectedPackage}>{selectedPackage}</option>
             </select>
@@ -120,6 +162,7 @@ const FormModal = ({
           {/* Submit Button */}
           <button
             type="submit"
+            onClick={handleSubmit}
             className="w-full  text-white bg-red-600 font-bold py-3 rounded-md hover:bg-red-700 transition"
           >
             Confirm Booking
