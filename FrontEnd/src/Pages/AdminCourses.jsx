@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const API_BASE_URL = "http://localhost:4000/course";
 
@@ -13,6 +14,7 @@ const CoursesPage = () => {
     name: "",
     price: "",
     description: "",
+    offer: "",
     image: null,
   });
 
@@ -20,6 +22,7 @@ const CoursesPage = () => {
     name: "",
     price: "",
     description: "",
+    offer: "",
     image: null,
   });
 
@@ -65,6 +68,7 @@ const CoursesPage = () => {
     formData.append("name", newCourse.name);
     formData.append("price", newCourse.price);
     formData.append("description", newCourse.description);
+    formData.append("offer", newCourse.offer);
     formData.append("image", newCourse.image);
 
     try {
@@ -75,7 +79,14 @@ const CoursesPage = () => {
       });
       setCourses([...courses, response.data]);
       setShowAddModal(false);
-      setNewCourse({ name: "", price: "", description: "", image: null });
+      setNewCourse({
+        name: "",
+        price: "",
+        description: "",
+        offer: "",
+        image: null,
+      });
+      toast.success("Course added successfully!");
     } catch (error) {
       console.error(
         "Error adding course:",
@@ -90,6 +101,7 @@ const CoursesPage = () => {
     formData.append("name", editCourse.name);
     formData.append("price", editCourse.price);
     formData.append("description", editCourse.description);
+    formData.append("offer", editCourse.offer);
 
     // Append image if it's a new file
     if (editCourse.image && editCourse.image instanceof File) {
@@ -116,6 +128,7 @@ const CoursesPage = () => {
       setShowEditModal(false);
       setSelectedCourse(null);
       setEditCourse({ name: "", price: "", description: "", image: null });
+      toast.success("Course updated successfully!");
     } catch (error) {
       console.error("Error editing course:", error);
     }
@@ -131,6 +144,7 @@ const CoursesPage = () => {
       setCourses(updatedCourses);
       setShowDeleteConfirm(false);
       setSelectedCourse(null);
+      toast.success("Course deleted successfully!");
     } catch (error) {
       console.error("Error deleting course:", error);
     }
@@ -164,12 +178,16 @@ const CoursesPage = () => {
               className="w-full h-40 object-cover rounded-lg mb-4"
             />
             <h3 className="text-xl font-semibold text-gray-700">
-              {course.name}
+              course name : {course.name}
             </h3>
-            <p className="text-sm text-gray-500">{course.description}</p>
-            <p className="text-lg font-semibold text-gray-900 mt-2">
-              {course.price}
+            <p className="text-sm text-gray-500">
+              {" "}
+              course description :{course.description}
             </p>
+            <p className="text-lg font-semibold text-gray-900 mt-2">
+              course price : £ {course.price}
+            </p>
+
             <div className="mt-4 flex justify-between">
               <button
                 onClick={() => {
@@ -213,16 +231,37 @@ const CoursesPage = () => {
                 }
                 required
               />
-              <input
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded-lg"
-                placeholder="Course Price"
-                value={newCourse.price}
-                onChange={(e) =>
-                  setNewCourse({ ...newCourse, price: e.target.value })
-                }
-                required
-              />
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                  £
+                </span>
+                <input
+                  type="number"
+                  className="w-full pl-8 p-2 border border-gray-300 rounded-lg"
+                  placeholder="Course Price"
+                  value={newCourse.price}
+                  onChange={(e) =>
+                    setNewCourse({ ...newCourse, price: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                  %
+                </span>
+                <input
+                  type="number"
+                  className="w-full pl-8 p-2 border border-gray-300 rounded-lg"
+                  placeholder="Course Price"
+                  value={newCourse.price}
+                  onChange={(e) =>
+                    setNewCourse({ ...newCourse, offer: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
               <textarea
                 className="w-full p-2 border border-gray-300 rounded-lg"
                 placeholder="Course Description"
@@ -266,6 +305,9 @@ const CoursesPage = () => {
               Edit Course
             </h2>
             <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Course Name
+              </label>
               <input
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded-lg"
@@ -276,16 +318,46 @@ const CoursesPage = () => {
                 }
                 required
               />
-              <input
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded-lg"
-                placeholder="Course Price"
-                value={editCourse.price}
-                onChange={(e) =>
-                  setEditCourse({ ...editCourse, price: e.target.value })
-                }
-                required
-              />
+              <label className="block text-sm font-medium text-gray-700">
+                Course Price
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                  £
+                </span>
+                <input
+                  type="text"
+                  className="w-full p-2 pl-8 border border-gray-300 rounded-lg"
+                  placeholder="Course Price"
+                  value={editCourse.price}
+                  onChange={(e) =>
+                    setEditCourse({ ...editCourse, price: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <label className="block text-sm font-medium text-gray-700">
+                offer
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                  %
+                </span>
+                <input
+                  type="text"
+                  className="w-full p-2 pl-8 border border-gray-300 rounded-lg"
+                  placeholder="Course offer"
+                  value={editCourse.offer}
+                  onChange={(e) =>
+                    setEditCourse({ ...editCourse, offer: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
+              <label className="block text-sm font-medium text-gray-700">
+                Course Description
+              </label>
               <textarea
                 className="w-full p-2 border border-gray-300 rounded-lg"
                 placeholder="Course Description"
@@ -295,7 +367,11 @@ const CoursesPage = () => {
                 }
                 required
               />
+
               <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Course Image
+                </label>
                 <input
                   type="file"
                   className="w-full p-2 border border-gray-300 rounded-lg"

@@ -5,9 +5,11 @@ import { FcMissedCall } from "react-icons/fc";
 import { LuPackageOpen } from "react-icons/lu";
 import { BsFillCollectionPlayFill } from "react-icons/bs";
 import { Link, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
 
   const menuItems = [
@@ -32,6 +34,10 @@ const Navbar = () => {
       url: "/admin/users", // Add leading slash
     },
   ];
+  const handleLogout = () => {
+    localStorage.removeItem("user"); // Clear user data from localStorage
+    navigate("/admin"); // Redirect to login page
+  };
 
   return (
     <div className="max-w-[1640px] mx-auto flex justify-between items-center p-4 shadow-sm">
@@ -44,10 +50,15 @@ const Navbar = () => {
           <AiOutlineMenu size={30} />
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl px-2 text-red-600">
-          360<span className="font-bold">driving school</span>
+          360<span className="font-bold">drive Academy</span>
         </h1>
       </div>
-        <button className="bg-red-600 text-white px-4 py-2 rounded-md">Logout</button>
+      <button
+        className="bg-red-600 text-white px-4 py-2 rounded-md"
+        onClick={handleLogout}
+      >
+        Logout
+      </button>
       {/* Mobile Menu */}
       {/* Overlay */}
       {nav && (

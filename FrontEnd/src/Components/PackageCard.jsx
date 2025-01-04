@@ -7,7 +7,7 @@ const PackageCard = ({ title, price, discount, description, onSelect }) => {
       {/* Discount Badge */}
       {discount && (
         <div className="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-bl-lg">
-          {discount}
+          {discount} % OFF
         </div>
       )}
 
@@ -15,7 +15,7 @@ const PackageCard = ({ title, price, discount, description, onSelect }) => {
       <h3 className="text-2xl font-bold text-gray-700 mb-4">{title}</h3>
 
       {/* Price */}
-      <h4 className="text-3xl font-extrabold text-gray-800 mb-3">{price}</h4>
+      <h4 className="text-3xl font-extrabold text-gray-800 mb-3"> £ {price}</h4>
 
       {/* Description */}
       <p className="text-gray-600 mb-8">{description}</p>

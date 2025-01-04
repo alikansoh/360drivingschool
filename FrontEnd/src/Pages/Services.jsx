@@ -4,43 +4,56 @@ import manuel from "../assets/manuel.png";
 import automatic from "../assets/automatic.png";
 import PackageCard from "../Components/PackageCard";
 import FormModal from "../Components/FormModal";
-import refresher from "../assets/ref.jpg";
-import motorway from "../assets/mot.jpg";
-import parking from "../assets/par.jpg";
-import night from "../assets/nig.jpg";
-import eco from "../assets/eco.jpeg";
-import winter from "../assets/win.jpeg";
 import axios from "axios";
+
 const BookingPage = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [selectedTransmission, setSelectedTransmission] = useState("Manual");
-  const [selectedPackage, setSelectedPackage] = useState("Starter Package");
+  const [selectedItem, setSelectedItem] = useState("started package"); // Changed to a generic selectedItem
   const [preferredTime, setPreferredTime] = useState("morning");
-  
 
-  const handleBookClick = async (transmission) => {
-    setSelectedTransmission(transmission);
-    setIsFormVisible(true);
+  // Fetch packages and courses from the API
+  const [packages, setPackages] = useState([]);
+  const [courses, setCourses] = useState([]);
+
+  const fetchPackages = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/package");
+      setPackages(response.data);
+    } catch (error) {
+      console.error("Error fetching packages:", error);
+    }
   };
+
+  const fetchCourses = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/course");
+      setCourses(response.data);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
+  };
+
+  useEffect(() => {
+    setSelectedTransmission("Manual");
+    fetchPackages();
+    fetchCourses();
+  }, []);
 
   const handleCloseForm = () => {
     setIsFormVisible(false);
-    setSelectedTransmission("Manual"); // Reset to default
-    setSelectedPackage("Starter Package"); // Reset package selection
+    // Resetting only the form visibility, keeping selected transmission/item for next selection
   };
 
   const handleSelectTransmission = (transmission) => {
     setSelectedTransmission(transmission);
   };
 
-  const handleSelectPackage = (pkg) => {
-    setSelectedPackage(pkg);
-    setIsFormVisible(true); // Show form when a package is selected
+  const handleSelectItem = (item, type) => {
+    const newItem = { ...item, type, transmission: selectedTransmission }; // Include transmission type
+    setSelectedItem(newItem);
+    setIsFormVisible(true);
   };
-
-  useEffect(() => {
-    setSelectedTransmission("Manual");
-  }, []);
 
   return (
     <div className="bg-gray-50">
@@ -51,7 +64,7 @@ const BookingPage = () => {
         </title>
         <meta
           name="description"
-          content="Book driving lessons with 360 Drive Academy. Choose manual or automatic transmission, select your preferred package, and get started today!"
+          content="Book driving lessons with 360 Drive Academy. Choose manual or automatic transmission, select your preferred package or course, and get started today!"
         />
         <meta
           name="keywords"
@@ -59,37 +72,6 @@ const BookingPage = () => {
         />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://yourwebsite.com/booking" />
-
-        {/* Open Graph tags for social media */}
-        <meta
-          property="og:title"
-          content="Book Driving Lessons | 360 Drive Academy"
-        />
-        <meta
-          property="og:description"
-          content="Book driving lessons with 360 Drive Academy. Choose manual or automatic transmission, select your preferred package, and get started today!"
-        />
-        <meta
-          property="og:image"
-          content="https://yourwebsite.com/images/booking-page-image.jpg"
-        />
-        <meta property="og:url" content="https://yourwebsite.com/booking" />
-        <meta property="og:type" content="website" />
-
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:title"
-          content="Book Driving Lessons | 360 Drive Academy"
-        />
-        <meta
-          name="twitter:description"
-          content="Book driving lessons with 360 Drive Academy. Choose manual or automatic transmission, select your preferred package, and get started today!"
-        />
-        <meta
-          name="twitter:image"
-          content="https://yourwebsite.com/images/booking-page-image.jpg"
-        />
       </Helmet>
 
       {/* Header Section */}
@@ -98,7 +80,7 @@ const BookingPage = () => {
           <h1 className="text-4xl font-bold mb-4">Book Your Driving Lessons</h1>
           <p className="text-lg">
             Get started with us. Choose manual or automatic transmission
-            lessons.
+            lessons, or select a package or course.
           </p>
         </div>
       </header>
@@ -120,7 +102,7 @@ const BookingPage = () => {
               {
                 title: "Step 2",
                 description:
-                  "Select your lesson package and schedule a callback.",
+                  "Select your lesson package or course and schedule a callback.",
                 icon: "fas fa-calendar-check",
               },
               {
@@ -211,146 +193,57 @@ const BookingPage = () => {
             Choose Your Package
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Starter Package",
-                price: "£ 300",
-                discount: "20% OFF",
-                description:
-                  "Perfect for beginners. Includes 10 driving lessons.",
-                action: () => handleSelectPackage("Starter Package"),
-              },
-              {
-                title: "Advanced Package",
-                price: "£ 350",
-                discount: "15% OFF",
-                description:
-                  "For intermediate learners. Includes 15 driving lessons.",
-                action: () => handleSelectPackage("Advanced Package"),
-              },
-              {
-                title: "Expert Package",
-                price: "£ 500",
-                discount: "10% OFF",
-                description:
-                  "For experienced learners. Includes 20 driving lessons.",
-                action: () => handleSelectPackage("Expert Package"),
-              },
-            ].map((pkg, index) => (
+            {packages.map((pkg, index) => (
               <PackageCard
                 key={index}
-                title={pkg.title}
+                title={pkg.name}
                 price={pkg.price}
-                discount={pkg.discount}
+                discount={pkg.offer}
                 description={pkg.description}
-                onSelect={pkg.action}
+                onSelect={() => handleSelectItem(pkg, "package")}
               />
             ))}
           </div>
         </div>
       </section>
+
+      {/* Additional Courses Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-12 sm:text-5xl">
             Additional Driving Courses to Enhance Your Skills
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-            {[
-              {
-                title: "Motorway Driving Course",
-                price: "£150",
-                discount: "10% OFF",
-                description:
-                  "Focused on motorway driving, includes 5 lessons for high-speed and complex traffic.",
-                action: () => handleSelectPackage("Motorway Driving Course"),
-                image: motorway,
-                alt: "Motorway Driving Course",
-              },
-              {
-                title: "Refresher Course",
-                price: "£200",
-                discount: "15% OFF",
-                description:
-                  "For licensed drivers to rebuild confidence. Includes 8 situational driving lessons.",
-                action: () => handleSelectPackage("Refresher Course"),
-                image: refresher,
-                alt: "Refresher Driving Course",
-              },
-              {
-                title: "Night Driving Course",
-                price: "£120",
-                discount: "5% OFF",
-                description:
-                  "Teaches safe night-driving techniques, with 4 lessons focused on reduced visibility.",
-                action: () => handleSelectPackage("Night Driving Course"),
-                image: night,
-                alt: "Night Driving Course",
-              },
-              {
-                title: "Parking Mastery Course",
-                price: "£100",
-                discount: "No Discount",
-                description:
-                  "Specialized in parallel parking, reverse parking, and tight-space navigation.",
-                action: () => handleSelectPackage("Parking Mastery Course"),
-                image: parking,
-                alt: "Parking Mastery Course",
-              },
-              {
-                title: "Eco-Friendly Driving Course",
-                price: "£180",
-                discount: "10% OFF",
-                description:
-                  "Learn fuel-efficient techniques to reduce emissions and save on fuel costs.",
-                action: () =>
-                  handleSelectPackage("Eco-Friendly Driving Course"),
-                image: eco,
-                alt: "Eco-Friendly Driving Course",
-              },
-              {
-                title: "Winter Driving Course",
-                price: "£200",
-                discount: "20% OFF",
-                description:
-                  "Focused on icy and snowy conditions, with 6 lessons for hazard management.",
-                action: () => handleSelectPackage("Winter Driving Course"),
-                image: winter,
-                alt: "Winter Driving Course",
-              },
-            ].map((course, index) => (
+            {courses.map((course, index) => (
               <div
                 key={index}
+                onClick={() => handleSelectItem(course, "course")}
                 className="relative overflow-hidden bg-white rounded-xl shadow-lg hover:shadow-xl transition-transform transform hover:scale-105"
               >
                 {/* Discount Badge */}
-                {course.discount !== "No Discount" && (
+                {course.offer && (
                   <div className="absolute top-4 right-4 bg-red-600 text-white text-sm font-bold px-4 py-2 rounded-full">
-                    {course.discount}
+                    {course.offer} % OFF
                   </div>
                 )}
 
                 {/* Course Image */}
                 <img
-                  src={course.image}
+                  src={`http://localhost:4000/${course.image}`}
                   alt={course.alt}
                   className="w-full h-48 object-cover rounded-t-xl"
                 />
-
-                {/* Course Details */}
                 <div className="p-6">
                   <h3 className="text-2xl font-semibold text-gray-700 mb-2">
-                    {course.title}
+                    {course.name}
                   </h3>
                   <h4 className="text-3xl font-extrabold text-gray-800 mb-3">
-                    {course.price}
+                    £ {course.price}
                   </h4>
                   <p className="text-gray-600 mb-4">{course.description}</p>
-
-                  {/* Action Button */}
                   <button
-                    onClick={course.action}
+                    onClick={() => handleSelectItem(course)} // Generic select function
                     className="w-full bg-red-600 text-white font-bold py-3 px-6 rounded-md hover:bg-red-700 transition"
-                    aria-label={`Book ${course.title} now`}
                   >
                     Select {course.title}
                   </button>
@@ -361,15 +254,13 @@ const BookingPage = () => {
         </div>
       </section>
 
-      {/* Booking Form (Dynamic) */}
+      {/* Booking Form (Modal) */}
       <FormModal
         isVisible={isFormVisible}
         onClose={handleCloseForm}
-        transmissionType={selectedTransmission}
-        selectedPackage={selectedPackage}
+        selectedItem={selectedItem}
         preferredTime={preferredTime}
         setPreferredTime={setPreferredTime}
-        setSelectedPackage={setSelectedPackage}
       />
     </div>
   );

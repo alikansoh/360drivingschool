@@ -16,17 +16,15 @@ const BookingPage = () => {
   };
 
   const handleDeleteBooking = (booking) => {
-    setSelectedBooking(booking); 
+    setSelectedBooking(booking);
     setShowDeleteConfirm(true); //
   };
-
- 
 
   const cancelDelete = () => {
     setShowDeleteConfirm(false); // Close the confirmation modal
     setSelectedBooking(null); // Reset the selected booking
   };
-  const deleteBooking = async(id) => {
+  const deleteBooking = async (id) => {
     try {
       await axios.delete(`http://localhost:4000/booking/${id}`);
       setShowDeleteConfirm(false);
@@ -41,13 +39,10 @@ const BookingPage = () => {
         progress: undefined,
         theme: "light",
       });
-
     } catch (error) {
       console.error("Error deleting booking:", error);
     }
-  
-    
-  }
+  };
   const closeModal = () => {
     setShowModal(false);
     setSelectedBooking(null);
@@ -127,14 +122,15 @@ const BookingPage = () => {
                   <strong>Phone Number:</strong> {selectedBooking.telephone}
                 </p>
                 <p>
-                  <strong>Post Code:</strong> AB12 3CD
+                  <strong>Post Code:</strong> {selectedBooking.postCode}
                 </p>
                 <p>
                   <strong>Preferred Time to Contact: </strong>
                   {selectedBooking.timetocontact}
                 </p>
                 <p>
-                  <strong>Package Selected:</strong> Standard Package
+                  <strong>Package Selected:</strong>{" "}
+                  {selectedBooking.packagename}
                 </p>
               </div>
             )}
@@ -150,8 +146,8 @@ const BookingPage = () => {
               Are you sure?
             </h2>
             <p className="mb-6 text-gray-600">
-              You are about to delete booking #{selectedBooking._id}. This action
-              cannot be undone.
+              You are about to delete booking #{selectedBooking._id}. This
+              action cannot be undone.
             </p>
             <div className="flex justify-between">
               <button

@@ -3,7 +3,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import Navbar from "./Components/Navbar.jsx";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import HomePage from "./Pages/Home.jsx";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -31,8 +31,8 @@ import Book from "./Pages/AdminBooking.jsx";
 import Courses from "./Pages/AdminCourses.jsx";
 import Package from "./Pages/AdminPackages.jsx";
 import AdminPage from "./Pages/AdminPage.jsx";
-import { ToastContainer, toast } from 'react-toastify';
-
+import { ToastContainer } from 'react-toastify';
+import PrivateRoute from "./Components/PrivateRoute.jsx"; // Import your PrivateRoute component
 
 function App() {
   return (
@@ -158,10 +158,40 @@ function MainContent() {
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/privacy-and-Policy" element={<PrivacyPolicy />} />
           <Route path="/useful-Links" element={<UsefulLinks />} />
-          <Route path="/admin/booking" element={<Book />} />
-          <Route path="/admin/courses" element={<Courses />} />
-          <Route path="/admin/packages" element={<Package />} />
-          <Route path="/admin/users" element={<AdminPage />} />
+
+          {/* Protected Routes */}
+          <Route
+            path="/admin/booking"
+            element={
+              <PrivateRoute>
+                <Book />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/courses"
+            element={
+              <PrivateRoute>
+                <Courses />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/packages"
+            element={
+              <PrivateRoute>
+                <Package />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <PrivateRoute>
+                <AdminPage />
+              </PrivateRoute>
+            }
+          />
         </Routes>
         {!isLoginPage && !isAdminPage && <Footer />}
       </div>

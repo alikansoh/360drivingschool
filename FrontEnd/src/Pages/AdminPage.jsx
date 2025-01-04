@@ -1,14 +1,9 @@
-import React, { useState } from "react";
-
-// Sample Data: List of users
-const initialUsers = [
-  { id: 1, name: "John Doe", email: "john.doe@example.com", role: "Admin" },
-  { id: 2, name: "Jane Smith", email: "jane.smith@example.com", role: "User" },
-  { id: 3, name: "Sam Wilson", email: "sam.wilson@example.com", role: "User" },
-];
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+const API_BASE_URL = "http://localhost:4000/user";
 
 const AdminUsersPage = () => {
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState([]);
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
@@ -16,6 +11,22 @@ const AdminUsersPage = () => {
     password: "",
   });
   const [editingUser, setEditingUser] = useState(null);
+
+  // Fetch all users from the API
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch(API_BASE_URL);
+      if (!response.ok) throw new Error("Failed to fetch users");
+      const data = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -33,13 +44,27 @@ const AdminUsersPage = () => {
     });
   };
 
-  const addNewUser = () => {
-    if (newUser.name && newUser.email && newUser.role) {
-      setUsers([
-        ...users,
-        { id: Date.now(), ...newUser }, // Add new user with a unique id
-      ]);
-      setNewUser({ name: "", email: "", role: "", password: "" }); // Reset form
+  const addNewUser = async () => {
+    if (newUser.name && newUser.email && newUser.password) {
+      const confirmAdd = window.confirm("Are you sure you want to add this user?");
+      if (!confirmAdd) return;
+
+      try {
+        const response = await fetch(API_BASE_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUser),
+        });
+
+        if (!response.ok) throw new Error("Failed to add user");
+        setNewUser({ name: "", email: "", role: "", password: "" }); // Reset form
+        fetchUsers(); // Refresh the user list
+        toast.success("User added successfully!");
+      } catch (error) {
+        console.error(error.message);
+      }
     } else {
       alert("Please fill in all fields!");
     }
@@ -49,15 +74,40 @@ const AdminUsersPage = () => {
     setEditingUser(user);
   };
 
-  const updateUser = () => {
-    setUsers(
-      users.map((user) => (user.id === editingUser.id ? editingUser : user))
-    );
-    setEditingUser(null); // Close edit form
+  const updateUser = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/${editingUser._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editingUser),
+      });
+
+      if (!response.ok) throw new Error("Failed to update user");
+      setEditingUser(null); // Close edit form
+      fetchUsers(); // Refresh the user list
+      toast.success("User updated successfully!");
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
-  const deleteUser = (id) => {
-    setUsers(users.filter((user) => user.id !== id));
+  const deleteUser = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this user?");
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error("Failed to delete user");
+      fetchUsers(); // Refresh the user list
+      toast.success("User deleted successfully!");
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   return (
@@ -90,14 +140,7 @@ const AdminUsersPage = () => {
             placeholder="Email"
             className="border p-2 w-full rounded mb-2"
           />
-          <input
-            type="text"
-            name="role"
-            value={newUser.role}
-            onChange={handleInputChange}
-            placeholder="Role (Admin/User)"
-            className="border p-2 w-full rounded mb-2"
-          />
+
           <input
             type="password"
             name="password"
@@ -126,7 +169,7 @@ const AdminUsersPage = () => {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id} className="border-b hover:bg-gray-50">
+              <tr key={user._id} className="border-b hover:bg-gray-50">
                 <td className="px-4 py-2">{user.name}</td>
                 <td className="px-4 py-2">
                   <button
@@ -136,7 +179,7 @@ const AdminUsersPage = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => deleteUser(user.id)}
+                    onClick={() => deleteUser(user._id)}
                     className="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600"
                   >
                     Delete
@@ -171,14 +214,7 @@ const AdminUsersPage = () => {
               placeholder="Email"
               className="border p-2 w-full rounded mb-2"
             />
-            <input
-              type="text"
-              name="role"
-              value={editingUser.role}
-              onChange={handleEditInputChange}
-              placeholder="Role (Admin/User)"
-              className="border p-2 w-full rounded mb-2"
-            />
+
             <input
               type="password"
               name="password"

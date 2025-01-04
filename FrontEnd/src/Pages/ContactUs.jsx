@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import contact from "../assets/contact.jpg";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
+import emailjs from "emailjs-com"; // Import EmailJS
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({
@@ -36,10 +37,24 @@ export default function ContactUs() {
     }
 
     try {
-      // Simulating sending an email (you can integrate with services like EmailJS)
+      const templateParams = {
+        from_name: name, // The user's name
+        email_sender: email, // The user's email (used in From Email and Reply-To)
+        message: message, // The message from the form
+      };
+
+      const response = await emailjs.send(
+        "service_bvrbsab", // Your EmailJS service ID
+        "template_x0wncxr", // Your EmailJS template ID
+        templateParams, // Data for the template
+        "A4JrpQy20GzSe3cjz" // Your EmailJS user ID
+      );
+
+      console.log("Message sent", response);
       setFormStatus("Message sent successfully! We'll get back to you soon.");
       setFormData({ name: "", email: "", message: "" }); // Clear form after submission
     } catch (error) {
+      console.error("Error sending email:", error);
       setFormStatus("There was an error. Please try again later.");
     }
   };
@@ -51,14 +66,26 @@ export default function ContactUs() {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="robots" content="index, follow" />
-        <meta name="keywords" content="contact driving school, driving lessons inquiry, 360 drive Academy, learn to drive, contact us driving Academy" />
-        <meta name="description" content="Get in touch with 360 Drive Academy for driving lessons, inquiries, or questions. Our team is here to help you." />
+        <meta
+          name="keywords"
+          content="contact driving school, driving lessons inquiry, 360 drive Academy, learn to drive, contact us driving Academy"
+        />
+        <meta
+          name="description"
+          content="Get in touch with 360 Drive Academy for driving lessons, inquiries, or questions. Our team is here to help you."
+        />
         <meta property="og:title" content="Contact Us - 360 Drive Academy" />
-        <meta property="og:description" content="Have questions? Contact 360 Drive Academy and we will respond within 24 hours." />
+        <meta
+          property="og:description"
+          content="Have questions? Contact 360 Drive Academy and we will respond within 24 hours."
+        />
         <meta property="og:image" content={contact} />
         <meta property="og:url" content={window.location.href} />
         <meta name="twitter:title" content="Contact Us - 360 Drive Academy" />
-        <meta name="twitter:description" content="Get in touch with 360 Drive Academy for inquiries, feedback, or to book driving lessons." />
+        <meta
+          name="twitter:description"
+          content="Get in touch with 360 Drive Academy for inquiries, feedback, or to book driving lessons."
+        />
         <meta name="twitter:image" content={contact} />
         <meta name="twitter:card" content="summary_large_image" />
         <link rel="canonical" href={window.location.href} />
@@ -104,7 +131,10 @@ export default function ContactUs() {
           </a>
 
           {/* Email */}
-          <a href="mailto:info@360drivingschool.co.uk" aria-label="Email 360 Drive Academy ">
+          <a
+            href="mailto:info@360drivingschool.co.uk"
+            aria-label="Email 360 Drive Academy "
+          >
             <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all ease-in-out duration-500">
               <FaEnvelope className="text-4xl text-red-600 mb-6" />
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
@@ -114,7 +144,7 @@ export default function ContactUs() {
                 Send us an email at{" "}
                 <strong>
                   <a href="mailto:info@360drivingschool.co.uk">
-                    info@360drivingschool.co.uk
+                    info@360driveacademy.co.uk
                   </a>
                 </strong>
                 , and we will get back to you within 24 hours.
