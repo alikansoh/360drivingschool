@@ -17,7 +17,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "*", 
+    origin: "https://360driveacademy.co.uk", 
     credentials: true, 
   })
 );
