@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import Booking from "./Routes/Booking.js";
 import Package from "./Routes/Package.js";
 import Course from "./Routes/Course.js";
+import User from "./Routes/User.js";
 const PORT = process.env.PORT || 4000;
 const app = express();
 dotenv.config(); // Load environment variables
@@ -25,6 +26,7 @@ app.use(
 app.use("/booking", Booking); 
 app.use("/package", Package);
 app.use("/course", Course);
+app.use("/user", User);
 app.use('/uploads', express.static('uploads'));
 
 
