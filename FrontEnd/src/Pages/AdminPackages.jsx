@@ -26,7 +26,9 @@ const PackagesPage = () => {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/package");
+        const response = await axios.get(
+          "https://three60drivingschool.onrender.com/package"
+        );
         setPackages(response.data);
       } catch (error) {
         console.error("Error fetching packages:", error);
@@ -39,7 +41,7 @@ const PackagesPage = () => {
   const handleAddPackage = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:4000/package",
+        "https://three60drivingschool.onrender.com/package",
         newPackage
       );
       setPackages([...packages, response.data]);
@@ -56,7 +58,7 @@ const PackagesPage = () => {
   const handleEditPackage = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:4000/package/${selectedPackage._id}`,
+        `https://three60drivingschool.onrender.com/package/${selectedPackage._id}`,
         editPackage
       );
       const updatedPackages = packages.map((pkg) =>
@@ -76,7 +78,7 @@ const PackagesPage = () => {
   const handleDeletePackage = async () => {
     try {
       await axios.delete(
-        `http://localhost:4000/package/${selectedPackage._id}`
+        `https://three60drivingschool.onrender.com/package/${selectedPackage._id}`
       );
 
       setPackages(packages.filter((pkg) => pkg._id !== selectedPackage._id));
@@ -112,7 +114,7 @@ const PackagesPage = () => {
             <h3 className="text-xl font-semibold text-gray-700">{pkg.name}</h3>
             <p className="text-sm text-gray-500">{pkg.description}</p>
             <p className="text-lg font-semibold text-gray-900 mt-2">
-            £{pkg.price}
+              £{pkg.price}
             </p>
             <div className="mt-4 flex justify-between">
               <button

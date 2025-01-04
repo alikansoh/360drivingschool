@@ -18,7 +18,9 @@ const BookingPage = () => {
 
   const fetchPackages = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/package");
+      const response = await axios.get(
+        "https://three60drivingschool.onrender.com/package"
+      );
       setPackages(response.data);
     } catch (error) {
       console.error("Error fetching packages:", error);
@@ -27,7 +29,9 @@ const BookingPage = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/course");
+      const response = await axios.get(
+        "https://three60drivingschool.onrender.com/course"
+      );
       setCourses(response.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
@@ -229,7 +233,7 @@ const BookingPage = () => {
 
                 {/* Course Image */}
                 <img
-                  src={`http://localhost:4000/${course.image}`}
+                  src={`https://three60drivingschool.onrender.com/${course.image}`}
                   alt={course.alt}
                   className="w-full h-48 object-cover rounded-t-xl"
                 />

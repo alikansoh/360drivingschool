@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const API_BASE_URL = "http://localhost:4000/course";
+const API_BASE_URL = "https://three60drivingschool.onrender.com/course";
 
 const CoursesPage = () => {
   const [courses, setCourses] = useState([]);
@@ -171,7 +171,7 @@ const CoursesPage = () => {
             <img
               src={
                 course.image
-                  ? `http://localhost:4000/${course.image}`
+                  ? `https://three60drivingschool.onrender.com/${course.image}`
                   : "https://via.placeholder.com/300?text=No+Image"
               }
               alt={course.name}

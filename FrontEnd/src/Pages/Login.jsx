@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 export default function Example() {
   const navigate = useNavigate(); // corrected to 'navigate'
-  
+
   // State for email and password
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,7 +15,7 @@ export default function Example() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `http://localhost:4000/user/login`,
+        `https://three60drivingschool.onrender.com/user/login`,
         {
           email,
           password,
@@ -23,7 +23,7 @@ export default function Example() {
         { withCredentials: true }
       );
       // Assuming the response contains the user object and token
-      const userData = response.data; 
+      const userData = response.data;
       localStorage.setItem("user", JSON.stringify(userData)); // Store user data in localStorage
       toast.success("Login successful!");
       navigate("/admin/booking"); // Redirect to protected page
@@ -32,7 +32,7 @@ export default function Example() {
       console.log(error.response?.data?.message || error.message);
     }
   };
-  
+
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">

@@ -26,7 +26,9 @@ const BookingPage = () => {
   };
   const deleteBooking = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/booking/${id}`);
+      await axios.delete(
+        `https://three60drivingschool.onrender.com/booking/${id}`
+      );
       setShowDeleteConfirm(false);
       // setBookings(bookings.filter((booking) => booking.id !== id));
       toast.success("Booking deleted successfully!", {
@@ -51,7 +53,7 @@ const BookingPage = () => {
   // Fetch bookings on component mount
   useEffect(() => {
     axios
-      .get("http://localhost:4000/booking")
+      .get("https://three60drivingschool.onrender.com/booking")
       .then((response) => {
         setBookings(response.data);
       })

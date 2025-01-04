@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-const API_BASE_URL = "http://localhost:4000/user";
+const API_BASE_URL = "https://three60drivingschool.onrender.com/user";
 
 const AdminUsersPage = () => {
   const [users, setUsers] = useState([]);
@@ -46,7 +46,9 @@ const AdminUsersPage = () => {
 
   const addNewUser = async () => {
     if (newUser.name && newUser.email && newUser.password) {
-      const confirmAdd = window.confirm("Are you sure you want to add this user?");
+      const confirmAdd = window.confirm(
+        "Are you sure you want to add this user?"
+      );
       if (!confirmAdd) return;
 
       try {
@@ -94,7 +96,9 @@ const AdminUsersPage = () => {
   };
 
   const deleteUser = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this user?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
     if (!confirmDelete) return;
 
     try {

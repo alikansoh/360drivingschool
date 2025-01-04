@@ -25,15 +25,17 @@ const FormModal = ({
     }
 
     try {
-      const response = await axios.post("http://localhost:4000/booking", {
-        transmissionType: selectedItem?.transmission || "N/A",
-        name: name,
-        telephone: telephone,
-        postCode: postCode,
-        timetocontact: preferredTime,
-        packagename: selectedItem?.name ,
-        
-      });
+      const response = await axios.post(
+        "https://three60drivingschool.onrender.com/booking",
+        {
+          transmissionType: selectedItem?.transmission || "N/A",
+          name: name,
+          telephone: telephone,
+          postCode: postCode,
+          timetocontact: preferredTime,
+          packagename: selectedItem?.name,
+        }
+      );
 
       toast.success("Booking successful!");
       setName("");
@@ -111,8 +113,6 @@ const FormModal = ({
           </div>
 
           {/* Course-Specific Additional Info */}
-          
-          
 
           {/* Selected Item Display */}
           <div className="mb-4">
