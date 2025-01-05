@@ -62,7 +62,7 @@ const PackagesPage = () => {
         editPackage
       );
       const updatedPackages = packages.map((pkg) =>
-        pkg.id === selectedPackage.id ? response.data : pkg
+        pkg._id === selectedPackage._id ? response.data : pkg
       );
       setPackages(updatedPackages);
       setShowEditModal(false);
@@ -108,7 +108,7 @@ const PackagesPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {packages.map((pkg) => (
           <div
-            key={pkg.id}
+            key={pkg._id}
             className="w-full bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
           >
             <h3 className="text-xl font-semibold text-gray-700">{pkg.name}</h3>
