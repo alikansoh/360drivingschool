@@ -6,4 +6,4 @@ Allow: /home/
 Allow: /courses/
 Allow: /
 Allow: /useful-links/
-Sitemap: https://360drivingschool.co.uk/sitemap.xml
+Sitemap: https://360driveacademy.co.uk/sitemap.xml
