@@ -31,6 +31,7 @@ import Book from "./Pages/AdminBooking.jsx";
 import Courses from "./Pages/AdminCourses.jsx";
 import Package from "./Pages/AdminPackages.jsx";
 import AdminPage from "./Pages/AdminPage.jsx";
+import { SpeedInsights } from "@vercel/speed-insights/react"
 import { ToastContainer } from 'react-toastify';
 import PrivateRoute from "./Components/PrivateRoute.jsx"; // Import your PrivateRoute component
 
@@ -194,6 +195,7 @@ function MainContent() {
         {!isLoginPage && !isAdminPage && <Footer />}
       </div>
       <ToastContainer />
+      <SpeedInsights />
     </div>
   );
 }
