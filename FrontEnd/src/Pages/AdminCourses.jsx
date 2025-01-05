@@ -253,12 +253,12 @@ const CoursesPage = () => {
                 <input
                   type="number"
                   className="w-full pl-8 p-2 border border-gray-300 rounded-lg"
-                  placeholder="Course Price"
+                  placeholder="Course Offer"
                   value={newCourse.offer}
                   onChange={(e) =>
                     setNewCourse({ ...newCourse, offer: e.target.value })
                   }
-                  required
+                  
                 />
               </div>
 
