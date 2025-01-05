@@ -188,7 +188,9 @@ function MainContent() {
           <Route
             path="/admin/users"
             element={
+              <PrivateRoute>
                 <AdminPage />
+              </PrivateRoute>
             }
           />
         </Routes>

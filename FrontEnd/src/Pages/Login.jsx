@@ -24,7 +24,7 @@ export default function Example() {
       );
       // Assuming the response contains the user object and token
       const userData = response.data;
-      localStorage.setItem("user", JSON.stringify(userData)); // Store user data in localStorage
+      localStorage.setItem("user", JSON.stringify(userData));
       toast.success("Login successful!");
       navigate("/admin/booking"); // Redirect to protected page
     } catch (error) {
