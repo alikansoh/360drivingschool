@@ -254,7 +254,7 @@ const CoursesPage = () => {
                   type="number"
                   className="w-full pl-8 p-2 border border-gray-300 rounded-lg"
                   placeholder="Course Price"
-                  value={newCourse.price}
+                  value={newCourse.offer}
                   onChange={(e) =>
                     setNewCourse({ ...newCourse, offer: e.target.value })
                   }
