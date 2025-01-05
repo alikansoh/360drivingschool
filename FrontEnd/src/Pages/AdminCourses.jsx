@@ -352,6 +352,7 @@ const CoursesPage = () => {
                     setEditCourse({ ...editCourse, offer: e.target.value })
                   }
                   required
+                  
                 />
               </div>
 
@@ -359,7 +360,7 @@ const CoursesPage = () => {
                 Course Description
               </label>
               <textarea
-                className="w-full p-2 border border-gray-300 rounded-lg"
+                className="w-full p-2 border border-gray-300 rounded-lg h-20"
                 placeholder="Course Description"
                 value={editCourse.description}
                 onChange={(e) =>
