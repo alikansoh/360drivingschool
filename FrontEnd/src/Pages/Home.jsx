@@ -20,7 +20,7 @@ const Home = () => {
         />
         <meta name="robots" content="index, follow" />
         <meta name="keywords" content="driving lessons, driving school, driving test, learn to drive, driving instructor, book driving lessons" />
-        <link rel="canonical" href="https://www.360drivingschool.com/" />
+        <link rel="canonical" href="https://www.360driveacademy.com/" />
       </Helmet>
 
       <Header />
