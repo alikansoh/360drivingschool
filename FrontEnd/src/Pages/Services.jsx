@@ -39,7 +39,6 @@ const BookingPage = () => {
         "https://three60drivingschool.onrender.com/course"
       );
   
-      // Sort the data by date in descending order (newest first)
       const sortedCourses = response.data.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );

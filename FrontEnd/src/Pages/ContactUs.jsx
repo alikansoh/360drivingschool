@@ -46,13 +46,16 @@ export default function ContactUs() {
         from_name: name, // The user's name
         email_sender: email, // The user's email (used in From Email and Reply-To)
         message: message, // The message from the form
+        to_name: "360 Drive Academy", // The recipient's name
+        reply_to: email, // The user's email (used in Reply-To)
+
       };
 
       const response = await emailjs.send(
-        "service_bvrbsab", // Your EmailJS service ID
-        "template_x0wncxr", // Your EmailJS template ID
+        "service_koye8l9", // Your EmailJS service ID
+        "template_nvi7azv", // Your EmailJS template ID
         templateParams, // Data for the template
-        "A4JrpQy20GzSe3cjz" // Your EmailJS user ID
+        "gaRLXY6TuKISguOB0" // Your EmailJS user ID
       );
 
       console.log("Message sent", response);
@@ -176,9 +179,7 @@ export default function ContactUs() {
             </h3>
             <p className="text-base text-gray-700 text-center">
               <strong>
-                <a href="https://www.tiktok.com/@360drive">
-                  360DriveAcademy{" "}
-                </a>
+                <a href="https://www.tiktok.com/@360drive">360DriveAcademy </a>
               </strong>
               Follow us on TikTok to receive updates on our latest driving
               lessons, inquiries, and more.

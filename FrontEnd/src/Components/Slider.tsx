@@ -7,9 +7,15 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
-import video1 from '../assets/1.png';
-import video2 from '../assets/2.png';
-import video3 from '../assets/3.png';
+import video1 from '../assets/video1.jpeg';
+import video2 from '../assets/video2.jpeg';
+import video3 from '../assets/video3.jpeg';
+import video4 from '../assets/video4.jpeg';
+import video5 from '../assets/video5.jpeg';
+import video6 from '../assets/video6.jpeg';
+import video7 from '../assets/video7.jpeg';
+import video8 from '../assets/video8.jpeg';
+
 
 const content = [
   {
@@ -29,7 +35,39 @@ const content = [
     date: '26 December 2011',
     header: 'Title03',
     info: 'I couldn’t be happier with my decision to join 360 Drive Academy. My instructor was always on time, super friendly, and gave clear, easy-to-follow instructions. They made parallel parking (my biggest fear) feel so simple! Now I feel safe and confident on the road. Thank you so much!'
-  }];
+  },
+  {
+    img: video4,
+    date: '26 December 2012',
+    header: 'Title04',
+    info: 'I am very grateful for your help and support. I was super worried on the road and very nervous.  I love your way of your teaching and show me reference points has helped me with my driving. I have passed first time at Mill Hill test centre. Thank you for all of your help.'
+  },
+  {
+    img: video5,
+    date: '26 December 2013',
+    header: 'Title05',
+    info: 'I successfully passed my driving test on the first try at Pinner in under 10 hours of lessons. I had a negative experience with another driving school before, so I was thrilled when I found 360 School. The instructor was really friendly, and my father felt confident in moving forward because of the knowledge and skills I gained. Thank you!',
+  },
+  {
+    img: video6,
+    date: '26 December 2014',
+    header: 'Title06',
+    info: 'Great school with amazing instructors! They tailored my lessons to fit my schedule, which was really helpful. I especially appreciated how they focused on real-world scenarios to prepare me for my driving test. Only reason I gave 4.5 stars is I wish I’d started lessons with them sooner. Don’t wait like I did!',
+  },
+  {
+    img: video7,
+    date: '26 December 2015',
+    header: 'Title07',
+    info: 'Thank you. I highly recommend 360 driving school.passed with confidence'
+  },
+  {
+    img: video8,
+    date: '26 December 2016',
+    header: 'Title08',
+    info: 'I have passed at Pinner. I was super worried at all the time. thank you so much for showing me the diagrams which has helped a lot. I really enjoyed  the mock test was very helpful and encourage others to go with you guys.',
+  }
+
+];
 
 export default function Fade() {
   return (
@@ -61,7 +99,7 @@ export default function Fade() {
               <div>
                 {item.img ? (
                   <img
-                    className="h-[23rem] mobile:h-[28rem] w-[23rem] rounded-lg"
+                    className="h-[24rem] mobile:h-[28rem] w-[24rem] rounded-lg"
                     src={item.img}
                     alt={` ${item.header}`}
                   />
