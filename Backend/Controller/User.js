@@ -52,21 +52,35 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
+        const { email, password } = req.body;
 
+        // Validate the user ID
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ error: "Invalid user ID" });
         }
 
+        // Check if password is being updated, if so, hash it
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+            req.body.password = hashedPassword; // Update the body with the hashed password
+        }
+
+        // Attempt to update the user with the provided data
         const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
+
+        // If no user is found with the given ID
         if (!updatedUser) {
             return res.status(404).json({ error: "User not found" });
         }
+
+        // Return the updated user data
         res.status(200).json(updatedUser);
     } catch (error) {
         console.error("Error updating user:", error);
         res.status(500).json({ error: "Failed to update user" });
     }
 };
+
 
 export const deleteUser = async (req, res) => {
     try {
