@@ -21,22 +21,35 @@ const BookingPage = () => {
       const response = await axios.get(
         "https://three60drivingschool.onrender.com/package"
       );
-      setPackages(response.data);
+  
+      // Sort the data by date in descending order (newest first)
+      const sortedPackages = response.data.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+  
+      setPackages(sortedPackages);
     } catch (error) {
       console.error("Error fetching packages:", error);
     }
   };
-
+  
   const fetchCourses = async () => {
     try {
       const response = await axios.get(
         "https://three60drivingschool.onrender.com/course"
       );
-      setCourses(response.data);
+  
+      // Sort the data by date in descending order (newest first)
+      const sortedCourses = response.data.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+  
+      setCourses(sortedCourses);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
   };
+  
 
   useEffect(() => {
     setSelectedTransmission("Manual");
