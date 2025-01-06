@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import contact from "../assets/contact.jpg";
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import {
+  FaPhoneAlt,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaTiktok,
+} from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
 import emailjs from "emailjs-com"; // Import EmailJS
 
@@ -132,7 +137,7 @@ export default function ContactUs() {
 
           {/* Email */}
           <a
-            href="mailto:info@360drivingschool.co.uk"
+            href="mailto:info@360driveacademy.co.uk"
             aria-label="Email 360 Drive Academy "
           >
             <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all ease-in-out duration-500">
@@ -143,7 +148,7 @@ export default function ContactUs() {
               <p className="text-base text-gray-700 text-center">
                 Send us an email at{" "}
                 <strong>
-                  <a href="mailto:info@360drivingschool.co.uk">
+                  <a href="mailto:info@360driveacademy.co.uk">
                     info@360driveacademy.co.uk
                   </a>
                 </strong>
@@ -163,6 +168,23 @@ export default function ContactUs() {
             </p>
           </div>
         </div>
+        <a href="https://www.tiktok.com/@360drive">
+          <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all ease-in-out duration-500 my-10  w-full">
+            <FaTiktok className="text-4xl text-red-600 mb-6" />
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              Follow Us on Tiktok
+            </h3>
+            <p className="text-base text-gray-700 text-center">
+              <strong>
+                <a href="https://www.tiktok.com/@360drive">
+                  360DriveAcademy{" "}
+                </a>
+              </strong>
+              Follow us on TikTok to receive updates on our latest driving
+              lessons, inquiries, and more.
+            </p>
+          </div>
+        </a>
 
         {/* Contact Form Section */}
         <div className="bg-white p-10 rounded-xl shadow-xl mb-16 transition-all ease-in-out duration-500 transform hover:scale-105">

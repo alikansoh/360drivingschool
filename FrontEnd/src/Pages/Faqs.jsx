@@ -77,7 +77,7 @@ export default function FAQsPage() {
         />
         <meta name="robots" content="index, follow" />
         <meta name="keywords" content="360 Drive Academy, driving lessons, driving courses, FAQ, driving test preparation" />
-        <link rel="canonical" href="https://www.360drivingschool.com/faqs" />
+        <link rel="canonical" href="https://www.360driveacademy.com/faqs" />
       </Helmet>
 
       <h1 className="text-4xl font-bold text-center mb-10">
