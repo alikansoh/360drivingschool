@@ -211,9 +211,6 @@ function PageMeta({ title, description }) {
       <meta property="og:description" content={description} />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={window.location.href} />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:card" content="summary_large_image" />
       <link rel="canonical" href={window.location.href} />
     </Helmet>
   );
