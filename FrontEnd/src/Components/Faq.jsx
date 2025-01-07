@@ -29,7 +29,7 @@ const Faq = () => {
     {
       question: "What happens if I cancel a lesson?",
       answer:
-        "We understand that plans change. You can cancel or reschedule a lesson with at least 24 hours' notice without any penalty.",
+        "We understand that plans change. You can cancel or reschedule a lesson with at least 48 hours' notice without any penalty.",
     },
   ];
 
