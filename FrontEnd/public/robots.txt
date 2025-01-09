@@ -5,5 +5,6 @@ Allow: /contact-us/
 Allow: /home/
 Allow: /courses/
 Allow: /
+
 Allow: /useful-links/
 Sitemap: https://360driveacademy.co.uk/sitemap.xml
