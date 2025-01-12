@@ -87,7 +87,7 @@ const BookingPage = () => {
           content="driving lessons, manual transmission, automatic transmission, driving packages, driving school, book lessons"
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://yourwebsite.com/booking" />
+        <link rel="canonical" href="https://www.360driveacademy.com/booking" />
       </Helmet>
 
       {/* Header Section */}
