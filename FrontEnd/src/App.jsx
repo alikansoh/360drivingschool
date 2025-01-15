@@ -33,8 +33,8 @@ import Package from "./Pages/AdminPackages.jsx";
 import AdminPage from "./Pages/AdminPage.jsx";
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import { ToastContainer } from 'react-toastify';
-import PrivateRoute from "./Components/PrivateRoute.jsx"; // Import your PrivateRoute component
-
+import PrivateRoute from "./Components/PrivateRoute.jsx"; 
+import { Analytics } from "@vercel/analytics/react"
 function App() {
   return (
     <section className="font-Poppins">
@@ -198,6 +198,7 @@ function MainContent() {
       </div>
       <ToastContainer />
       <SpeedInsights />
+      <Analytics />
     </div>
   );
 }
