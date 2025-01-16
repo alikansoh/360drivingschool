@@ -1,6 +1,4 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import Navbar from "./Components/Navbar.jsx";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
@@ -8,13 +6,6 @@ import HomePage from "./Pages/Home.jsx";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "swiper/css/scrollbar";
-import "swiper/css/thumbs";
-import "swiper/css/effect-coverflow";
-import "swiper/css/mousewheel";
-import "swiper/css/autoplay";
-import "swiper/css/effect-fade";
-import "swiper/css/grid";
 import Footer from "./Components/footer.jsx";
 import Services from "./Pages/Services.jsx";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -31,10 +22,11 @@ import Book from "./Pages/AdminBooking.jsx";
 import Courses from "./Pages/AdminCourses.jsx";
 import Package from "./Pages/AdminPackages.jsx";
 import AdminPage from "./Pages/AdminPage.jsx";
-import { SpeedInsights } from "@vercel/speed-insights/react"
-import { ToastContainer } from 'react-toastify';
-import PrivateRoute from "./Components/PrivateRoute.jsx"; 
-import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import { ToastContainer } from "react-toastify";
+import PrivateRoute from "./Components/PrivateRoute.jsx";
+import { Analytics } from "@vercel/analytics/react";
+
 function App() {
   return (
     <section className="font-Poppins">
@@ -61,18 +53,7 @@ function MainContent() {
       {isAdminPage && <SideBar />}
 
       <div className="flex-1">
-        {/* Helmet for SEO */}
-        <Helmet>
-          <meta charSet="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <meta name="robots" content="index, follow" />
-          <meta
-            name="keywords"
-            content="driving school, learn to drive, driving test, driving lessons, driving instructors"
-          />
-        </Helmet>
-
-        {/* Dynamic Title and Meta Tags for Each Page */}
+        {/* Routes with dynamic meta tags */}
         <Routes>
           <Route
             path="/"
@@ -204,6 +185,8 @@ function MainContent() {
 }
 
 function PageMeta({ title, description }) {
+  const canonicalUrl = `${window.location.origin}${window.location.pathname}`;
+
   return (
     <Helmet>
       <title>{title}</title>
@@ -211,8 +194,12 @@ function PageMeta({ title, description }) {
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:type" content="website" />
-      <meta property="og:url" content={window.location.href} />
-      <link rel="canonical" href={window.location.href} />
+      <meta property="og:url" content={canonicalUrl} />
+      <link rel="canonical" href={canonicalUrl} />
+
+      {/* Example Alternate Tags */}
+      <link rel="alternate" hreflang="en" href={`${window.location.origin}${window.location.pathname}`} />
+      <link rel="alternate" hreflang="fr" href={`${window.location.origin}/fr${window.location.pathname}`} />
     </Helmet>
   );
 }
