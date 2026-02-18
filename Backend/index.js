@@ -21,6 +21,7 @@ app.use(express.json());
 const allowedOrigins = [
   "https://www.360driveacademy.co.uk",
   "https://360driveacademy.co.uk", // Without "www" for compatibility
+  "http://localhost:5173"
 ];
 
 app.use(
