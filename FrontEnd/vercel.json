@@ -1,13 +1,16 @@
 {
-    "rewrites": [
-      {
-        "source": "/(.*)",
-        "destination": "/index.html"
-      },
-      {
-         "source": "/sitemap.xml",
+  "rewrites": [
+    {
+      "source": "/sitemap.xml",
       "destination": "https://three60drivingschool.onrender.com/sitemap.xml"
-      }
-    ]
-  }
-  
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "https://three60drivingschool.onrender.com/robots.txt"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
