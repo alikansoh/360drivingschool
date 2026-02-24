@@ -12,8 +12,9 @@
  *   node generate-sitemap.js
  */
 
-import fs   from "fs";
-import path from "path";
+import fs      from "fs";
+import path    from "path";
+import process from "process";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -70,29 +71,41 @@ function urlBlock({ loc, lastmod, changefreq, priority, hreflang = false }) {
   </url>`;
 }
 
-/* ── Fetch published blog posts from your API ────────────────── */
+/* ── Fetch ALL published blog posts (handles pagination) ─────── */
+// API response shape: { page, limit, total, pages, blogs: [...] }
 async function fetchPublishedPosts() {
   try {
-    // Your API returns posts — adjust endpoint if needed
-    const res = await fetch(`${API_BASE}/blogs?published=true`);
+    const allPosts = [];
+    let page = 1;
+    let totalPages = 1;
 
-    if (!res.ok) {
-      console.warn(`⚠️  API responded ${res.status} — skipping blog posts.`);
-      return [];
-    }
+    do {
+      const res = await fetch(
+        `${API_BASE}/blog?published=true&limit=100&page=${page}`
+      );
 
-    const data = await res.json();
+      if (!res.ok) {
+        console.warn(`⚠️  API responded ${res.status} on page ${page} — stopping.`);
+        break;
+      }
 
-    // Handle { blogs: [...] }, { posts: [...] }, { data: [...] }, or plain array
-    const posts = Array.isArray(data)
-      ? data
-      : (data.blogs ?? data.posts ?? data.data ?? []);
+      const data = await res.json();
 
-    // Filter client-side too — only published: true (matches schema default: false)
-    const published = posts.filter((p) => p.published === true);
+      // Response shape: { page, limit, total, pages, blogs: [...] }
+      const posts = data.blogs ?? [];
+      totalPages  = data.pages ?? 1;
 
-    console.log(`✅  ${published.length} published post(s) fetched.`);
-    return published;
+      // Extra safety — only include published: true
+      const published = posts.filter((p) => p.published === true);
+      allPosts.push(...published);
+
+      console.log(`   Page ${page}/${totalPages} — ${published.length} post(s)`);
+      page++;
+
+    } while (page <= totalPages);
+
+    console.log(`✅  ${allPosts.length} published post(s) fetched in total.`);
+    return allPosts;
 
   } catch (err) {
     console.warn("⚠️  Could not reach API:", err.message);
