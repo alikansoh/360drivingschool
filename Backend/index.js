@@ -3,6 +3,8 @@ import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import sitemapRouter from "./Routes/sitemap.js";  // line 1
+
 
 import Booking from "./Routes/Booking.js";
 import Package from "./Routes/Package.js";
@@ -52,6 +54,8 @@ app.use("/course", Course);
 app.use("/user", User);
 app.use("/blog", BlogRoutes);
 app.use(reviewsRouter); // exposes GET /api/reviews
+app.use("/", sitemapRouter);                        // line 2
+
 
 // Default health-check
 app.get("/", (_req, res) => res.json({ ok: true, time: new Date() }));
