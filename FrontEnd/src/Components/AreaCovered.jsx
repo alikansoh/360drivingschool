@@ -1,0 +1,1291 @@
+import React, { useEffect, useRef, useState, memo } from "react";
+import { createPortal } from "react-dom";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useForm } from "react-hook-form";
+import {
+  FaCheckCircle,
+  FaMapMarkerAlt,
+  FaArrowRight,
+  FaPhoneAlt,
+  FaCar,
+  FaStar,
+  FaShieldAlt,
+  FaGraduationCap,
+  FaClock,
+  FaMedal,
+  FaUserCheck,
+  FaRoute,
+  FaThumbsUp,
+  FaCalendarAlt,
+  FaAward,
+} from "react-icons/fa";
+import Reviews from "../Components/ReviewsG"
+/* ─────────────────────────────────────────────────────────────
+   Helpers & data
+───────────────────────────────────────────────────────────── */
+
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 32 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-40px" },
+  transition: { duration: 0.65, delay, ease: [0.16, 1, 0.3, 1] },
+});
+
+const WHY_ITEMS = [
+  { icon: FaShieldAlt,   title: "DVSA-Approved Instructors",  body: "Every instructor holds a full ADI qualification and is regularly assessed — so you always learn from the best." },
+  { icon: FaMedal,       title: "90% First-Time Pass Rate",   body: "Our structured lesson plans and mock tests consistently beat the national average by a significant margin." },
+  { icon: FaUserCheck,   title: "DBS-Checked & Insured",      body: "Full enhanced DBS checks and comprehensive insurance on every vehicle for your complete peace of mind." },
+  { icon: FaRoute,       title: "Local Road Knowledge",       body: "Instructors who live and teach locally know every test-route junction, roundabout, and hazard intimately." },
+  { icon: FaCalendarAlt, title: "Flexible 7-Day Booking",     body: "Morning, afternoon, or evening — we fit around your schedule. Online booking available 24/7." },
+  { icon: FaAward,       title: "1,000+ Students Passed",     body: "A proven track record across West London with hundreds of verified 5-star reviews from real students." },
+];
+
+/* ─── Animated counter ─── */
+function useCountUp(target, duration = 1600, start = false) {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    if (!start) return;
+    let startTime = null;
+    const step = (ts) => {
+      if (!startTime) startTime = ts;
+      const progress = Math.min((ts - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setValue(Math.floor(eased * target));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [target, duration, start]);
+  return value;
+}
+
+function StatCounter({ num, suffix, label, delay = 0 }) {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef(null);
+  const count = useCountUp(num, 1400, visible);
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold: 0.3 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+  return (
+    <motion.div ref={ref} className="ap-stat"
+      initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay }}>
+      <span className="ap-stat-num">{count}<span className="ap-stat-suffix">{suffix}</span></span>
+      <span className="ap-stat-label">{label}</span>
+    </motion.div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
+   BookingFormFields - memoized to avoid unnecessary re-renders
+   Accepts only the props it needs so parent updates (toast, etc.)
+   don't force rerendering the entire form on unrelated changes.
+───────────────────────────────────────────────────────────── */
+const BookingFormFields = memo(function BookingFormFields({
+  idPrefix = "m_",
+  register,
+  errors,
+  contactMethod,
+  bookingMode,
+  toggleContactMethod,
+  toggleBookingMode,
+  areaName,
+  postcode,
+  inputBase,
+}) {
+  const gearboxLabel =
+    bookingMode && typeof bookingMode === "string"
+      ? bookingMode.charAt(0).toUpperCase() + bookingMode.slice(1)
+      : "Manual";
+
+  return (
+    <>
+      <div>
+        <label htmlFor={`${idPrefix}fullName`} className="block text-xs font-medium text-gray-700 mb-1">
+          Full name
+        </label>
+        <input id={`${idPrefix}fullName`} {...register("fullName", { required: true })} className={inputBase} placeholder="Jane Doe" autoComplete="name" />
+        {errors.fullName && <p className="text-red-600 text-xs mt-1">Required</p>}
+      </div>
+
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1">Contact by</label>
+        <div className="inline-flex rounded-lg bg-gray-100 p-1 w-full" role="tablist" aria-label="Contact method">
+          {["email", "phone"].map((m) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => toggleContactMethod(m)}
+              aria-pressed={contactMethod === m}
+              className={`flex-1 px-3 py-1.5 rounded-md text-sm transition ${
+                contactMethod === m ? "bg-white shadow-sm font-semibold text-gray-900" : "text-gray-500"
+              }`}
+            >
+              {m === "email" ? "Email" : "Telephone"}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1">Gearbox</label>
+        <div className="inline-flex rounded-lg bg-gray-100 p-1 w-full" role="tablist" aria-label="Booking mode">
+          {["manual", "automatic"].map((m) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => toggleBookingMode(m)}
+              aria-pressed={bookingMode === m}
+              className={`flex-1 px-3 py-1.5 rounded-md text-sm capitalize transition ${
+                bookingMode === m ? "bg-white shadow-sm font-semibold text-gray-900" : "text-gray-500"
+              }`}
+            >
+              {m.charAt(0).toUpperCase() + m.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {contactMethod === "email" ? (
+        <div>
+          <label htmlFor={`${idPrefix}email`} className="block text-xs font-medium text-gray-700 mb-1">Email address</label>
+          <input id={`${idPrefix}email`} type="email" {...register("email")} className={inputBase} placeholder="you@example.com" autoComplete="email" />
+          {errors.email && <p className="text-red-600 text-xs mt-1">{errors.email.message}</p>}
+        </div>
+      ) : (
+        <div>
+          <label htmlFor={`${idPrefix}phone`} className="block text-xs font-medium text-gray-700 mb-1">Phone number</label>
+          <input id={`${idPrefix}phone`} type="tel" {...register("phone")} className={inputBase} placeholder="+44 7..." autoComplete="tel" />
+          {errors.phone && <p className="text-red-600 text-xs mt-1">{errors.phone.message}</p>}
+        </div>
+      )}
+
+      <div>
+        <label htmlFor={`${idPrefix}location`} className="block text-xs font-medium text-gray-700 mb-1">Location / postcode</label>
+        <input id={`${idPrefix}location`} {...register("location", { required: true })} className={inputBase} placeholder="e.g. West London / SW6" autoComplete="postal-code" />
+        {errors.location && <p className="text-red-600 text-xs mt-1">Required</p>}
+      </div>
+
+      {/* Inline selected area + gearbox display (reflects current bookingMode) */}
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1">Selected area</label>
+        <div className="text-sm text-gray-700 bg-gray-50 border border-gray-100 rounded-md px-3 py-2">
+          <div className="font-medium">{areaName}</div>
+          {postcode && <div className="text-xs text-gray-500">{postcode}</div>}
+          <div className="text-xs text-gray-500 mt-1">Gearbox: <strong className="text-gray-700">{gearboxLabel}</strong></div>
+        </div>
+      </div>
+
+      <input {...register("honeypot")} className="hidden" aria-hidden="true" tabIndex={-1} />
+    </>
+  );
+});
+
+/* ─────────────────────────────────────────────────────────────
+   AreaPage component (main)
+───────────────────────────────────────────────────────────── */
+const AreaPage = ({
+  areaName       = "Your Area",
+  areaSlug       = "your-area",
+  postcode       = "",
+  metaDescription= "",
+  seoDescription = "",
+  introText      = "",
+  bodyText       = "",
+  services       = [],
+  nearbyAreas    = [],
+  mapEmbedUrl    = "",
+  phone          = "0789471859",
+  ctaHref        = "/contact",
+  faqs           = [],
+}) => {
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const parallaxY   = useTransform(scrollYProgress, [0, 1], [0, 80]);
+  const smoothY     = useSpring(parallaxY, { stiffness: 50, damping: 18 });
+  const parallaxOpa = 1;
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [savedBooking, setSavedBooking] = useState(null);
+
+  const modalRef = useRef(null);
+  const lastFocusedRef = useRef(null);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors, isSubmitSuccessful },
+  } = useForm({
+    defaultValues: {
+      fullName: "",
+      email: "",
+      phone: "",
+      contactMethod: "phone",
+      bookingMode: "manual",
+      location: "",
+      honeypot: "",
+    },
+  });
+
+  const contactMethod = watch("contactMethod");
+  const bookingMode = watch("bookingMode");
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      const tid = setTimeout(() => setToast(null), 4500);
+      return () => clearTimeout(tid);
+    }
+  }, [isSubmitSuccessful]);
+
+  useEffect(() => {
+    document.body.style.overflow = modalOpen ? "hidden" : "";
+    return () => (document.body.style.overflow = "");
+  }, [modalOpen]);
+
+  useEffect(() => {
+    if (!modalOpen) return;
+    lastFocusedRef.current = document.activeElement;
+    const modal = modalRef.current;
+    if (!modal) return;
+    const focusable = modal.querySelectorAll(
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+    );
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    setTimeout(() => first?.focus?.(), 0);
+
+    function onKey(e) {
+      if (e.key === "Escape") setModalOpen(false);
+      if (e.key === "Tab") {
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      try {
+        lastFocusedRef.current?.focus?.();
+      } catch {}
+    };
+  }, [modalOpen]);
+
+  const focusVisibleField = (method) => {
+    const inlineId = method === "email" ? "email" : "phone";
+    const modalId = method === "email" ? "m_email" : "m_phone";
+    setTimeout(() => {
+      const el = document.getElementById(inlineId) || document.getElementById(modalId);
+      el?.focus?.();
+    }, 0);
+  };
+
+  const toggleContactMethod = (method) => {
+    // only clear the other field, do not call reset or anything that would refresh whole form
+    setValue("contactMethod", method, { shouldDirty: true, shouldTouch: true });
+    if (method === "email") {
+      setValue("phone", "", { shouldDirty: true });
+    } else {
+      setValue("email", "", { shouldDirty: true });
+    }
+    focusVisibleField(method);
+  };
+
+  const toggleBookingMode = (mode) => {
+    // set booking mode only (no reset)
+    setValue("bookingMode", mode, { shouldDirty: true, shouldTouch: true });
+  };
+
+  const bookingsUrl = "https://three60drivingschool.onrender.com/booking";
+
+  const onSubmit = async (data) => {
+    if (data.honeypot) {
+      setToast({ type: "error", message: "Bot suspected — submission blocked." });
+      return;
+    }
+    if (!data.fullName?.trim()) {
+      setToast({ type: "error", message: "Please enter your name." });
+      return;
+    }
+    if (!data.location?.trim()) {
+      setToast({ type: "error", message: "Please enter your location." });
+      return;
+    }
+    if (
+      data.contactMethod === "email" &&
+      !/^\S+@\S+\.\S+$/.test(data.email || "")
+    ) {
+      setToast({ type: "error", message: "Please enter a valid email address." });
+      return;
+    }
+    if (
+      data.contactMethod === "phone" &&
+      !/^[0-9+\-\s()]{6,20}$/.test(data.phone || "")
+    ) {
+      setToast({ type: "error", message: "Please enter a valid phone number." });
+      return;
+    }
+
+    setSubmitting(true);
+    setToast(null);
+    setShowSuccess(false);
+    setSavedBooking(null);
+
+    try {
+      const res = await fetch(bookingsUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.fullName,
+          contactMethod: data.contactMethod,
+          bookingMode: data.bookingMode,
+          email: data.email || null,
+          phone: data.phone || null,
+          location: data.location,
+          area: areaName,
+        }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new Error(text || "Submission failed");
+      }
+
+      const saved = await res.json();
+
+      // store saved booking and show detailed confirmation (modal stays open)
+      setSavedBooking(saved);
+      setShowSuccess(true);
+      setToast({
+        type: "success",
+        message: "Booking request received — see confirmation below.",
+      });
+
+      // clear only the input fields (do not re-render/refresh entire form)
+      reset({ fullName: "", email: "", phone: "", contactMethod: "phone", bookingMode: data.bookingMode, location: "" }, { keepValues: false });
+      // keep bookingMode in the form (so displayed gearbox remains as chosen)
+      setValue("bookingMode", data.bookingMode, { shouldDirty: false });
+
+    } catch (err) {
+      setToast({
+        type: "error",
+        message: err?.message || "Submission failed. Try again later.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  /* Modal portal */
+  const ModalPortal = ({ children }) =>
+    typeof document !== "undefined"
+      ? createPortal(
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+            <div
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={() => setModalOpen(false)}
+              aria-hidden="true"
+            />
+            <div className="relative w-full sm:max-w-md sm:mx-4">{children}</div>
+          </div>,
+          document.body
+        )
+      : null;
+
+  const inputBase =
+    "w-full px-3 py-2 rounded-lg border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 text-sm";
+
+  /* Meta + schema + seo text (kept minimal) */
+  useEffect(() => {
+    const pageTitle = `Driving Lessons in ${areaName}${postcode ? ` ${postcode}` : ""} | 360 Drive Academy`;
+    document.title = pageTitle;
+    const setMeta = (key, val, attr = "name") => {
+      let el = document.querySelector(`meta[${attr}="${key}"]`);
+      if (!el) { el = document.createElement("meta"); el.setAttribute(attr, key); document.head.appendChild(el); }
+      el.setAttribute("content", val);
+    };
+    const canonicalUrl = `https://360driveacademy.co.uk/areas/${areaSlug}`;
+    const ogImage = "https://360driveacademy.co.uk/og-image.jpg";
+    setMeta("description", metaDescription);
+    setMeta("robots", "index, follow");
+    setMeta("og:title",       pageTitle,       "property");
+    setMeta("og:description", metaDescription, "property");
+    setMeta("og:url",         canonicalUrl,     "property");
+    setMeta("og:image",       ogImage,          "property");
+    let canonical = document.querySelector("link[rel='canonical']");
+    if (!canonical) { canonical = document.createElement("link"); canonical.setAttribute("rel", "canonical"); document.head.appendChild(canonical); }
+    canonical.setAttribute("href", canonicalUrl);
+    return () => { document.title = "360 Drive Academy"; };
+  }, [areaName, areaSlug, postcode, metaDescription]);
+
+  const locationSeoDesc = seoDescription || (
+    `360 Drive Academy has been helping learners in ${areaName}${postcode ? ` (${postcode})` : ""} pass their driving test first time for years. ` +
+    `Our local DVSA-approved instructors know every road, roundabout, and test-route in and around ${areaName}, giving you a real advantage on test day. ` +
+    `Whether you're a complete beginner, returning after a break, or need an intensive course, we have a lesson package to suit you.`
+  );
+
+  /* ---------- Render ---------- */
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "DrivingSchool",
+        name: "360 Drive Academy",
+        description: metaDescription,
+        telephone: phone,
+        priceRange: "££",
+        openingHours: ["Mo-Su 07:00-21:00"],
+        areaServed: { "@type": "City", name: areaName },
+        url: `https://360driveacademy.co.uk/areas/${areaSlug}`,
+        image: "https://360driveacademy.co.uk/og-image.jpg",
+        address: { "@type": "PostalAddress", addressLocality: areaName, postalCode: postcode, addressCountry: "GB" },
+        aggregateRating: { "@type": "AggregateRating", ratingValue: "5", bestRating: "5", worstRating: "1", reviewCount: "320" },
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: (faqs.length ? faqs : [
+          { q: `How much do driving lessons cost in ${areaName}?`, a: `Our driving lessons in ${areaName} start from competitive rates. Get in touch for the latest pricing and any current offers — we often run discounts for block bookings.` },
+          { q: `Which driving test centres are near ${areaName}?`, a: `We prepare students for tests at all local DVSA-approved test centres near ${areaName}. Your instructor will be familiar with the test routes and common hazards.` },
+          { q: `Do you offer automatic driving lessons in ${areaName}?`, a: `Yes — we offer both manual and automatic driving lessons in ${areaName}${postcode ? ` (${postcode})` : ""}. Automatic lessons are ideal if you want to learn faster or find manual gear changes challenging.` },
+          { q: `How quickly can I start lessons in ${areaName}?`, a: `We typically have availability within a few days. Contact us or book online and we'll match you with a local instructor in ${areaName} as quickly as possible.` },
+        ]).map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } }))
+      }) }} />
+
+      <style>{`
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+          --red:       #d92b1e;
+          --red-deep:  #b52217;
+          --red-soft:  rgba(217,43,30,0.08);
+          --red-glow:  rgba(217,43,30,0.28);
+          --ink:       #1a1d23;
+          --ink2:      #22252d;
+          --ink3:      #2a2e38;
+          --slate:     #6b7280;
+          --slate-lt:  #9ca3af;
+          --line:      #e8eaed;
+          --line2:     #f0f2f5;
+          --surface:   #f8f9fb;
+          --white:     #ffffff;
+          --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif;
+          --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        html { scroll-behavior: smooth; }
+        .ap { font-family: var(--font); background: var(--white); color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+        /* ══════════════════════════════════
+           HERO
+        ══════════════════════════════════ */
+        .ap-hero {
+          position: relative;
+          min-height: 100svh;
+          background: var(--ink);
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+        }
+
+        /* Colour mesh — made slightly stronger / warmer for hero impact */
+        .ap-hero-bg {
+          position: absolute; inset: 0; z-index: 0; pointer-events: none;
+          background:
+            radial-gradient(ellipse 80% 70% at -5% 60%, rgba(217,43,30,0.11) 0%, transparent 55%),
+            radial-gradient(ellipse 55% 55% at 105% 15%, rgba(255,122,107,0.06) 0%, transparent 55%),
+            radial-gradient(ellipse 40% 35% at 50% 105%, rgba(217,43,30,0.045) 0%, transparent 60%);
+        }
+
+        /* Soft spotlight behind left content for more lift */
+        .ap-hero-left::before {
+          content: '';
+          position: absolute;
+          left: -10%;
+          top: 10%;
+          width: 60%;
+          height: 120%;
+          pointer-events: none;
+          z-index: 0;
+          background: radial-gradient(closest-side, rgba(255,255,255,0.03), transparent 45%);
+          transform: translateZ(0);
+        }
+
+        /* Horizontal accent line */
+        .ap-hero-rule {
+          position: absolute;
+          left: clamp(18px, 6vw, 80px);
+          right: 0;
+          top: 0;
+          height: 1px;
+          background: linear-gradient(90deg, var(--red) 0%, rgba(217,43,30,0.2) 18%, transparent 55%);
+          z-index: 3;
+        }
+
+        /* ── Hero grid ── */
+        .ap-hero-grid {
+          position: relative; z-index: 3;
+          display: grid;
+          grid-template-columns: 1fr;
+          flex: 1;
+        }
+        @media (min-width: 1000px) {
+          .ap-hero-grid { grid-template-columns: 52% 48%; }
+        }
+
+        /* ── Left panel ── */
+        .ap-hero-left {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: clamp(56px, 7vw, 110px) clamp(18px, 6vw, 84px) clamp(48px, 6vw, 88px);
+          position: relative;
+        }
+
+        /* Large ghost letter — add subtle float animation and slightly visible fill */
+        .ap-hero-ghost {
+          position: absolute;
+          bottom: -50px; left: -10px;
+          font-family: var(--font);
+          font-size: clamp(120px, 22vw, 260px);
+          font-weight: 800;
+          line-height: 1;
+          color: rgba(255,255,255,0.04);
+          pointer-events: none;
+          user-select: none;
+          letter-spacing: -0.04em;
+          z-index: 0;
+          white-space: nowrap;
+          mix-blend-mode: soft-light;
+          animation: floatGhost 6s ease-in-out infinite;
+        }
+        @keyframes floatGhost { 0% { transform: translateY(0); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0); } }
+
+        /* Eyebrow */
+        .ap-eyebrow {
+          display: inline-flex; align-items: center; gap: 12px;
+          margin-bottom: 24px;
+          position: relative; z-index: 1;
+          width: fit-content;
+        }
+        .ap-eyebrow-line { width: 32px; height: 1.5px; background: var(--red); border-radius: 1px; }
+        .ap-eyebrow-tag {
+          font-family: var(--font);
+          font-size: 0.64rem; font-weight: 600;
+          letter-spacing: 0.2em; text-transform: uppercase;
+          color: var(--red); line-height: 1;
+        }
+
+        /* H1 */
+        .ap-h1 {
+          font-family: var(--font);
+          font-size: clamp(3rem, 6.5vw, 5.2rem);
+          font-weight: 800;
+          line-height: 1.02;
+          letter-spacing: -0.03em;
+          color: var(--white);
+          position: relative; z-index: 1;
+        }
+        .ap-h1-sub {
+          display: block;
+          font-weight: 300;
+          color: rgba(255,255,255,0.48);
+          font-size: 0.82em;
+          letter-spacing: -0.01em;
+        }
+        .ap-h1-place {
+          display: block;
+          background: linear-gradient(120deg, #ff7a6b 0%, var(--red) 45%, #b52217 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          white-space: nowrap;
+        }
+
+        /* Postcode pill */
+        .ap-pc-pill {
+          display: inline-flex; align-items: center; gap: 7px;
+          margin-top: 16px;
+          background: rgba(217,43,30,0.07);
+          border: 1px solid rgba(217,43,30,0.18);
+          border-radius: 4px;
+          padding: 6px 12px;
+          font-family: var(--font);
+          font-size: 0.75rem; font-weight: 700;
+          letter-spacing: 0.12em;
+          color: rgba(217,43,30,0.75);
+          width: fit-content;
+          position: relative; z-index: 1;
+        }
+
+        /* Description */
+        .ap-hero-desc {
+          font-family: var(--font);
+          font-size: 0.98rem;
+          font-weight: 400;
+          color: rgba(255,255,255,0.58);
+          line-height: 1.85;
+          max-width: 540px;
+          margin: 30px 0 38px;
+          position: relative; z-index: 1;
+        }
+        .ap-hero-desc strong { color: rgba(255,255,255,0.9); font-weight: 700; }
+
+        /* Stats */
+        .ap-stats {
+          display: flex;
+          align-items: stretch;
+          flex-wrap: wrap;
+          gap: 0;
+          margin-bottom: 42px;
+          position: relative; z-index: 1;
+          border: 1px solid rgba(255,255,255,0.06);
+          border-radius: 14px;
+          overflow: hidden;
+          width: fit-content;
+          max-width: 100%;
+          background: rgba(255,255,255,0.03);
+        }
+        .ap-stat {
+          display: flex; flex-direction: column; align-items: center; gap: 4px;
+          padding: 20px 30px;
+          position: relative;
+        }
+        .ap-stat + .ap-stat::before {
+          content: ''; position: absolute; left: 0; top: 14px; bottom: 14px;
+          width: 1px; background: rgba(255,255,255,0.06);
+        }
+        .ap-stat-num {
+          font-family: var(--font);
+          font-size: 2rem; font-weight: 800;
+          color: var(--white); line-height: 1;
+          letter-spacing: -0.04em;
+        }
+        .ap-stat-suffix { color: var(--red); }
+        .ap-stat-label {
+          font-family: var(--font);
+          font-size: 0.6rem; font-weight: 600;
+          color: rgba(255,255,255,0.24);
+          text-transform: uppercase; letter-spacing: 0.12em;
+          white-space: nowrap;
+        }
+
+        /* CTA buttons */
+        .ap-hero-actions {
+          display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+          position: relative; z-index: 1;
+        }
+        .ap-btn-primary {
+          display: inline-flex; align-items: center; gap: 11px;
+          background: var(--red); color: var(--white);
+          font-family: var(--font);
+          font-size: 0.875rem; font-weight: 600;
+          letter-spacing: 0.01em;
+          padding: 16px 28px;
+          border-radius: 10px;
+          text-decoration: none;
+          position: relative; overflow: hidden;
+          box-shadow: 0 6px 18px rgba(181, 34, 28, 0.12), 0 2px 0 var(--red-deep), inset 0 1px 0 rgba(255,255,255,0.12);
+          transition: box-shadow 0.25s, transform 0.2s, background 0.2s;
+          white-space: nowrap;
+          border: none;
+          cursor: pointer;
+        }
+        .ap-btn-primary::after {
+          content: ''; position: absolute; inset: 0;
+          background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%);
+        }
+        .ap-btn-primary:hover {
+          background: var(--red-deep);
+          box-shadow: 0 0 48px var(--red-glow), 0 2px 0 var(--red-deep), inset 0 1px 0 rgba(255,255,255,0.16);
+          transform: translateY(-3px) scale(1.01);
+        }
+        .ap-btn-arrow {
+          width: 24px; height: 24px;
+          background: rgba(255,255,255,0.18);
+          border-radius: 6px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 10px; flex-shrink: 0;
+          transition: background 0.2s, transform 0.2s;
+          position: relative; z-index: 1;
+        }
+        .ap-btn-primary:hover .ap-btn-arrow { background: rgba(255,255,255,0.28); transform: translateX(3px); }
+
+        .ap-btn-phone {
+          display: inline-flex; align-items: center; gap: 10px;
+          color: rgba(255,255,255,0.6);
+          font-family: var(--font);
+          font-size: 0.875rem; font-weight: 500;
+          padding: 15px 22px;
+          border-radius: 10px;
+          border: 1px solid rgba(255,255,255,0.08);
+          text-decoration: none;
+          transition: color 0.2s, border-color 0.2s, background 0.2s;
+          white-space: nowrap;
+        }
+        .ap-btn-phone:hover { color: var(--white); border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.04); }
+        .ap-phone-ico {
+          width: 30px; height: 30px;
+          background: rgba(217,43,30,0.12);
+          border-radius: 8px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 11px; color: var(--red); flex-shrink: 0;
+        }
+
+        /* ── Right panel — map ── */
+        .ap-hero-right {
+          position: relative; overflow: hidden;
+          min-height: 380px;
+        }
+        .ap-hero-right iframe {
+          position: absolute; inset: 0;
+          width: 100%; height: 100%;
+          border: 0; display: block;
+          filter: saturate(0.65) brightness(0.78) contrast(1.05) sepia(0.05);
+        }
+        .ap-hero-right::before {
+          content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+          background:
+            linear-gradient(270deg, transparent 46%, rgba(26,29,35,0.46) 100%),
+            linear-gradient(0deg, rgba(26,29,35,0.18) 0%, transparent 12%, transparent 88%, rgba(26,29,35,0.18) 100%);
+        }
+        .ap-hero-right::after {
+          content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+          background: rgba(26,29,35,0.08);
+        }
+
+        /* Map area label */
+        .ap-map-label {
+          position: absolute;
+          bottom: 32px; right: 28px;
+          z-index: 10;
+          display: flex; flex-direction: column; gap: 6px;
+          align-items: flex-end;
+        }
+        .ap-map-area-name {
+          font-family: var(--font);
+          font-size: clamp(1.8rem, 4vw, 2.8rem);
+          font-weight: 700;
+          color: rgba(255,255,255,0.12);
+          letter-spacing: -0.02em;
+          line-height: 1;
+          user-select: none;
+          pointer-events: none;
+        }
+        .ap-map-postcode {
+          font-family: var(--font);
+          font-size: 0.7rem; font-weight: 700;
+          letter-spacing: 0.14em;
+          color: rgba(217,43,30,0.5);
+          user-select: none;
+        }
+
+        /* Trust bar */
+        .ap-trust-bar {
+          position: relative; z-index: 3;
+          border-top: 1px solid rgba(255,255,255,0.04);
+          background: rgba(255,255,255,0.015);
+        }
+        .ap-trust-inner {
+          display: flex; overflow-x: auto; scrollbar-width: none;
+          max-width: 1200px; margin: 0 auto;
+          padding: 0 clamp(16px, 5vw, 60px);
+        }
+        .ap-trust-inner::-webkit-scrollbar { display: none; }
+        .ap-trust-item {
+          display: flex; align-items: center; gap: 9px;
+          padding: 14px 24px;
+          font-family: var(--font);
+          font-size: 0.71rem; font-weight: 500;
+          color: rgba(255,255,255,0.3);
+          white-space: nowrap; flex-shrink: 0;
+          border-right: 1px solid rgba(255,255,255,0.04);
+          letter-spacing: 0.03em;
+          transition: color 0.2s;
+        }
+        .ap-trust-item:first-child { padding-left: 0; }
+        .ap-trust-item:last-child  { border-right: none; }
+        .ap-trust-item:hover { color: rgba(255,255,255,0.5); }
+        .ap-trust-ico { color: var(--red); font-size: 10px; flex-shrink: 0; opacity: 0.7; }
+
+        /* Body layout */
+        .ap-body {
+          max-width: 1140px; margin: 0 auto;
+          padding: 96px 24px 104px;
+          display: flex; flex-direction: column; gap: 96px;
+        }
+
+        .ap-tag { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 12px; }
+        .ap-tag-line { width: 20px; height: 2px; background: var(--red); border-radius: 2px; flex-shrink: 0; }
+        .ap-tag-text { font-family: var(--font); font-size: 0.63rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--red); }
+
+        .ap-sec-h2 { font-family: var(--font); font-size: clamp(1.55rem, 3vw, 2.1rem); font-weight: 700; color: var(--ink); letter-spacing: -0.025em; line-height: 1.18; margin: 0 0 10px; }
+        .ap-sec-sub { font-family: var(--font); font-size: 0.9rem; color: var(--slate); line-height: 1.8; margin: 0 0 34px; font-weight: 400; max-width: 560px; }
+
+        .ap-two { display: grid; grid-template-columns: 1fr; gap: 60px; }
+        @media (min-width: 840px) { .ap-two { grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; } }
+
+        .ap-prose { font-family: var(--font); font-size: 0.94rem; color: #505663; line-height: 1.85; font-weight: 400; }
+        .ap-prose p { margin: 0 0 18px; }
+        .ap-prose strong { color: var(--ink); font-weight: 600; }
+
+        .ap-services { display: flex; flex-direction: column; gap: 7px; }
+        .ap-svc { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; font-family: var(--font); font-size: 0.875rem; color: #374151; font-weight: 500; transition: border-color 0.22s, background 0.22s, transform 0.22s; cursor: default; }
+        .ap-svc:hover { border-color: rgba(217,43,30,0.25); background: rgba(217,43,30,0.04); transform: translateX(5px); }
+        .ap-svc-ico { color: var(--red); font-size: 12px; flex-shrink: 0; }
+
+        .ap-why-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(258px, 1fr)); gap: 14px; }
+        .ap-why-card { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 30px 26px; transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s; position: relative; overflow: hidden; }
+        .ap-why-card:hover { border-color: rgba(217,43,30,0.2); box-shadow: 0 10px 40px rgba(217,43,30,0.07); transform: translateY(-3px); }
+        .ap-why-ico-wrap { width: 46px; height: 46px; background: rgba(217,43,30,0.06); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+        .ap-why-ico-wrap svg { color: var(--red); font-size: 18px; }
+        .ap-why-card-h { font-family: var(--font); font-size: 0.9rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; }
+        .ap-why-card-p { font-family: var(--font); font-size: 0.82rem; color: var(--slate); line-height: 1.75; font-weight: 400; }
+
+        .ap-kw-block { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 40px; }
+        .ap-kw-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; margin-top: 24px; }
+        @media (min-width: 540px) { .ap-kw-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 860px) { .ap-kw-grid { grid-template-columns: repeat(4, 1fr); } }
+        .ap-kw { display: flex; align-items: center; gap: 9px; background: var(--white); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; font-family: var(--font); font-size: 0.75rem; color: #374151; font-weight: 500; transition: border-color 0.2s, color 0.2s; cursor: default; }
+        .ap-kw:hover { border-color: var(--red); color: var(--red); }
+        .ap-kw-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--red); opacity: 0.35; flex-shrink: 0; }
+
+        .ap-faqs { display: flex; flex-direction: column; gap: 9px; margin-top: 26px; }
+        .ap-faq { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--white); }
+        .ap-faq summary { list-style: none; padding: 19px 24px; font-family: var(--font); font-size: 0.9rem; font-weight: 600; color: var(--ink); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 14px; transition: background 0.18s; user-select: none; }
+        .ap-faq summary::-webkit-details-marker { display: none; }
+        .ap-faq summary:hover { background: var(--surface); }
+        .ap-faq[open] summary { background: rgba(217,43,30,0.05); color: var(--red); }
+        .ap-faq-chevron { width: 22px; height: 22px; background: var(--line2); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 9px; color: var(--slate); transition: background 0.18s, transform 0.28s; }
+        .ap-faq[open] .ap-faq-chevron { background: rgba(217,43,30,0.12); color: var(--red); transform: rotate(180deg); }
+        .ap-faq-ans { padding: 0 24px 22px; font-family: var(--font); font-size: 0.875rem; color: #4b5563; line-height: 1.85; font-weight: 400; border-top: 1px solid var(--line2); }
+
+        .ap-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .ap-chip { display: inline-flex; align-items: center; gap: 8px; background: var(--white); border: 1px solid var(--line); border-radius: 100px; padding: 9px 18px; font-family: var(--font); font-size: 0.8rem; color: #374151; font-weight: 500; text-decoration: none; transition: border-color 0.2s, color 0.2s, background 0.2s; }
+        .ap-chip:hover { border-color: var(--red); color: var(--red); background: rgba(217,43,30,0.04); }
+        .ap-chip-ico { color: var(--red); font-size: 9px; opacity: 0.45; }
+
+        .ap-cta { background: var(--ink); position: relative; overflow: hidden; padding: 100px 24px; text-align: center; }
+        .ap-cta-orb1, .ap-cta-orb2 { position: absolute; border-radius: 50%; pointer-events: none; }
+        .ap-cta-orb1 { bottom: -120px; left: -80px; width: 420px; height: 420px; background: radial-gradient(circle, rgba(217,43,30,0.1) 0%, transparent 65%); }
+        .ap-cta-orb2 { top: -80px; right: -60px; width: 340px; height: 340px; background: radial-gradient(circle, rgba(217,43,30,0.06) 0%, transparent 65%); }
+        .ap-cta-rule { width: 40px; height: 2px; background: var(--red); margin: 0 auto 20px; border-radius: 1px; }
+        .ap-cta-inner { position: relative; z-index: 1; max-width: 580px; margin: 0 auto; }
+        .ap-cta-kicker { font-family: var(--font); font-size: 0.63rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(217,43,30,0.7); margin-bottom: 18px; }
+        .ap-cta-h2 { font-family: var(--font); font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 800; color: var(--white); letter-spacing: -0.025em; line-height: 1.12; margin: 0 0 16px; }
+        .ap-cta-h2 em { color: #f87171; font-style: normal; }
+        .ap-cta-desc { font-family: var(--font); color: rgba(255,255,255,0.35); font-size: 0.9rem; line-height: 1.8; margin: 0 0 38px; font-weight: 400; }
+        .ap-cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+        /* Responsive tweaks */
+        @media (min-width: 640px) and (max-width: 999px) {
+          .ap-h1 { font-size: clamp(2.8rem, 7vw, 3.8rem); }
+          .ap-hero-right { min-height: 360px; }
+        }
+        @media (max-width: 639px) {
+          .ap-hero-left  { padding: 44px 18px 32px; }
+          .ap-h1 { font-size: clamp(2.6rem, 11vw, 3.2rem); }
+          .ap-hero-desc  { font-size: 0.875rem; margin: 22px 0 30px; }
+          .ap-stats { width: 100%; border-radius: 12px; }
+          .ap-stat  { padding: 16px 18px; flex: 1; }
+          .ap-stat-num { font-size: 1.6rem; }
+          .ap-hero-actions { flex-direction: column; gap: 10px; }
+          .ap-btn-primary, .ap-btn-phone { width: 100%; justify-content: center; }
+          .ap-hero-right { min-height: 270px; }
+          .ap-map-label { display: none; }
+          .ap-body { padding: 60px 16px 76px; gap: 68px; }
+          .ap-kw-block { padding: 24px 18px; }
+          .ap-faq summary { padding: 16px 18px; font-size: 0.87rem; }
+          .ap-faq-ans { padding: 0 18px 18px; }
+          .ap-cta { padding: 68px 18px; }
+          .ap-cta-actions { flex-direction: column; gap: 10px; }
+          .ap-cta-actions .ap-btn-primary,
+          .ap-cta-actions .ap-btn-phone { width: 100%; justify-content: center; }
+        }
+      `}</style>
+
+      <main className="ap">
+        {/* HERO */}
+        <header className="ap-hero" ref={heroRef}>
+          <div className="ap-hero-bg" aria-hidden="true" />
+          <div className="ap-hero-rule" aria-hidden="true" />
+
+          <div className="ap-hero-grid">
+            <motion.div className="ap-hero-left" style={{ y: smoothY, opacity: parallaxOpa }}>
+              <div className="ap-hero-ghost" aria-hidden="true">
+                {areaName.replace(/\s+/g, '').toUpperCase().slice(0, 4)}
+              </div>
+
+              <motion.div className="ap-eyebrow"
+                initial={{ opacity: 0, x: -14 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }} aria-hidden="true">
+                <div className="ap-eyebrow-line" />
+                <span className="ap-eyebrow-tag">360 Drive Academy</span>
+              </motion.div>
+
+              <motion.h1 className="ap-h1"
+                initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.65, delay: 0.18 }}>
+                Driving
+                <span className="ap-h1-sub">Lessons in</span>
+                <span className="ap-h1-place">{areaName}</span>
+              </motion.h1>
+
+              {postcode && (
+                <motion.div className="ap-pc-pill"
+                  initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.38, delay: 0.42 }}>
+                  <FaMapMarkerAlt style={{ fontSize: "8px" }} />
+                  {postcode}
+                </motion.div>
+              )}
+
+              <motion.p className="ap-hero-desc"
+                initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}>
+                {locationSeoDesc.split(". ").slice(0, 2).map((s, i, arr) => {
+                  const html = s
+                    .replace(new RegExp(areaName, "g"), `<strong>${areaName}</strong>`)
+                    .replace(new RegExp(postcode || "ZZZZ", "g"), `<strong>${postcode}</strong>`);
+                  return <span key={i} dangerouslySetInnerHTML={{ __html: html + (i < arr.length - 1 ? ". " : ".") }} />;
+                })}
+              </motion.p>
+
+              <div className="ap-stats" role="list" aria-label="Key statistics">
+                <StatCounter num={90}   suffix="%" label="Pass Rate" delay={0.44} />
+                <StatCounter num={1000} suffix="+" label="Students"  delay={0.51} />
+                <div className="ap-stat" role="listitem">
+                  <motion.span className="ap-stat-num"
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                    transition={{ duration: 0.4, delay: 0.58 }} aria-label="5 star rated">
+                    5<span className="ap-stat-suffix">★</span>
+                  </motion.span>
+                  <span className="ap-stat-label">Stars</span>
+                </div>
+              </div>
+
+              <motion.div className="ap-hero-actions"
+                initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.62 }}>
+                <button onClick={(e) => { e.preventDefault(); setModalOpen(true); }} className="ap-btn-primary" aria-haspopup="dialog">
+                  Book a Lesson
+                  <span className="ap-btn-arrow" aria-hidden="true"><FaArrowRight /></span>
+                </button>
+                <a href={`tel:${phone}`} className="ap-btn-phone">
+                  <span className="ap-phone-ico" aria-hidden="true"><FaPhoneAlt /></span>
+                  {phone}
+                </a>
+              </motion.div>
+            </motion.div>
+
+            <motion.div className="ap-hero-right"
+              initial={{ opacity: 0, scale: 0.995 }} animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.0, delay: 0.3 }}>
+              {mapEmbedUrl ? (
+                <iframe
+                  src={mapEmbedUrl} allowFullScreen="" loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title={`360 Drive Academy coverage — ${areaName}`}
+                />
+              ) : (
+                <div className="ap-map-ph">
+                  <FaMapMarkerAlt style={{ fontSize: "3.5rem", color: "#dc2626", opacity: 0.2 }} />
+                  <span>Map loading…</span>
+                </div>
+              )}
+              <motion.div className="ap-map-label"
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.8 }} aria-hidden="true">
+                <span className="ap-map-area-name">{areaName}</span>
+                {postcode && <span className="ap-map-postcode">{postcode}</span>}
+              </motion.div>
+            </motion.div>
+          </div>
+
+          <div className="ap-trust-bar" role="region" aria-label="Trust signals">
+            <div className="ap-trust-inner">
+              {[
+                { icon: FaStar,          text: "5-Star Rated" },
+                { icon: FaShieldAlt,     text: "DVSA Approved" },
+                { icon: FaCar,           text: "Manual & Automatic" },
+                { icon: FaThumbsUp,      text: "90% First-Time Pass" },
+                { icon: FaGraduationCap, text: "1,000+ Passed" },
+                { icon: FaClock,         text: "7 Days a Week" },
+                { icon: FaMapMarkerAlt,  text: `Local to ${areaName}` },
+              ].map(({ icon: Icon, text }) => (
+                <div className="ap-trust-item" key={text}>
+                  <Icon className="ap-trust-ico" aria-hidden="true" />
+                  {text}
+                </div>
+              ))}
+            </div>
+          </div>
+        </header>
+
+        {/* BODY */}
+        <div className="ap-body">
+          <div className="ap-two">
+            {services.length > 0 && (
+              <motion.section {...fadeUp(0)} aria-labelledby="svc-h">
+                <div className="ap-tag"><div className="ap-tag-line" /><span className="ap-tag-text">What We Offer</span></div>
+                <h2 id="svc-h" className="ap-sec-h2">Lesson Services in {areaName}</h2>
+                <p className="ap-sec-sub">Tuition tailored to learners at every stage — beginners to test-ready.</p>
+                <div className="ap-services">
+                  {services.map((s, i) => (
+                    <motion.div key={i} className="ap-svc"
+                      initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }} transition={{ duration: 0.32, delay: i * 0.05 }}>
+                      <FaCheckCircle className="ap-svc-ico" aria-hidden="true" />{s}
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.section>
+            )}
+
+            <motion.section {...fadeUp(0.08)} aria-labelledby="about-h">
+              <div className="ap-tag"><div className="ap-tag-line" /><span className="ap-tag-text">About {areaName}</span></div>
+              <h2 id="about-h" className="ap-sec-h2">Driving Lessons — {areaName}{postcode ? `, ${postcode}` : ""}</h2>
+              <div className="ap-prose">
+                {introText ? <p>{introText}</p> : (
+                  <p><strong>360 Drive Academy</strong> delivers expert <strong>driving lessons in {areaName}</strong>{postcode ? ` (${postcode})` : ""}. Our fully qualified, <strong>DVSA-approved instructors</strong> live and teach in the local area — they know every road, hazard, and test-route junction, giving every student a genuine advantage on test day.</p>
+                )}
+                {bodyText ? <p>{bodyText}</p> : (
+                  <>
+                    <p>Whether you need <strong>beginner driving lessons</strong>, a fast-track <strong>intensive course</strong>, or <strong>automatic lessons near {areaName}</strong>, we design every lesson around your pace and learning style.</p>
+                    <p>All instructors are <strong>DBS-checked</strong> and experienced with learners of every ability. We offer lessons <strong>7 days a week including evenings</strong>, and you can book online in minutes.</p>
+                  </>
+                )}
+              </div>
+            </motion.section>
+          </div>
+
+          <motion.section {...fadeUp(0.05)} aria-labelledby="why-h">
+            <div className="ap-tag"><div className="ap-tag-line" /><span className="ap-tag-text">Why Choose Us</span></div>
+            <h2 id="why-h" className="ap-sec-h2">Why 360 Drive Academy in {areaName}</h2>
+            <p className="ap-sec-sub">Hundreds of learners across West London have trusted us to get them through their driving test.</p>
+            <div className="ap-why-grid">
+              {WHY_ITEMS.map(({ icon: Icon, title, body }, i) => (
+                <motion.div key={i} className="ap-why-card"
+                  initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.07 }}>
+                  <div className="ap-why-ico-wrap"><Icon aria-hidden="true" /></div>
+                  <h3 className="ap-why-card-h">{title}</h3>
+                  <p className="ap-why-card-p">{body}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.section>
+
+          <motion.section {...fadeUp(0.04)} aria-labelledby="kw-h">
+            <div className="ap-kw-block">
+              <div className="ap-tag"><div className="ap-tag-line" /><span className="ap-tag-text">Popular Searches</span></div>
+              <h2 id="kw-h" className="ap-sec-h2" style={{ marginBottom: 0 }}>Find the Right Lesson in {areaName}</h2>
+              <div className="ap-kw-grid">
+                {[
+                  `Driving lessons ${areaName}`,         `Automatic lessons ${areaName}`,
+                  `Manual lessons ${areaName}`,           `Intensive course ${areaName}`,
+                  `Driving instructor ${areaName}`,       `Pass Plus ${areaName}`,
+                  `Mock driving test ${areaName}`,        `Cheap driving lessons ${areaName}`,
+                  `Theory test help ${areaName}`,
+                  postcode ? `Driving lessons ${postcode}` : `Lessons near ${areaName}`,
+                  `DVSA test centre ${areaName}`,         `Learn to drive ${areaName}`,
+                  `Beginner lessons ${areaName}`,         `Block booking ${areaName}`,
+                  `Refresher lessons ${areaName}`,        `Motorway lessons ${areaName}`,
+                ].map((kw, i) => (
+                  <motion.div key={i} className="ap-kw"
+                    initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }} transition={{ duration: 0.26, delay: i * 0.025 }}>
+                    <span className="ap-kw-dot" aria-hidden="true" />{kw}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.section>
+
+          <motion.section {...fadeUp(0.04)} aria-labelledby="faq-h">
+            <div className="ap-tag"><div className="ap-tag-line" /><span className="ap-tag-text">FAQs</span></div>
+            <h2 id="faq-h" className="ap-sec-h2">Frequently Asked Questions — {areaName}</h2>
+            <p className="ap-sec-sub">Everything you need to know before booking your first lesson.</p>
+            <div className="ap-faqs">
+              {(faqs.length ? faqs : [
+                { q: `How much do driving lessons cost in ${areaName}?`, a: `Our driving lessons in ${areaName} start from competitive rates. Get in touch for the latest pricing and any current offers — we often run discounts for block bookings.` },
+                { q: `Which driving test centres are near ${areaName}?`, a: `We prepare students for tests at all local DVSA-approved test centres near ${areaName}. Your instructor will be familiar with the test routes and common hazards.` },
+                { q: `Do you offer automatic driving lessons in ${areaName}?`, a: `Yes — we offer both manual and automatic driving lessons in ${areaName}${postcode ? ` (${postcode})` : ""}. Automatic lessons are ideal if you want to learn faster or find manual gear changes challenging.` },
+                { q: `How quickly can I start lessons in ${areaName}?`, a: `We typically have availability within a few days. Contact us or book online and we'll match you with a local instructor in ${areaName} as quickly as possible.` },
+              ]).map(({ q, a }, i) => (
+                <motion.details key={i} className="ap-faq" initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: i * 0.06 }}>
+                  <summary>{q}<span className="ap-faq-chevron" aria-hidden="true">▾</span></summary>
+                  <div className="ap-faq-ans">{a}</div>
+                </motion.details>
+              ))}
+            </div>
+          </motion.section>
+
+          {nearbyAreas.length > 0 && (
+            <motion.section {...fadeUp(0.04)} aria-labelledby="nearby-h">
+              <div className="ap-tag"><div className="ap-tag-line" /><span className="ap-tag-text">Also Covered</span></div>
+              <h2 id="nearby-h" className="ap-sec-h2">Driving Lessons near {areaName}</h2>
+              <p className="ap-sec-sub">We cover {areaName} and all surrounding areas. Tap any location to explore lessons near you.</p>
+              <nav aria-label="Nearby areas">
+                <div className="ap-chips">
+                  {nearbyAreas.map(({ name, href }, i) => (
+                    <motion.a key={i} href={href || "#"} className="ap-chip" initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.26, delay: i * 0.04 }}>
+                      <FaMapMarkerAlt className="ap-chip-ico" aria-hidden="true" />{name}
+                    </motion.a>
+                  ))}
+                </div>
+              </nav>
+            </motion.section>
+          )}
+        </div>
+        {/*google review*/}
+        <section>
+          <Reviews/>
+        </section>
+
+        {/* Bottom CTA */}
+        <section className="ap-cta" aria-labelledby="cta-h">
+          <div className="ap-cta-orb1" aria-hidden="true" />
+          <div className="ap-cta-orb2" aria-hidden="true" />
+          <motion.div className="ap-cta-inner" initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.65 }}>
+            <div className="ap-cta-rule" aria-hidden="true" />
+            <p className="ap-cta-kicker">Ready to get started?</p>
+            <h2 id="cta-h" className="ap-cta-h2">Book Your First Lesson<br />in <em>{areaName}</em> Today</h2>
+            <p className="ap-cta-desc">Flexible slots available 7 days a week, including evenings. We'll match you with a local instructor in {areaName}{postcode ? ` (${postcode})` : ""} and get you on the road fast.</p>
+            <div className="ap-cta-actions">
+              <button onClick={(e) => { e.preventDefault(); setModalOpen(true); }} className="ap-btn-primary" aria-haspopup="dialog">
+                Book a Lesson
+                <span className="ap-btn-arrow" aria-hidden="true"><FaArrowRight /></span>
+              </button>
+              <a href={`tel:${phone}`} className="ap-btn-phone">
+                <span className="ap-phone-ico" aria-hidden="true"><FaPhoneAlt /></span>
+                {phone}
+              </a>
+            </div>
+          </motion.div>
+        </section>
+      </main>
+
+      {/* Booking modal (portal) */}
+      {modalOpen && (
+        <ModalPortal>
+          <motion.div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="booking-title"
+            initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
+            transition={{ type: "spring", stiffness: 280, damping: 30 }} className="w-full"
+          >
+            <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl max-h-[92dvh] overflow-y-auto">
+              <div className="flex justify-center pt-3 pb-1 sm:hidden">
+                <div className="w-10 h-1 rounded-full bg-gray-300" aria-hidden="true" />
+              </div>
+
+              <div className="px-5 pb-8 pt-3 sm:p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 id="booking-title" className="text-lg font-semibold text-gray-900">Request a lesson</h3>
+                    <p className="text-xs text-gray-500 mt-0.5">We'll confirm availability by phone or email.</p>
+                  </div>
+
+                  {/* Bigger exit symbol for clarity */}
+                  <button onClick={() => setModalOpen(false)} aria-label="Close booking modal" className="p-2 -mr-1 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition">
+                    <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Detailed confirmation panel (shown after save) */}
+                {showSuccess && savedBooking ? (
+                  <div className="mb-4 rounded-md border border-green-100 bg-green-50 p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg">
+                        ✓
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-md font-semibold text-green-800">Booking Confirmed</h4>
+                        <p className="text-xs text-green-700 mt-1">Thanks — your booking request has been saved. We'll contact you shortly to confirm availability.</p>
+
+                        <div className="mt-3 text-sm text-green-800 grid grid-cols-1 gap-2">
+                          <div><strong>Booking ID:</strong> <span className="font-mono">{savedBooking._id || savedBooking.id || "—"}</span></div>
+                          <div><strong>Area:</strong> {savedBooking.area || areaName}</div>
+                          <div><strong>Transmission:</strong> {savedBooking.bookingMode || savedBooking.transmissionType || (bookingMode ? bookingMode : "—")}</div>
+                          <div><strong>Contact:</strong> {savedBooking.phone || savedBooking.email || "—"}</div>
+                        </div>
+
+                        <div className="mt-3 flex gap-2">
+                          <button onClick={() => { setShowSuccess(false); setSavedBooking(null); setModalOpen(false); }} className="bg-green-700 text-white px-3 py-2 rounded-md text-sm">Done</button>
+                          <button onClick={() => { setShowSuccess(false); setSavedBooking(null); }} className="px-3 py-2 rounded-md text-sm border border-green-700 text-green-700 bg-white">Make another request</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+
+                {/* Form (hidden when showing confirmation with savedBooking to avoid confusion) */}
+                {!savedBooking && (
+                  <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-3" noValidate aria-live="polite">
+                    <BookingFormFields
+                      idPrefix="m_"
+                      register={register}
+                      errors={errors}
+                      contactMethod={contactMethod}
+                      bookingMode={bookingMode}
+                      toggleContactMethod={toggleContactMethod}
+                      toggleBookingMode={toggleBookingMode}
+                      areaName={areaName}
+                      postcode={postcode}
+                      inputBase={inputBase}
+                    />
+
+                    <div className="flex items-center gap-3 mt-1">
+                      <button type="submit" disabled={submitting} className="flex-1 bg-red-600 text-white font-semibold px-4 py-2.5 rounded-lg shadow hover:bg-red-700 active:scale-[0.98] disabled:opacity-60 transition-all flex items-center justify-center gap-2 text-sm">
+                        {submitting ? (
+                          <>
+                            <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none" aria-hidden>
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                            </svg>
+                            Sending…
+                          </>
+                        ) : (
+                          "Request Booking"
+                        )}
+                      </button>
+
+                      <button type="button" onClick={() => { reset(); setModalOpen(false); }} className="px-3 py-2.5 text-sm text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition">
+                        Cancel
+                      </button>
+                    </div>
+
+                    <p className="text-xs text-gray-400 leading-relaxed">
+                      By submitting you agree to our{" "}
+                      <a href="/privacy" className="underline text-gray-600">privacy policy</a>.
+                    </p>
+
+                    {toast && (
+                      <div className={`rounded-lg px-3 py-2.5 text-sm ${toast.type === "success" ? "bg-green-50 text-green-800 border border-green-100" : "bg-red-50 text-red-800 border border-red-100"}`}>
+                        {toast.message}
+                      </div>
+                    )}
+                  </form>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        </ModalPortal>
+      )}
+    </>
+  );
+};
+
+export default AreaPage;

@@ -1,11 +1,14 @@
 import React from "react";
 import Header from "../Components/Header";
+import AboutUs from "../Components/AboutUs";
+import ReviewsG from "../Components/ReviewsG";
 import Reviews from "../Components/reviews";
 import WhyUs from "../Components/WhyUs";
 import Badges from "../Components/Badges";
 import Book from "../Components/Book";
 import Faq from "../Components/Faq";
 import AreaCover from "../Components/AreaCover";
+import Posts from "../Components/blog";
 import { Helmet } from "react-helmet-async";
 
 const Home = () => {
@@ -35,12 +38,16 @@ const Home = () => {
       </Helmet>
 
       <Header />
+      <AboutUs />
       <WhyUs />
+      <ReviewsG />
       <Book />
       <AreaCover />
       <Badges />
       <Reviews />
       <Faq />
+      <Posts />
+
     </>
   );
 };

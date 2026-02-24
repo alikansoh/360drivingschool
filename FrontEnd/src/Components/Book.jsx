@@ -25,7 +25,7 @@ const BookNowSection = () => {
   return (
     <section
       id="book-now-section"
-      className="flex flex-col items-center justify-center mt-20 px-5 py-10 bg-gray-100"
+      className="flex flex-col items-center justify-center  px-5 py-10 bg-gray-100"
       aria-labelledby="book-now-title"
     >
       {/* Headline */}
