@@ -11,6 +11,7 @@ import {
   FaHeart,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const features = [
   {
@@ -46,6 +47,42 @@ const features = [
 ];
 
 const WhyUs = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleBookingClick = () => {
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+    const runAction = () => {
+      if (isMobile) {
+        // Header listens for this event to open the mobile booking modal
+        window.dispatchEvent(new Event("openMobileBooking"));
+        return;
+      }
+
+      // Try to scroll to the inline booking aside on larger screens
+      const el = document.getElementById("inline-booking-aside");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => {
+          const first = el.querySelector("input, button, textarea, select");
+          first?.focus?.();
+        }, 500);
+      } else {
+        // Fallback: open mobile booking modal if inline aside isn't present
+        window.dispatchEvent(new Event("openMobileBooking"));
+      }
+    };
+
+    if (typeof window !== "undefined" && window.location.pathname === "/") {
+      runAction();
+    } else {
+      // navigate to homepage, then run action after short delay to allow DOM to render
+      navigate("/", { replace: false });
+      setTimeout(runAction, 350);
+    }
+  };
+
   return (
     <>
       <style>{`
@@ -368,6 +405,8 @@ const WhyUs = () => {
           overflow: hidden;
           transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
           box-shadow: 0 6px 24px rgba(220,38,38,0.35);
+          border: none;
+          cursor: pointer;
         }
 
         .trust-cta::after {
@@ -392,8 +431,6 @@ const WhyUs = () => {
         <div className="whyus-bg-text">360°</div>
 
         <div className="whyus-container">
-
-          {/* ── Header ── */}
           <motion.div
             initial={{ opacity: 0, y: -24 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -417,7 +454,6 @@ const WhyUs = () => {
             </p>
           </motion.div>
 
-          {/* ── Feature Cards ── */}
           <div className="whyus-grid">
             {features.map(({ icon: Icon, title, desc }, i) => (
               <motion.div
@@ -442,7 +478,6 @@ const WhyUs = () => {
             ))}
           </div>
 
-          {/* ── Trust bar ── */}
           <motion.div
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -472,12 +507,15 @@ const WhyUs = () => {
               ))}
             </div>
 
-            <a href="#courses" className="trust-cta">
+            <button
+              type="button"
+              className="trust-cta"
+              onClick={handleBookingClick}
+            >
               Book a Lesson
               <FaArrowRight style={{ fontSize: "12px" }} />
-            </a>
+            </button>
           </motion.div>
-
         </div>
       </section>
     </>

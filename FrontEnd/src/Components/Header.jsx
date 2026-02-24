@@ -188,6 +188,28 @@ const Header = () => {
   // Use the /booking path (matching your other usage). If your backend uses /api/bookings instead, change to "/api/bookings"
   const bookingsUrl = `${apiBase.replace(/\/$/, "")}/booking`;
 
+  // EmailJS credentials (use environment variables; fallbacks provided for dev)
+  const EMAILJS_SERVICE_ID = getClientEnv("REACT_APP_EMAILJS_SERVICE_ID", "service_koye8l9");
+  const EMAILJS_TEMPLATE_ID = getClientEnv("REACT_APP_EMAILJS_TEMPLATE_ID", "template_nvi7azv");
+  const EMAILJS_PUBLIC_KEY = getClientEnv("REACT_APP_EMAILJS_PUBLIC_KEY", "gaRLXY6TuKISguOB0");
+
+  // Initialize EmailJS once when component mounts (public key required)
+  useEffect(() => {
+    if (EMAILJS_PUBLIC_KEY) {
+      try {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn("EmailJS init failed:", err);
+      }
+    } else {
+      // eslint-disable-next-line no-console
+      console.warn("EmailJS public key not set; email notifications will be skipped.");
+    }
+    // We intentionally do NOT include the EMAILJS_* constants in deps to avoid re-initializing.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const onSubmit = async (data) => {
     if (data.honeypot) {
       setToast({ type: "error", message: "Bot suspected — submission blocked." });
@@ -273,6 +295,7 @@ const Header = () => {
 
       // 2) Send email notification via EmailJS (only after DB save)
       const templateParams = {
+        to_name: "Admin",
         full_name: saved.fullName || payload.fullName,
         email: saved.email || payload.email || "",
         phone: saved.phone || payload.phone || "",
@@ -283,17 +306,15 @@ const Header = () => {
         site: payload.metadata.site,
         booking_id: saved._id || saved.id || "",
         created_at: saved.createdAt || "",
+        manage_url: `${typeof window !== "undefined" ? window.location.origin : ""}/admin/bookings/${saved._id || saved.id || ""}`,
+        message: saved.notes || "",
       };
 
-      // Get emailjs credentials safely
-      const serviceId = getClientEnv("REACT_APP_EMAILJS_SERVICE_ID", "");
-      const templateId = getClientEnv("REACT_APP_EMAILJS_TEMPLATE_ID", "");
-      const publicKey = getClientEnv("REACT_APP_EMAILJS_PUBLIC_KEY", "");
-
       let emailSent = false;
-      if (serviceId && templateId && publicKey) {
+      if (EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY) {
         try {
-          await emailjs.send(serviceId, templateParams, publicKey);
+          // emailjs.init(publicKey) was called in useEffect; use the 3-arg send signature
+          await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
           emailSent = true;
         } catch (emailErr) {
           // Log but don't fail the entire flow — booking is saved
@@ -301,9 +322,8 @@ const Header = () => {
           console.warn("EmailJS send failed:", emailErr);
         }
       } else {
-        // If creds are missing, don't attempt send; you may log or warn.
         // eslint-disable-next-line no-console
-        console.warn("EmailJS not configured; skipping email send.");
+        console.warn("EmailJS credentials missing, skipping email send.");
       }
 
       // update toast with email status if needed

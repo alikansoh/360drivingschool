@@ -1,3 +1,4 @@
+import React, { Fragment, useEffect } from "react";
 import {
   Disclosure,
   DisclosureButton,
@@ -16,7 +17,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { useLocation, Link } from "react-router-dom";
 import logo from "../assets/360logo-nav.png";
-import { Fragment } from "react";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -49,6 +49,18 @@ function classNames(...classes) {
 export default function Navbar() {
   const location = useLocation();
 
+  // Close the mobile Disclosure when the route changes
+  useEffect(() => {
+    try {
+      // Headless UI Disclosure toggle sets aria-expanded on the button.
+      // Find any Disclosure toggle within the <nav> that is expanded and click it to close.
+      const openButton = document.querySelector('nav button[aria-expanded="true"]');
+      if (openButton) openButton.click();
+    } catch (e) {
+      // fail silently
+    }
+  }, [location.pathname]);
+
   return (
     <Disclosure
       as="nav"
@@ -71,13 +83,14 @@ export default function Navbar() {
                 </DisclosureButton>
               </div>
 
-              {/* ── MOBILE / TABLET: centred logo ── */}
+              {/* ── MOBILE / TABLET: centred logo (increased slightly) ── */}
               <div className="absolute inset-0 flex items-center justify-center lg:hidden pointer-events-none">
                 <Link to="/" className="pointer-events-auto group">
                   <img
                     alt="Company Logo"
                     src={logo}
-                    className="h-[4.5rem] sm:h-[5.5rem] w-auto transition-transform duration-300 group-hover:scale-105 drop-shadow-md"
+                    // Increased mobile logo size slightly: h-[5.25rem] -> sm:h-[6rem]
+                    className="h-[5.25rem] sm:h-[6rem] w-auto transition-transform duration-300 group-hover:scale-105 drop-shadow-md"
                   />
                 </Link>
               </div>

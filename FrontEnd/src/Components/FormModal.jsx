@@ -9,9 +9,10 @@ import emailjs from "@emailjs/browser";
  * - Shows improved confirmation after save.
  * - Larger, more prominent close (exit) control.
  *
- * Updated: Selected display now reflects the current gearbox choice
- * (from the form's bookingMode) so when you toggle gearbox in the modal
- * the UI updates immediately instead of showing the original selectedItem.transmission.
+ * NOTE: Hooks must be called in the same order on every render.
+ * The EmailJS init useEffect and the EmailJS-related constants are placed
+ * above the early `if (!isVisible) return null;` check so the hook count
+ * never changes between renders (fixes "Rendered more hooks..." error).
  */
 
 function getClientEnv(key, fallback = "") {
@@ -35,6 +36,7 @@ function getClientEnv(key, fallback = "") {
 }
 
 const FormModal = ({ isVisible, onClose, selectedItem }) => {
+  // --- Hooks and state (must be declared before any early return) ---
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -71,6 +73,38 @@ const FormModal = ({ isVisible, onClose, selectedItem }) => {
     }
   }, [isSubmitSuccessful]);
 
+  // EmailJS credentials (prefer env variables)
+  // Provide your real keys in environment variables instead of hard-coding.
+  const EMAILJS_SERVICE_ID = getClientEnv(
+    "REACT_APP_EMAILJS_SERVICE_ID",
+    getClientEnv("VITE_EMAILJS_SERVICE_ID", "service_koye8l9")
+  );
+  const EMAILJS_TEMPLATE_ID = getClientEnv(
+    "REACT_APP_EMAILJS_TEMPLATE_ID",
+    getClientEnv("VITE_EMAILJS_TEMPLATE_ID", "template_nvi7azv")
+  );
+  const EMAILJS_PUBLIC_KEY = getClientEnv(
+    "REACT_APP_EMAILJS_PUBLIC_KEY",
+    getClientEnv("VITE_EMAILJS_PUBLIC_KEY", "gaRLXY6TuKISguOB0")
+  );
+
+  // Initialize EmailJS once when component mounts (public key optional but recommended)
+  useEffect(() => {
+    if (EMAILJS_PUBLIC_KEY) {
+      try {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn("EmailJS init failed:", err);
+      }
+    } else {
+      // eslint-disable-next-line no-console
+      console.info("EmailJS public key not provided; skipping init.");
+    }
+    // Intentionally empty deps to run once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // keep packageName & bookingMode in sync with selectedItem
   useEffect(() => {
     if (!selectedItem) return;
@@ -89,8 +123,10 @@ const FormModal = ({ isVisible, onClose, selectedItem }) => {
     }, 80);
   }, [selectedItem, setValue, isVisible]);
 
+  // --- Early return if not visible (safe because hooks were already declared) ---
   if (!isVisible) return null;
 
+  // --- Non-hook helpers + variables ---
   const inputBase =
     "w-full px-3 py-2 rounded-lg border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 text-sm";
   const primary = "bg-gradient-to-r from-red-600 to-red-500";
@@ -114,7 +150,10 @@ const FormModal = ({ isVisible, onClose, selectedItem }) => {
     setValue("bookingMode", mode, { shouldDirty: true, shouldTouch: true });
   };
 
-  const apiBase = getClientEnv("REACT_APP_API_BASE_URL", "https://three60drivingschool.onrender.com");
+  const apiBase = getClientEnv(
+    "REACT_APP_API_BASE_URL",
+    "https://three60drivingschool.onrender.com"
+  );
   const bookingsUrl = `${apiBase.replace(/\/$/, "")}/booking`;
 
   const onSubmit = async (data) => {
@@ -175,8 +214,10 @@ const FormModal = ({ isVisible, onClose, selectedItem }) => {
         transmission: selectedItem?.transmission || null,
       },
       metadata: {
-        site: typeof window !== "undefined" ? window.location.hostname || "" : "",
-        userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "",
+        site:
+          typeof window !== "undefined" ? window.location.hostname || "" : "",
+        userAgent:
+          typeof navigator !== "undefined" ? navigator.userAgent : "",
       },
     };
 
@@ -202,31 +243,75 @@ const FormModal = ({ isVisible, onClose, selectedItem }) => {
       reset();
 
       // send optional email notification via EmailJS
+      const bookingId = saved._id || saved.id || "";
+      const createdAt = saved.createdAt || new Date().toISOString();
+      const site = payload.metadata.site || "";
+
+      const manageUrl =
+        typeof window !== "undefined" && bookingId
+          ? `${window.location.origin}/admin/bookings/${bookingId}`
+          : "";
+
+      const message =
+        (saved.notes || saved.message) ||
+        (selectedItem
+          ? `${selectedItem.type || "Package"}: ${selectedItem.name || ""}`
+          : "");
+
       const templateParams = {
-        full_name: saved.fullName || payload.fullName,
+        to_name: "Admin",
+        booking_id: bookingId,
+        site,
+        created_at: createdAt,
+        full_name: saved.fullName || payload.fullName || "",
         email: saved.email || payload.email || "",
         phone: saved.phone || payload.phone || "",
-        contact_method: saved.contactMethod || payload.contactMethod,
-        booking_mode: saved.bookingMode || payload.bookingMode,
-        location: saved.location || payload.location,
-        package_name: saved.packageName || payload.packageName,
-        site: payload.metadata.site,
-        booking_id: saved._id || saved.id || "",
-        created_at: saved.createdAt || "",
+        contact_method:
+          saved.contactMethod || saved.timetocontact || payload.contactMethod || "",
+        booking_mode:
+          saved.bookingMode || saved.transmissionType || payload.bookingMode || "",
+        location: saved.location || saved.postCode || payload.location || "",
+        package_name:
+          saved.packageName || saved.packagename || payload.packageName || "General Enq",
+        message,
+        manage_url: manageUrl,
+        selected_item: selectedItem ? JSON.stringify(selectedItem) : "",
       };
 
-      const serviceId = getClientEnv("REACT_APP_EMAILJS_SERVICE_ID", "");
-      const templateId = getClientEnv("REACT_APP_EMAILJS_TEMPLATE_ID", "");
-      const publicKey = getClientEnv("REACT_APP_EMAILJS_PUBLIC_KEY", "");
-
-      if (serviceId && templateId && publicKey) {
+      if (EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID) {
         try {
-          await emailjs.send(serviceId, templateParams, publicKey);
+          // Use 3-arg send if init(publicKey) was called above; otherwise include public key as 4th arg.
+          if (EMAILJS_PUBLIC_KEY) {
+            await emailjs.send(
+              EMAILJS_SERVICE_ID,
+              EMAILJS_TEMPLATE_ID,
+              templateParams
+            );
+          } else {
+            await emailjs.send(
+              EMAILJS_SERVICE_ID,
+              EMAILJS_TEMPLATE_ID,
+              templateParams,
+              EMAILJS_PUBLIC_KEY || undefined
+            );
+          }
+          setToast({
+            type: "success",
+            message: "Booking saved — notification email sent.",
+          });
         } catch (emailErr) {
           // don't fail the flow — booking is saved
           // eslint-disable-next-line no-console
           console.warn("EmailJS send failed:", emailErr);
+          setToast({
+            type: "success",
+            message:
+              "Booking saved — notification email could not be sent (logged).",
+          });
         }
+      } else {
+        // eslint-disable-next-line no-console
+        console.info("EmailJS not configured; skipping email send.");
       }
     } catch (err) {
       setToast({
@@ -384,9 +469,7 @@ const FormModal = ({ isVisible, onClose, selectedItem }) => {
           )}
         </div>
 
-        {/* Show selected package/course info inline for clarity (non-editable).
-            Use current bookingMode (watch) so the displayed transmission updates
-            as user toggles gearbox inside the modal. */}
+        {/* Show selected package/course info inline for clarity (non-editable). */}
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">
             Selected

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, memo } from "react";
 import { createPortal } from "react-dom";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useForm } from "react-hook-form";
+import emailjs from "@emailjs/browser";
 import {
   FaCheckCircle,
   FaMapMarkerAlt,
@@ -19,10 +20,46 @@ import {
   FaCalendarAlt,
   FaAward,
 } from "react-icons/fa";
-import Reviews from "../Components/ReviewsG"
+import Reviews from "../Components/ReviewsG";
+
 /* ─────────────────────────────────────────────────────────────
    Helpers & data
 ───────────────────────────────────────────────────────────── */
+
+/** Read env vars from both CRA (REACT_APP_*) and Vite (VITE_*) */
+function getClientEnv(key, fallback = "") {
+  try {
+    if (typeof process !== "undefined" && process?.env && process.env[key]) {
+      return process.env[key];
+    }
+    if (typeof import.meta !== "undefined" && import.meta?.env) {
+      if (import.meta.env[key]) return import.meta.env[key];
+      if (key.startsWith("REACT_APP_")) {
+        const viteKey = "VITE_" + key.slice("REACT_APP_".length);
+        if (import.meta.env[viteKey]) return import.meta.env[viteKey];
+      }
+      const alt = key.replace(/^REACT_APP_/, "VITE_");
+      if (import.meta.env[alt]) return import.meta.env[alt];
+    }
+  } catch (_) {
+    // swallow
+  }
+  return fallback;
+}
+
+/* ── EmailJS credentials — identical to FormModal ── */
+const EMAILJS_SERVICE_ID = getClientEnv(
+  "REACT_APP_EMAILJS_SERVICE_ID",
+  getClientEnv("VITE_EMAILJS_SERVICE_ID", "service_koye8l9")
+);
+const EMAILJS_TEMPLATE_ID = getClientEnv(
+  "REACT_APP_EMAILJS_TEMPLATE_ID",
+  getClientEnv("VITE_EMAILJS_TEMPLATE_ID", "template_nvi7azv")
+);
+const EMAILJS_PUBLIC_KEY = getClientEnv(
+  "REACT_APP_EMAILJS_PUBLIC_KEY",
+  getClientEnv("VITE_EMAILJS_PUBLIC_KEY", "gaRLXY6TuKISguOB0")
+);
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 32 },
@@ -78,9 +115,7 @@ function StatCounter({ num, suffix, label, delay = 0 }) {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   BookingFormFields - memoized to avoid unnecessary re-renders
-   Accepts only the props it needs so parent updates (toast, etc.)
-   don't force rerendering the entire form on unrelated changes.
+   BookingFormFields - memoized
 ───────────────────────────────────────────────────────────── */
 const BookingFormFields = memo(function BookingFormFields({
   idPrefix = "m_",
@@ -167,7 +202,7 @@ const BookingFormFields = memo(function BookingFormFields({
         {errors.location && <p className="text-red-600 text-xs mt-1">Required</p>}
       </div>
 
-      {/* Inline selected area + gearbox display (reflects current bookingMode) */}
+      {/* Inline selected area + gearbox display */}
       <div>
         <label className="block text-xs font-medium text-gray-700 mb-1">Selected area</label>
         <div className="text-sm text-gray-700 bg-gray-50 border border-gray-100 rounded-md px-3 py-2">
@@ -186,19 +221,19 @@ const BookingFormFields = memo(function BookingFormFields({
    AreaPage component (main)
 ───────────────────────────────────────────────────────────── */
 const AreaPage = ({
-  areaName       = "Your Area",
-  areaSlug       = "your-area",
-  postcode       = "",
-  metaDescription= "",
-  seoDescription = "",
-  introText      = "",
-  bodyText       = "",
-  services       = [],
-  nearbyAreas    = [],
-  mapEmbedUrl    = "",
-  phone          = "0789471859",
-  ctaHref        = "/contact",
-  faqs           = [],
+  areaName        = "Your Area",
+  areaSlug        = "your-area",
+  postcode        = "",
+  metaDescription = "",
+  seoDescription  = "",
+  introText       = "",
+  bodyText        = "",
+  services        = [],
+  nearbyAreas     = [],
+  mapEmbedUrl     = "",
+  phone           = "0789471859",
+  ctaHref         = "/contact",
+  faqs            = [],
 }) => {
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
@@ -206,13 +241,13 @@ const AreaPage = ({
   const smoothY     = useSpring(parallaxY, { stiffness: 50, damping: 18 });
   const parallaxOpa = 1;
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [toast, setToast] = useState(null);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [modalOpen,    setModalOpen]    = useState(false);
+  const [submitting,   setSubmitting]   = useState(false);
+  const [toast,        setToast]        = useState(null);
+  const [showSuccess,  setShowSuccess]  = useState(false);
   const [savedBooking, setSavedBooking] = useState(null);
 
-  const modalRef = useRef(null);
+  const modalRef       = useRef(null);
   const lastFocusedRef = useRef(null);
 
   const {
@@ -235,7 +270,19 @@ const AreaPage = ({
   });
 
   const contactMethod = watch("contactMethod");
-  const bookingMode = watch("bookingMode");
+  const bookingMode   = watch("bookingMode");
+
+  /* ── Initialize EmailJS once on mount — same as FormModal ── */
+  useEffect(() => {
+    if (EMAILJS_PUBLIC_KEY) {
+      try {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+      } catch (err) {
+        console.warn("EmailJS init failed:", err);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -258,33 +305,29 @@ const AreaPage = ({
       'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
     );
     const first = focusable[0];
-    const last = focusable[focusable.length - 1];
+    const last  = focusable[focusable.length - 1];
     setTimeout(() => first?.focus?.(), 0);
 
     function onKey(e) {
       if (e.key === "Escape") setModalOpen(false);
       if (e.key === "Tab") {
         if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
+          e.preventDefault(); last.focus();
         } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
+          e.preventDefault(); first.focus();
         }
       }
     }
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("keydown", onKey);
-      try {
-        lastFocusedRef.current?.focus?.();
-      } catch {}
+      try { lastFocusedRef.current?.focus?.(); } catch {}
     };
   }, [modalOpen]);
 
   const focusVisibleField = (method) => {
     const inlineId = method === "email" ? "email" : "phone";
-    const modalId = method === "email" ? "m_email" : "m_phone";
+    const modalId  = method === "email" ? "m_email" : "m_phone";
     setTimeout(() => {
       const el = document.getElementById(inlineId) || document.getElementById(modalId);
       el?.focus?.();
@@ -292,18 +335,13 @@ const AreaPage = ({
   };
 
   const toggleContactMethod = (method) => {
-    // only clear the other field, do not call reset or anything that would refresh whole form
     setValue("contactMethod", method, { shouldDirty: true, shouldTouch: true });
-    if (method === "email") {
-      setValue("phone", "", { shouldDirty: true });
-    } else {
-      setValue("email", "", { shouldDirty: true });
-    }
+    if (method === "email") setValue("phone", "", { shouldDirty: true });
+    else setValue("email", "", { shouldDirty: true });
     focusVisibleField(method);
   };
 
   const toggleBookingMode = (mode) => {
-    // set booking mode only (no reset)
     setValue("bookingMode", mode, { shouldDirty: true, shouldTouch: true });
   };
 
@@ -322,17 +360,11 @@ const AreaPage = ({
       setToast({ type: "error", message: "Please enter your location." });
       return;
     }
-    if (
-      data.contactMethod === "email" &&
-      !/^\S+@\S+\.\S+$/.test(data.email || "")
-    ) {
+    if (data.contactMethod === "email" && !/^\S+@\S+\.\S+$/.test(data.email || "")) {
       setToast({ type: "error", message: "Please enter a valid email address." });
       return;
     }
-    if (
-      data.contactMethod === "phone" &&
-      !/^[0-9+\-\s()]{6,20}$/.test(data.phone || "")
-    ) {
+    if (data.contactMethod === "phone" && !/^[0-9+\-\s()]{6,20}$/.test(data.phone || "")) {
       setToast({ type: "error", message: "Please enter a valid phone number." });
       return;
     }
@@ -347,41 +379,92 @@ const AreaPage = ({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: data.fullName,
-          contactMethod: data.contactMethod,
-          bookingMode: data.bookingMode,
-          email: data.email || null,
-          phone: data.phone || null,
-          location: data.location,
-          area: areaName,
+          // legacy fields — mirrors FormModal payload shape
+          name:             data.fullName,
+          telephone:        data.phone || "",
+          postCode:         data.location,
+          timetocontact:    data.contactMethod,
+          transmissionType: data.bookingMode,
+          packagename:      `Area Enquiry – ${areaName}`,
+          // modern fields
+          fullName:         data.fullName,
+          phone:            data.phone || "",
+          email:            data.email || "",
+          location:         data.location,
+          contactMethod:    data.contactMethod,
+          bookingMode:      data.bookingMode,
+          packageName:      `Area Enquiry – ${areaName}`,
+          area:             areaName,
+          metadata: {
+            site:      typeof window    !== "undefined" ? window.location.hostname : "",
+            userAgent: typeof navigator !== "undefined" ? navigator.userAgent      : "",
+          },
         }),
       });
 
       if (!res.ok) {
         const text = await res.text().catch(() => "");
-        throw new Error(text || "Submission failed");
+        throw new Error(text || `Submission failed (status ${res.status})`);
       }
 
       const saved = await res.json();
-
-      // store saved booking and show detailed confirmation (modal stays open)
       setSavedBooking(saved);
       setShowSuccess(true);
-      setToast({
-        type: "success",
-        message: "Booking request received — see confirmation below.",
-      });
+      setToast({ type: "success", message: "Booking request received — see confirmation below." });
 
-      // clear only the input fields (do not re-render/refresh entire form)
-      reset({ fullName: "", email: "", phone: "", contactMethod: "phone", bookingMode: data.bookingMode, location: "" }, { keepValues: false });
-      // keep bookingMode in the form (so displayed gearbox remains as chosen)
+      // reset form but preserve chosen bookingMode
+      reset(
+        { fullName: "", email: "", phone: "", contactMethod: "phone", bookingMode: data.bookingMode, location: "" },
+        { keepValues: false }
+      );
       setValue("bookingMode", data.bookingMode, { shouldDirty: false });
 
+      /* ── EmailJS notification — same config & template as FormModal ── */
+      if (EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID) {
+        const bookingId = saved._id || saved.id || "";
+        const createdAt = saved.createdAt || new Date().toISOString();
+        const site      = typeof window !== "undefined" ? window.location.hostname : "";
+        const manageUrl =
+          typeof window !== "undefined" && bookingId
+            ? `${window.location.origin}/admin/bookings/${bookingId}`
+            : "";
+
+        const templateParams = {
+          to_name:        "Admin",
+          booking_id:     bookingId,
+          site,
+          created_at:     createdAt,
+          full_name:      saved.fullName      || data.fullName      || "",
+          email:          saved.email         || data.email         || "",
+          phone:          saved.phone         || data.phone         || "",
+          contact_method: saved.contactMethod || saved.timetocontact || data.contactMethod || "",
+          booking_mode:   saved.bookingMode   || saved.transmissionType || data.bookingMode || "",
+          location:       saved.location      || saved.postCode     || data.location || "",
+          package_name:   saved.packageName   || saved.packagename  || `Area Enquiry – ${areaName}`,
+          message:        `Area page enquiry for ${areaName}${postcode ? ` (${postcode})` : ""}`,
+          manage_url:     manageUrl,
+          selected_item:  JSON.stringify({ type: "area", name: areaName, postcode }),
+        };
+
+        try {
+          // 3-arg send (public key was passed to emailjs.init() above — same pattern as FormModal)
+          if (EMAILJS_PUBLIC_KEY) {
+            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+          } else {
+            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, EMAILJS_PUBLIC_KEY || undefined);
+          }
+          setToast({ type: "success", message: "Booking saved — notification email sent." });
+        } catch (emailErr) {
+          // Don't fail the booking flow — booking is already saved
+          console.warn("EmailJS send failed:", emailErr);
+          setToast({ type: "success", message: "Booking saved — notification email could not be sent (logged)." });
+        }
+      } else {
+        console.info("EmailJS not configured; skipping email send.");
+      }
+
     } catch (err) {
-      setToast({
-        type: "error",
-        message: err?.message || "Submission failed. Try again later.",
-      });
+      setToast({ type: "error", message: err?.message || "Submission failed. Try again later." });
     } finally {
       setSubmitting(false);
     }
@@ -406,7 +489,7 @@ const AreaPage = ({
   const inputBase =
     "w-full px-3 py-2 rounded-lg border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 text-sm";
 
-  /* Meta + schema + seo text (kept minimal) */
+  /* Meta + schema */
   useEffect(() => {
     const pageTitle = `Driving Lessons in ${areaName}${postcode ? ` ${postcode}` : ""} | 360 Drive Academy`;
     document.title = pageTitle;
@@ -416,13 +499,13 @@ const AreaPage = ({
       el.setAttribute("content", val);
     };
     const canonicalUrl = `https://360driveacademy.co.uk/areas/${areaSlug}`;
-    const ogImage = "https://360driveacademy.co.uk/og-image.jpg";
-    setMeta("description", metaDescription);
-    setMeta("robots", "index, follow");
+    const ogImage      = "https://360driveacademy.co.uk/og-image.jpg";
+    setMeta("description",    metaDescription);
+    setMeta("robots",         "index, follow");
     setMeta("og:title",       pageTitle,       "property");
     setMeta("og:description", metaDescription, "property");
-    setMeta("og:url",         canonicalUrl,     "property");
-    setMeta("og:image",       ogImage,          "property");
+    setMeta("og:url",         canonicalUrl,    "property");
+    setMeta("og:image",       ogImage,         "property");
     let canonical = document.querySelector("link[rel='canonical']");
     if (!canonical) { canonical = document.createElement("link"); canonical.setAttribute("rel", "canonical"); document.head.appendChild(canonical); }
     canonical.setAttribute("href", canonicalUrl);
@@ -435,7 +518,7 @@ const AreaPage = ({
     `Whether you're a complete beginner, returning after a break, or need an intensive course, we have a lesson package to suit you.`
   );
 
-  /* ---------- Render ---------- */
+  /* ────────────────────────── Render ────────────────────────── */
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
@@ -487,9 +570,7 @@ const AreaPage = ({
         html { scroll-behavior: smooth; }
         .ap { font-family: var(--font); background: var(--white); color: var(--ink); -webkit-font-smoothing: antialiased; }
 
-        /* ══════════════════════════════════
-           HERO
-        ══════════════════════════════════ */
+        /* ══ HERO ══ */
         .ap-hero {
           position: relative;
           min-height: 100svh;
@@ -498,8 +579,6 @@ const AreaPage = ({
           display: flex;
           flex-direction: column;
         }
-
-        /* Colour mesh — made slightly stronger / warmer for hero impact */
         .ap-hero-bg {
           position: absolute; inset: 0; z-index: 0; pointer-events: none;
           background:
@@ -507,324 +586,123 @@ const AreaPage = ({
             radial-gradient(ellipse 55% 55% at 105% 15%, rgba(255,122,107,0.06) 0%, transparent 55%),
             radial-gradient(ellipse 40% 35% at 50% 105%, rgba(217,43,30,0.045) 0%, transparent 60%);
         }
-
-        /* Soft spotlight behind left content for more lift */
         .ap-hero-left::before {
           content: '';
-          position: absolute;
-          left: -10%;
-          top: 10%;
-          width: 60%;
-          height: 120%;
-          pointer-events: none;
-          z-index: 0;
+          position: absolute; left: -10%; top: 10%; width: 60%; height: 120%;
+          pointer-events: none; z-index: 0;
           background: radial-gradient(closest-side, rgba(255,255,255,0.03), transparent 45%);
           transform: translateZ(0);
         }
-
-        /* Horizontal accent line */
         .ap-hero-rule {
-          position: absolute;
-          left: clamp(18px, 6vw, 80px);
-          right: 0;
-          top: 0;
-          height: 1px;
+          position: absolute; left: clamp(18px, 6vw, 80px); right: 0; top: 0;
+          height: 1px; z-index: 3;
           background: linear-gradient(90deg, var(--red) 0%, rgba(217,43,30,0.2) 18%, transparent 55%);
-          z-index: 3;
         }
-
-        /* ── Hero grid ── */
         .ap-hero-grid {
           position: relative; z-index: 3;
-          display: grid;
-          grid-template-columns: 1fr;
-          flex: 1;
+          display: grid; grid-template-columns: 1fr; flex: 1;
         }
-        @media (min-width: 1000px) {
-          .ap-hero-grid { grid-template-columns: 52% 48%; }
-        }
+        @media (min-width: 1000px) { .ap-hero-grid { grid-template-columns: 52% 48%; } }
 
-        /* ── Left panel ── */
         .ap-hero-left {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
+          display: flex; flex-direction: column; justify-content: center;
           padding: clamp(56px, 7vw, 110px) clamp(18px, 6vw, 84px) clamp(48px, 6vw, 88px);
           position: relative;
         }
-
-        /* Large ghost letter — add subtle float animation and slightly visible fill */
         .ap-hero-ghost {
-          position: absolute;
-          bottom: -50px; left: -10px;
+          position: absolute; bottom: -50px; left: -10px; z-index: 0;
           font-family: var(--font);
-          font-size: clamp(120px, 22vw, 260px);
-          font-weight: 800;
-          line-height: 1;
-          color: rgba(255,255,255,0.04);
-          pointer-events: none;
-          user-select: none;
-          letter-spacing: -0.04em;
-          z-index: 0;
-          white-space: nowrap;
-          mix-blend-mode: soft-light;
+          font-size: clamp(120px, 22vw, 260px); font-weight: 800; line-height: 1;
+          color: rgba(255,255,255,0.04); pointer-events: none; user-select: none;
+          letter-spacing: -0.04em; white-space: nowrap; mix-blend-mode: soft-light;
           animation: floatGhost 6s ease-in-out infinite;
         }
         @keyframes floatGhost { 0% { transform: translateY(0); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0); } }
 
-        /* Eyebrow */
-        .ap-eyebrow {
-          display: inline-flex; align-items: center; gap: 12px;
-          margin-bottom: 24px;
-          position: relative; z-index: 1;
-          width: fit-content;
-        }
+        .ap-eyebrow { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 24px; position: relative; z-index: 1; width: fit-content; }
         .ap-eyebrow-line { width: 32px; height: 1.5px; background: var(--red); border-radius: 1px; }
-        .ap-eyebrow-tag {
-          font-family: var(--font);
-          font-size: 0.64rem; font-weight: 600;
-          letter-spacing: 0.2em; text-transform: uppercase;
-          color: var(--red); line-height: 1;
-        }
+        .ap-eyebrow-tag { font-family: var(--font); font-size: 0.64rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red); line-height: 1; }
 
-        /* H1 */
-        .ap-h1 {
-          font-family: var(--font);
-          font-size: clamp(3rem, 6.5vw, 5.2rem);
-          font-weight: 800;
-          line-height: 1.02;
-          letter-spacing: -0.03em;
-          color: var(--white);
-          position: relative; z-index: 1;
-        }
-        .ap-h1-sub {
-          display: block;
-          font-weight: 300;
-          color: rgba(255,255,255,0.48);
-          font-size: 0.82em;
-          letter-spacing: -0.01em;
-        }
+        .ap-h1 { font-family: var(--font); font-size: clamp(3rem, 6.5vw, 5.2rem); font-weight: 800; line-height: 1.02; letter-spacing: -0.03em; color: var(--white); position: relative; z-index: 1; }
+        .ap-h1-sub { display: block; font-weight: 300; color: rgba(255,255,255,0.48); font-size: 0.82em; letter-spacing: -0.01em; }
         .ap-h1-place {
           display: block;
           background: linear-gradient(120deg, #ff7a6b 0%, var(--red) 45%, #b52217 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
           white-space: nowrap;
         }
-
-        /* Postcode pill */
         .ap-pc-pill {
-          display: inline-flex; align-items: center; gap: 7px;
-          margin-top: 16px;
-          background: rgba(217,43,30,0.07);
-          border: 1px solid rgba(217,43,30,0.18);
-          border-radius: 4px;
-          padding: 6px 12px;
-          font-family: var(--font);
-          font-size: 0.75rem; font-weight: 700;
-          letter-spacing: 0.12em;
-          color: rgba(217,43,30,0.75);
-          width: fit-content;
-          position: relative; z-index: 1;
+          display: inline-flex; align-items: center; gap: 7px; margin-top: 16px;
+          background: rgba(217,43,30,0.07); border: 1px solid rgba(217,43,30,0.18);
+          border-radius: 4px; padding: 6px 12px;
+          font-family: var(--font); font-size: 0.75rem; font-weight: 700;
+          letter-spacing: 0.12em; color: rgba(217,43,30,0.75);
+          width: fit-content; position: relative; z-index: 1;
         }
-
-        /* Description */
         .ap-hero-desc {
-          font-family: var(--font);
-          font-size: 0.98rem;
-          font-weight: 400;
-          color: rgba(255,255,255,0.58);
-          line-height: 1.85;
-          max-width: 540px;
-          margin: 30px 0 38px;
-          position: relative; z-index: 1;
+          font-family: var(--font); font-size: 0.98rem; font-weight: 400;
+          color: rgba(255,255,255,0.58); line-height: 1.85;
+          max-width: 540px; margin: 30px 0 38px; position: relative; z-index: 1;
         }
         .ap-hero-desc strong { color: rgba(255,255,255,0.9); font-weight: 700; }
 
-        /* Stats */
         .ap-stats {
-          display: flex;
-          align-items: stretch;
-          flex-wrap: wrap;
-          gap: 0;
-          margin-bottom: 42px;
-          position: relative; z-index: 1;
-          border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 14px;
-          overflow: hidden;
-          width: fit-content;
-          max-width: 100%;
+          display: flex; align-items: stretch; flex-wrap: wrap; gap: 0;
+          margin-bottom: 42px; position: relative; z-index: 1;
+          border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;
+          overflow: hidden; width: fit-content; max-width: 100%;
           background: rgba(255,255,255,0.03);
         }
-        .ap-stat {
-          display: flex; flex-direction: column; align-items: center; gap: 4px;
-          padding: 20px 30px;
-          position: relative;
-        }
-        .ap-stat + .ap-stat::before {
-          content: ''; position: absolute; left: 0; top: 14px; bottom: 14px;
-          width: 1px; background: rgba(255,255,255,0.06);
-        }
-        .ap-stat-num {
-          font-family: var(--font);
-          font-size: 2rem; font-weight: 800;
-          color: var(--white); line-height: 1;
-          letter-spacing: -0.04em;
-        }
+        .ap-stat { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 20px 30px; position: relative; }
+        .ap-stat + .ap-stat::before { content: ''; position: absolute; left: 0; top: 14px; bottom: 14px; width: 1px; background: rgba(255,255,255,0.06); }
+        .ap-stat-num { font-family: var(--font); font-size: 2rem; font-weight: 800; color: var(--white); line-height: 1; letter-spacing: -0.04em; }
         .ap-stat-suffix { color: var(--red); }
-        .ap-stat-label {
-          font-family: var(--font);
-          font-size: 0.6rem; font-weight: 600;
-          color: rgba(255,255,255,0.24);
-          text-transform: uppercase; letter-spacing: 0.12em;
-          white-space: nowrap;
-        }
+        .ap-stat-label { font-family: var(--font); font-size: 0.6rem; font-weight: 600; color: rgba(255,255,255,0.24); text-transform: uppercase; letter-spacing: 0.12em; white-space: nowrap; }
 
-        /* CTA buttons */
-        .ap-hero-actions {
-          display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
-          position: relative; z-index: 1;
-        }
+        .ap-hero-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; position: relative; z-index: 1; }
         .ap-btn-primary {
           display: inline-flex; align-items: center; gap: 11px;
           background: var(--red); color: var(--white);
-          font-family: var(--font);
-          font-size: 0.875rem; font-weight: 600;
-          letter-spacing: 0.01em;
-          padding: 16px 28px;
-          border-radius: 10px;
-          text-decoration: none;
+          font-family: var(--font); font-size: 0.875rem; font-weight: 600; letter-spacing: 0.01em;
+          padding: 16px 28px; border-radius: 10px; text-decoration: none;
           position: relative; overflow: hidden;
-          box-shadow: 0 6px 18px rgba(181, 34, 28, 0.12), 0 2px 0 var(--red-deep), inset 0 1px 0 rgba(255,255,255,0.12);
+          box-shadow: 0 6px 18px rgba(181,34,28,0.12), 0 2px 0 var(--red-deep), inset 0 1px 0 rgba(255,255,255,0.12);
           transition: box-shadow 0.25s, transform 0.2s, background 0.2s;
-          white-space: nowrap;
-          border: none;
-          cursor: pointer;
+          white-space: nowrap; border: none; cursor: pointer;
         }
-        .ap-btn-primary::after {
-          content: ''; position: absolute; inset: 0;
-          background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%);
-        }
-        .ap-btn-primary:hover {
-          background: var(--red-deep);
-          box-shadow: 0 0 48px var(--red-glow), 0 2px 0 var(--red-deep), inset 0 1px 0 rgba(255,255,255,0.16);
-          transform: translateY(-3px) scale(1.01);
-        }
-        .ap-btn-arrow {
-          width: 24px; height: 24px;
-          background: rgba(255,255,255,0.18);
-          border-radius: 6px;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 10px; flex-shrink: 0;
-          transition: background 0.2s, transform 0.2s;
-          position: relative; z-index: 1;
-        }
+        .ap-btn-primary::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%); }
+        .ap-btn-primary:hover { background: var(--red-deep); box-shadow: 0 0 48px var(--red-glow), 0 2px 0 var(--red-deep), inset 0 1px 0 rgba(255,255,255,0.16); transform: translateY(-3px) scale(1.01); }
+        .ap-btn-arrow { width: 24px; height: 24px; background: rgba(255,255,255,0.18); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; transition: background 0.2s, transform 0.2s; position: relative; z-index: 1; }
         .ap-btn-primary:hover .ap-btn-arrow { background: rgba(255,255,255,0.28); transform: translateX(3px); }
 
         .ap-btn-phone {
           display: inline-flex; align-items: center; gap: 10px;
-          color: rgba(255,255,255,0.6);
-          font-family: var(--font);
-          font-size: 0.875rem; font-weight: 500;
-          padding: 15px 22px;
-          border-radius: 10px;
-          border: 1px solid rgba(255,255,255,0.08);
-          text-decoration: none;
-          transition: color 0.2s, border-color 0.2s, background 0.2s;
-          white-space: nowrap;
+          color: rgba(255,255,255,0.6); font-family: var(--font); font-size: 0.875rem; font-weight: 500;
+          padding: 15px 22px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);
+          text-decoration: none; transition: color 0.2s, border-color 0.2s, background 0.2s; white-space: nowrap;
         }
         .ap-btn-phone:hover { color: var(--white); border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.04); }
-        .ap-phone-ico {
-          width: 30px; height: 30px;
-          background: rgba(217,43,30,0.12);
-          border-radius: 8px;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 11px; color: var(--red); flex-shrink: 0;
-        }
+        .ap-phone-ico { width: 30px; height: 30px; background: rgba(217,43,30,0.12); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--red); flex-shrink: 0; }
 
-        /* ── Right panel — map ── */
-        .ap-hero-right {
-          position: relative; overflow: hidden;
-          min-height: 380px;
-        }
-        .ap-hero-right iframe {
-          position: absolute; inset: 0;
-          width: 100%; height: 100%;
-          border: 0; display: block;
-          filter: saturate(0.65) brightness(0.78) contrast(1.05) sepia(0.05);
-        }
-        .ap-hero-right::before {
-          content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
-          background:
-            linear-gradient(270deg, transparent 46%, rgba(26,29,35,0.46) 100%),
-            linear-gradient(0deg, rgba(26,29,35,0.18) 0%, transparent 12%, transparent 88%, rgba(26,29,35,0.18) 100%);
-        }
-        .ap-hero-right::after {
-          content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
-          background: rgba(26,29,35,0.08);
-        }
+        .ap-hero-right { position: relative; overflow: hidden; min-height: 380px; }
+        .ap-hero-right iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; filter: saturate(0.65) brightness(0.78) contrast(1.05) sepia(0.05); }
+        .ap-hero-right::before { content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(270deg, transparent 46%, rgba(26,29,35,0.46) 100%), linear-gradient(0deg, rgba(26,29,35,0.18) 0%, transparent 12%, transparent 88%, rgba(26,29,35,0.18) 100%); }
+        .ap-hero-right::after  { content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: rgba(26,29,35,0.08); }
 
-        /* Map area label */
-        .ap-map-label {
-          position: absolute;
-          bottom: 32px; right: 28px;
-          z-index: 10;
-          display: flex; flex-direction: column; gap: 6px;
-          align-items: flex-end;
-        }
-        .ap-map-area-name {
-          font-family: var(--font);
-          font-size: clamp(1.8rem, 4vw, 2.8rem);
-          font-weight: 700;
-          color: rgba(255,255,255,0.12);
-          letter-spacing: -0.02em;
-          line-height: 1;
-          user-select: none;
-          pointer-events: none;
-        }
-        .ap-map-postcode {
-          font-family: var(--font);
-          font-size: 0.7rem; font-weight: 700;
-          letter-spacing: 0.14em;
-          color: rgba(217,43,30,0.5);
-          user-select: none;
-        }
+        .ap-map-label { position: absolute; bottom: 32px; right: 28px; z-index: 10; display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+        .ap-map-area-name { font-family: var(--font); font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; color: rgba(255,255,255,0.12); letter-spacing: -0.02em; line-height: 1; user-select: none; pointer-events: none; }
+        .ap-map-postcode { font-family: var(--font); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; color: rgba(217,43,30,0.5); user-select: none; }
 
-        /* Trust bar */
-        .ap-trust-bar {
-          position: relative; z-index: 3;
-          border-top: 1px solid rgba(255,255,255,0.04);
-          background: rgba(255,255,255,0.015);
-        }
-        .ap-trust-inner {
-          display: flex; overflow-x: auto; scrollbar-width: none;
-          max-width: 1200px; margin: 0 auto;
-          padding: 0 clamp(16px, 5vw, 60px);
-        }
+        .ap-trust-bar { position: relative; z-index: 3; border-top: 1px solid rgba(255,255,255,0.04); background: rgba(255,255,255,0.015); }
+        .ap-trust-inner { display: flex; overflow-x: auto; scrollbar-width: none; max-width: 1200px; margin: 0 auto; padding: 0 clamp(16px, 5vw, 60px); }
         .ap-trust-inner::-webkit-scrollbar { display: none; }
-        .ap-trust-item {
-          display: flex; align-items: center; gap: 9px;
-          padding: 14px 24px;
-          font-family: var(--font);
-          font-size: 0.71rem; font-weight: 500;
-          color: rgba(255,255,255,0.3);
-          white-space: nowrap; flex-shrink: 0;
-          border-right: 1px solid rgba(255,255,255,0.04);
-          letter-spacing: 0.03em;
-          transition: color 0.2s;
-        }
+        .ap-trust-item { display: flex; align-items: center; gap: 9px; padding: 14px 24px; font-family: var(--font); font-size: 0.71rem; font-weight: 500; color: rgba(255,255,255,0.3); white-space: nowrap; flex-shrink: 0; border-right: 1px solid rgba(255,255,255,0.04); letter-spacing: 0.03em; transition: color 0.2s; }
         .ap-trust-item:first-child { padding-left: 0; }
         .ap-trust-item:last-child  { border-right: none; }
         .ap-trust-item:hover { color: rgba(255,255,255,0.5); }
         .ap-trust-ico { color: var(--red); font-size: 10px; flex-shrink: 0; opacity: 0.7; }
 
-        /* Body layout */
-        .ap-body {
-          max-width: 1140px; margin: 0 auto;
-          padding: 96px 24px 104px;
-          display: flex; flex-direction: column; gap: 96px;
-        }
+        .ap-body { max-width: 1140px; margin: 0 auto; padding: 96px 24px 104px; display: flex; flex-direction: column; gap: 96px; }
 
         .ap-tag { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 12px; }
         .ap-tag-line { width: 20px; height: 2px; background: var(--red); border-radius: 2px; flex-shrink: 0; }
@@ -888,7 +766,6 @@ const AreaPage = ({
         .ap-cta-desc { font-family: var(--font); color: rgba(255,255,255,0.35); font-size: 0.9rem; line-height: 1.8; margin: 0 0 38px; font-weight: 400; }
         .ap-cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
-        /* Responsive tweaks */
         @media (min-width: 640px) and (max-width: 999px) {
           .ap-h1 { font-size: clamp(2.8rem, 7vw, 3.8rem); }
           .ap-hero-right { min-height: 360px; }
@@ -916,7 +793,7 @@ const AreaPage = ({
       `}</style>
 
       <main className="ap">
-        {/* HERO */}
+        {/* ── HERO ── */}
         <header className="ap-hero" ref={heroRef}>
           <div className="ap-hero-bg" aria-hidden="true" />
           <div className="ap-hero-rule" aria-hidden="true" />
@@ -1033,7 +910,7 @@ const AreaPage = ({
           </div>
         </header>
 
-        {/* BODY */}
+        {/* ── BODY ── */}
         <div className="ap-body">
           <div className="ap-two">
             {services.length > 0 && (
@@ -1119,12 +996,14 @@ const AreaPage = ({
             <p className="ap-sec-sub">Everything you need to know before booking your first lesson.</p>
             <div className="ap-faqs">
               {(faqs.length ? faqs : [
-                { q: `How much do driving lessons cost in ${areaName}?`, a: `Our driving lessons in ${areaName} start from competitive rates. Get in touch for the latest pricing and any current offers — we often run discounts for block bookings.` },
-                { q: `Which driving test centres are near ${areaName}?`, a: `We prepare students for tests at all local DVSA-approved test centres near ${areaName}. Your instructor will be familiar with the test routes and common hazards.` },
+                { q: `How much do driving lessons cost in ${areaName}?`,       a: `Our driving lessons in ${areaName} start from competitive rates. Get in touch for the latest pricing and any current offers — we often run discounts for block bookings.` },
+                { q: `Which driving test centres are near ${areaName}?`,       a: `We prepare students for tests at all local DVSA-approved test centres near ${areaName}. Your instructor will be familiar with the test routes and common hazards.` },
                 { q: `Do you offer automatic driving lessons in ${areaName}?`, a: `Yes — we offer both manual and automatic driving lessons in ${areaName}${postcode ? ` (${postcode})` : ""}. Automatic lessons are ideal if you want to learn faster or find manual gear changes challenging.` },
-                { q: `How quickly can I start lessons in ${areaName}?`, a: `We typically have availability within a few days. Contact us or book online and we'll match you with a local instructor in ${areaName} as quickly as possible.` },
+                { q: `How quickly can I start lessons in ${areaName}?`,        a: `We typically have availability within a few days. Contact us or book online and we'll match you with a local instructor in ${areaName} as quickly as possible.` },
               ]).map(({ q, a }, i) => (
-                <motion.details key={i} className="ap-faq" initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: i * 0.06 }}>
+                <motion.details key={i} className="ap-faq"
+                  initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }} transition={{ duration: 0.3, delay: i * 0.06 }}>
                   <summary>{q}<span className="ap-faq-chevron" aria-hidden="true">▾</span></summary>
                   <div className="ap-faq-ans">{a}</div>
                 </motion.details>
@@ -1140,7 +1019,9 @@ const AreaPage = ({
               <nav aria-label="Nearby areas">
                 <div className="ap-chips">
                   {nearbyAreas.map(({ name, href }, i) => (
-                    <motion.a key={i} href={href || "#"} className="ap-chip" initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.26, delay: i * 0.04 }}>
+                    <motion.a key={i} href={href || "#"} className="ap-chip"
+                      initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }} transition={{ duration: 0.26, delay: i * 0.04 }}>
                       <FaMapMarkerAlt className="ap-chip-ico" aria-hidden="true" />{name}
                     </motion.a>
                   ))}
@@ -1149,16 +1030,19 @@ const AreaPage = ({
             </motion.section>
           )}
         </div>
-        {/*google review*/}
+
+        {/* Google Reviews */}
         <section>
-          <Reviews/>
+          <Reviews />
         </section>
 
-        {/* Bottom CTA */}
+        {/* ── Bottom CTA ── */}
         <section className="ap-cta" aria-labelledby="cta-h">
           <div className="ap-cta-orb1" aria-hidden="true" />
           <div className="ap-cta-orb2" aria-hidden="true" />
-          <motion.div className="ap-cta-inner" initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.65 }}>
+          <motion.div className="ap-cta-inner"
+            initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.65 }}>
             <div className="ap-cta-rule" aria-hidden="true" />
             <p className="ap-cta-kicker">Ready to get started?</p>
             <h2 id="cta-h" className="ap-cta-h2">Book Your First Lesson<br />in <em>{areaName}</em> Today</h2>
@@ -1177,14 +1061,22 @@ const AreaPage = ({
         </section>
       </main>
 
-      {/* Booking modal (portal) */}
+      {/* ── Booking Modal (portal) ── */}
       {modalOpen && (
         <ModalPortal>
-          <motion.div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="booking-title"
-            initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
-            transition={{ type: "spring", stiffness: 280, damping: 30 }} className="w-full"
+          <motion.div
+            ref={modalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="booking-title"
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", stiffness: 280, damping: 30 }}
+            className="w-full"
           >
             <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl max-h-[92dvh] overflow-y-auto">
+              {/* drag handle (mobile) */}
               <div className="flex justify-center pt-3 pb-1 sm:hidden">
                 <div className="w-10 h-1 rounded-full bg-gray-300" aria-hidden="true" />
               </div>
@@ -1195,43 +1087,47 @@ const AreaPage = ({
                     <h3 id="booking-title" className="text-lg font-semibold text-gray-900">Request a lesson</h3>
                     <p className="text-xs text-gray-500 mt-0.5">We'll confirm availability by phone or email.</p>
                   </div>
-
-                  {/* Bigger exit symbol for clarity */}
-                  <button onClick={() => setModalOpen(false)} aria-label="Close booking modal" className="p-2 -mr-1 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition">
+                  <button
+                    onClick={() => setModalOpen(false)}
+                    aria-label="Close booking modal"
+                    className="p-2 -mr-1 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition"
+                  >
                     <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" aria-hidden>
                       <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </button>
                 </div>
 
-                {/* Detailed confirmation panel (shown after save) */}
+                {/* ── Confirmation panel ── */}
                 {showSuccess && savedBooking ? (
                   <div className="mb-4 rounded-md border border-green-100 bg-green-50 p-4">
                     <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg">
-                        ✓
-                      </div>
+                      <div className="flex-shrink-0 bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg">✓</div>
                       <div className="flex-1">
                         <h4 className="text-md font-semibold text-green-800">Booking Confirmed</h4>
                         <p className="text-xs text-green-700 mt-1">Thanks — your booking request has been saved. We'll contact you shortly to confirm availability.</p>
-
                         <div className="mt-3 text-sm text-green-800 grid grid-cols-1 gap-2">
                           <div><strong>Booking ID:</strong> <span className="font-mono">{savedBooking._id || savedBooking.id || "—"}</span></div>
                           <div><strong>Area:</strong> {savedBooking.area || areaName}</div>
-                          <div><strong>Transmission:</strong> {savedBooking.bookingMode || savedBooking.transmissionType || (bookingMode ? bookingMode : "—")}</div>
+                          <div><strong>Transmission:</strong> {savedBooking.bookingMode || savedBooking.transmissionType || bookingMode || "—"}</div>
                           <div><strong>Contact:</strong> {savedBooking.phone || savedBooking.email || "—"}</div>
                         </div>
-
                         <div className="mt-3 flex gap-2">
-                          <button onClick={() => { setShowSuccess(false); setSavedBooking(null); setModalOpen(false); }} className="bg-green-700 text-white px-3 py-2 rounded-md text-sm">Done</button>
-                          <button onClick={() => { setShowSuccess(false); setSavedBooking(null); }} className="px-3 py-2 rounded-md text-sm border border-green-700 text-green-700 bg-white">Make another request</button>
+                          <button
+                            onClick={() => { setShowSuccess(false); setSavedBooking(null); setModalOpen(false); }}
+                            className="bg-green-700 text-white px-3 py-2 rounded-md text-sm"
+                          >Done</button>
+                          <button
+                            onClick={() => { setShowSuccess(false); setSavedBooking(null); }}
+                            className="px-3 py-2 rounded-md text-sm border border-green-700 text-green-700 bg-white"
+                          >Make another request</button>
                         </div>
                       </div>
                     </div>
                   </div>
                 ) : null}
 
-                {/* Form (hidden when showing confirmation with savedBooking to avoid confusion) */}
+                {/* ── Form (hidden after confirmed booking) ── */}
                 {!savedBooking && (
                   <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-3" noValidate aria-live="polite">
                     <BookingFormFields
@@ -1248,7 +1144,11 @@ const AreaPage = ({
                     />
 
                     <div className="flex items-center gap-3 mt-1">
-                      <button type="submit" disabled={submitting} className="flex-1 bg-red-600 text-white font-semibold px-4 py-2.5 rounded-lg shadow hover:bg-red-700 active:scale-[0.98] disabled:opacity-60 transition-all flex items-center justify-center gap-2 text-sm">
+                      <button
+                        type="submit"
+                        disabled={submitting}
+                        className="flex-1 bg-red-600 text-white font-semibold px-4 py-2.5 rounded-lg shadow hover:bg-red-700 active:scale-[0.98] disabled:opacity-60 transition-all flex items-center justify-center gap-2 text-sm"
+                      >
                         {submitting ? (
                           <>
                             <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -1257,12 +1157,13 @@ const AreaPage = ({
                             </svg>
                             Sending…
                           </>
-                        ) : (
-                          "Request Booking"
-                        )}
+                        ) : "Request Booking"}
                       </button>
-
-                      <button type="button" onClick={() => { reset(); setModalOpen(false); }} className="px-3 py-2.5 text-sm text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition">
+                      <button
+                        type="button"
+                        onClick={() => { reset(); setModalOpen(false); }}
+                        className="px-3 py-2.5 text-sm text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition"
+                      >
                         Cancel
                       </button>
                     </div>
@@ -1273,7 +1174,11 @@ const AreaPage = ({
                     </p>
 
                     {toast && (
-                      <div className={`rounded-lg px-3 py-2.5 text-sm ${toast.type === "success" ? "bg-green-50 text-green-800 border border-green-100" : "bg-red-50 text-red-800 border border-red-100"}`}>
+                      <div className={`rounded-lg px-3 py-2.5 text-sm ${
+                        toast.type === "success"
+                          ? "bg-green-50 text-green-800 border border-green-100"
+                          : "bg-red-50 text-red-800 border border-red-100"
+                      }`}>
                         {toast.message}
                       </div>
                     )}

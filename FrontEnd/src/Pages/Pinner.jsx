@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import AreaPage from "../Components/AreaCover";
+import AreaPage from "../Components/AreaCovered";
 
 const AREA     = "Pinner";
 const SLUG     = "pinner";

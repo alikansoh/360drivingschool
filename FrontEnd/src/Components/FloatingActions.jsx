@@ -43,16 +43,17 @@ export default function FloatingActions({ phone = "447789471859" }) {
   return (
     <div
       aria-hidden={false}
-      className="fixed right-3 bottom-4 z-[70] flex flex-col gap-2 sm:gap-3"
+      // increased bottom spacing on small screens: bottom-10 for mobile, revert to sm:bottom-4 on >=640px
+      className="fixed right-3 bottom-10 sm:bottom-4 z-[70] flex flex-col gap-2 sm:gap-3"
     >
       <button
         onClick={() =>
           openWhatsApp("Hi, I'm interested in driving lessons. Can you help me book?")
         }
         aria-label="Message us on WhatsApp"
-        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-500 hover:bg-green-600 text-white shadow-md flex items-center justify-center transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-300 opacity-90 hover:opacity-100"
+        className="w-10 h-10  sm:w-12 sm:h-12 rounded-full bg-green-500 hover:bg-green-600 text-white shadow-md flex items-center justify-center transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-300 opacity-90 hover:opacity-100"
       >
-        <FaWhatsapp className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden />
+        <FaWhatsapp className=" w-4 h-4 sm:w-5 sm:h-5" aria-hidden />
       </button>
 
       <button
