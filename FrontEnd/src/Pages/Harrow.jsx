@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import AreaPage from "../components/AreaCovered";
+import AreaPage from "../Components/AreaCovered";
 
 const AREA = "Harrow";
 const SLUG = "harrow";
