@@ -270,7 +270,7 @@ function PageMeta({ title, description }) {
       <meta property="og:description" content={description} />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:image" content={`${window.location.origin}/og-image.jpg`} />
+      <meta property="og:image" content={`${window.location.origin}/og-image.png`} />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
@@ -282,7 +282,7 @@ function PageMeta({ title, description }) {
 /* Reusable meta helper for areas (keeps consistent schema + phone) */
 function buildAreaMeta({ slug, title, description, keywords, areaName }) {
   const canonicalUrl = `${window.location.origin}/${slug}`;
-  const image = `${window.location.origin}/og-image.jpg`;
+  const image = `${window.location.origin}/og-image.png`;
   const businessSchema = {
     "@context": "https://schema.org",
     "@type": "DrivingSchool",
