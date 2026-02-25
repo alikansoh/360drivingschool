@@ -96,7 +96,7 @@ function buildDrivingSchoolSchema({ areaName, areaSlug, metaDescription, phone, 
     priceRange:     "££",
     openingHours:   ["Mo-Su 07:00-21:00"],
     url:            `https://360driveacademy.co.uk/areas/${areaSlug}`,
-    image:          "https://360driveacademy.co.uk/og-image.jpg",
+    image:          "https://360driveacademy.co.uk/src/assets/og-image.png",
     areaServed: {
       "@type": "City",
       name:    areaName,
@@ -415,7 +415,7 @@ function useSeoMeta({ areaName, areaSlug, postcode, metaDescription }) {
     };
 
     const canonicalUrl = `https://360driveacademy.co.uk/areas/${areaSlug}`;
-    const ogImage      = "https://360driveacademy.co.uk/og-image.jpg";
+    const ogImage      = "https://360driveacademy.co.uk/src/assets/og-image.png";
 
     setMeta("description",    metaDescription);
     setMeta("robots",         "index, follow");
