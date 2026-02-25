@@ -88,31 +88,31 @@ function buildDrivingSchoolSchema({ areaName, areaSlug, metaDescription, phone, 
   ];
 
   const drivingSchool = {
-    "@context":     "https://schema.org",
-    "@type":        "DrivingSchool",
-    name:           "360 Drive Academy",
-    description:    metaDescription,
-    telephone:      phone,
-    priceRange:     "££",
-    openingHours:   ["Mo-Su 07:00-21:00"],
-    url:            `https://360driveacademy.co.uk/areas/${areaSlug}`,
-    image:          "https://360driveacademy.co.uk/src/assets/og-image.png",
+    "@context":  "https://schema.org",
+    "@type":     ["LocalBusiness", "DrivingSchool"], // ← key change
+    name:        "360 Drive Academy",
+    description: metaDescription,
+    telephone:   phone,
+    priceRange:  "££",
+    openingHours: ["Mo-Su 07:00-21:00"],
+    url:         `https://360driveacademy.co.uk/areas/${areaSlug}`,
+    image:       "https://360driveacademy.co.uk/og-image.png",
     areaServed: {
       "@type": "City",
       name:    areaName,
     },
     address: {
-      "@type":           "PostalAddress",
-      addressLocality:   areaName,
-      postalCode:        postcode,
-      addressCountry:    "GB",          // ← plain ISO-3166-1 alpha-2 string, NOT an object
+      "@type":         "PostalAddress",
+      addressLocality: areaName,
+      postalCode:      postcode,
+      addressCountry:  "GB", // make sure this is a plain string in production
     },
     aggregateRating: {
-      "@type":       "AggregateRating",
-      ratingValue:   "5",              // strings preferred by Google validator
-      bestRating:    "5",
-      worstRating:   "1",
-      reviewCount:   "18",
+      "@type":      "AggregateRating",
+      ratingValue:  "5",
+      bestRating:   "5",
+      worstRating:  "1",
+      reviewCount:  "18",
     },
   };
 
@@ -415,7 +415,7 @@ function useSeoMeta({ areaName, areaSlug, postcode, metaDescription }) {
     };
 
     const canonicalUrl = `https://360driveacademy.co.uk/areas/${areaSlug}`;
-    const ogImage      = "https://360driveacademy.co.uk/src/assets/og-image.png";
+    const ogImage      = "https://360driveacademy.co.uk/og-image.png";
 
     setMeta("description",    metaDescription);
     setMeta("robots",         "index, follow");
