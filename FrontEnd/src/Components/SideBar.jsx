@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { AiOutlineMenu, AiOutlineSearch, AiOutlineClose } from "react-icons/ai";
+import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { GrUserSettings } from "react-icons/gr";
 import { FcMissedCall } from "react-icons/fc";
 import { LuPackageOpen } from "react-icons/lu";
 import { BsFillCollectionPlayFill } from "react-icons/bs";
+import { FaBlog } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
@@ -16,27 +17,33 @@ const Navbar = () => {
     {
       icon: <FcMissedCall size={25} className="mr-4" />,
       text: "Booking",
-      url: "/admin/booking", // Ensure this matches location.pathname
+      url: "/admin/booking",
     },
     {
       icon: <LuPackageOpen size={25} className="mr-4 " />,
       text: "Packages",
-      url: "/admin/packages", // Add leading slash for consistency
+      url: "/admin/packages",
     },
     {
       icon: <BsFillCollectionPlayFill size={25} className="mr-4" />,
       text: "Courses",
-      url: "/admin/courses", // Add leading slash
+      url: "/admin/courses",
     },
     {
       icon: <GrUserSettings size={25} className="mr-4" />,
       text: "User",
-      url: "/admin/users", // Add leading slash
+      url: "/admin/users",
+    },
+    {
+      icon: <FaBlog size={25} className="mr-4" />,
+      text: "Blog",
+      url: "/admin/blogs",
     },
   ];
+
   const handleLogout = () => {
-    localStorage.removeItem("user"); // Clear user data from localStorage
-    navigate("/admin"); // Redirect to login page
+    localStorage.removeItem("user");
+    navigate("/admin");
   };
 
   return (
@@ -53,12 +60,14 @@ const Navbar = () => {
           360<span className="font-bold">drive Academy</span>
         </h1>
       </div>
+
       <button
         className="bg-red-600 text-white px-4 py-2 rounded-md"
         onClick={handleLogout}
       >
         Logout
       </button>
+
       {/* Mobile Menu */}
       {/* Overlay */}
       {nav && (
