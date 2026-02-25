@@ -282,7 +282,7 @@ function PageMeta({ title, description }) {
 /* Reusable meta helper for areas (keeps consistent schema + phone) */
 function buildAreaMeta({ slug, title, description, keywords, areaName }) {
   const canonicalUrl = `${window.location.origin}/${slug}`;
-  const image = `${window.location.origin}/og-image.png`;
+  const image = `360driveacademy.co.uk/og-image.png`;
   const businessSchema = {
     "@context": "https://schema.org",
     "@type": "DrivingSchool",
